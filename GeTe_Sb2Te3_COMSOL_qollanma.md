@@ -129,7 +129,7 @@ t_f0       3[nm]         "GeSbTe4 filament qatlami (vdW)"
 t_GT       20[nm]        "GeTe qatlami"
 t_TE       20[nm]        "Yuqori elektrod (TiN)"
 r_f        10[nm]        "Filament radiusi"
-sigma_on   1e5[S/m]      "Filament o'tkazuvchanligi (ON)"
+sigma_on   1e4[S/m]      "Filament o'tkazuvchanligi (ON)"
 sigma_off  1[S/m]        "Filament atrofi / OFF"
 lambda_t   0.05[nm]      "O'tkazuvchanlikning qalinlikka sezgirlik uzunligi"
 k_state    1             "1 = xotira (bosimga sezgir), 0 = kalitlash (sezgir emas)"
@@ -159,10 +159,15 @@ E_f        20[GPa]       "Filament qatlamining Young moduli (vdW, yumshoq)"
 | Material | E [GPa] | ν | ρ [kg/m³] | σ [S/m] | ε_r |
 |---|---|---|---|---|---|
 | TiN (BE, TE) | 250 | 0.25 | 5220 | 5e6 | 1 |
-| Sb₂Te₃ | 55 | 0.25 | 6500 | 1e5 | 50 |
+| Sb₂Te₃ | 55 | 0.25 | 6500 | 1e6 | 50 |
 | GeSbTe₄ filament | `E_f` | 0.25 | 6300 | *(fizikada beriladi)* | 30 |
 | Interfeys qolgani | `E_f` | 0.25 | 6300 | `sigma_off` | 30 |
-| GeTe (kristall) | 50 | 0.25 | 6140 | 1e4 | 36 |
+| GeTe (kristall) | 50 | 0.25 | 6140 | 1e6 | 36 |
+
+> GeTe va Sb₂Te₃ filamentdan ancha yaxshi o'tkazishi kerak (σ ≫ sigma_on). Aks holda ularning ketma-ket (spreading)
+> qarshiligi R_ON ni "yopib qo'yadi" va bosim effekti ko'rinmaydi. Batafsil: `comsol_java/README_JAVA.md`, 4-bo'lim.
+
+Java API versiyasi (bu modelni avtomatik quradi): `comsol_java/GeTeSb2Te3_RON.java`.
 
 ### 3.5. Solid Mechanics (bosimni berish)
 1. **Solid Mechanics → Linear Elastic Material 1**: hamma domenlar, material qiymatlaridan.
