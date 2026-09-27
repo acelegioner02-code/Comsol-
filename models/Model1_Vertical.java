@@ -124,7 +124,7 @@ public class Model1_Vertical {
     p(model, "Ea", "0.9[eV]", "Migratsiya aktivatsiya energiyasi (fitting)");
     p(model, "a_hop", "0.3[nm]", "Sakrash masofasi (fitting)");
     p(model, "tau_rel", "1e3[s]", "Relaksatsiya vaqti (katta -> nonvolatil)");
-    p(model, "p_win", "2", "Joglekar oynasi darajasi (Fwin(x) = 1-(2x-1)^(2*p_win))");
+    p(model, "p_win", "2", "Oyna funksiyasi darajasi (Biolek: Fwin = 1-x^(2p) yoki 1-(x-1)^(2p))");
     p(model, "kB_c", "1.380649e-23[J/K]", "Boltsman doimiysi");
     p(model, "q_c", "1.602176634e-19[C]", "Elektron zaryadi");
 
@@ -203,11 +203,28 @@ public class Model1_Vertical {
         "Filamentdagi haydovchi maydon (V_app>0 -> E_drive>0 -> SET yo'nalishi)");
     model.component("comp1").variable("var1").set("T_local", "aveop_fil(T)",
         "Filamentning o'rtacha harorati (Heat Transfer dan)");
-    model.component("comp1").variable("var1").set("Fwin_x", "1-(2*xode-1)^(2*p_win)",
-        "Joglekar oynasi: chegaralarda (x=0,1) dx/dt ni nolga olib boradi");
+    // OYNA TANLOVI (Time Dependent, 3-bosqich, 2-qism uchun EMPIRIK ravishda TUZATILDI):
+    // dastlab Joglekar oynasi (1-(2x-1)^(2p)) + x(0)=1e-3 bilan sinaldi. Natija: SET to'g'ri ishladi
+    // (V_SET topilgan = 3.705 V, maqsad 3.5 V), LEKIN RESET umuman topilmadi - Joglekar oynasi
+    // Fwin(1)=0 QURILISHI BO'YICHA, shuning uchun x=1 ga yetgach, HATTO KUCHLI MANFIY E_drive
+    // (V=-4.5V) da ham haydovchi had deyarli bostiriladi va x amalda "yopishib qoladi" (faqat juda
+    // sekin -x/tau_rel relaksatsiyasi qoladi, tau_rel=1000s >> 30ms simulyatsiya). Bu Joglekar
+    // (simmetrik) oynaning YAXSHI MA'LUM kamchiligi: ikkala chegara HAM yo'nalishidan qat'i nazar
+    // "yopishqoq" bo'lib qoladi. YECHIM: Biolek oynasi (yo'nalishga bog'liq): SET paytida (E_drive>0)
+    // oyna x=1 yaqinida yopiladi (o'sishni to'xtatadi, lekin PASTGA harakatni CHEKLAMAYDI), RESET
+    // paytida (E_drive<0) oyna x=0 yaqinida yopiladi, ammo x=1 yaqinida OCHIQ qoladi - shu bilan
+    // RESET signalini bostirmaydi. Yo'nalish sifatida haqiqiy dx/dt (o'z-o'ziga bog'liq bo'lardi)
+    // o'rniga sign(E_drive) ishlatiladi - bu matematik jihatdan bir xil (sinh argumentning ishorasini
+    // saqlaydi), lekin circular reference yo'q.
+    model.component("comp1").variable("var1").set("Fwin_x",
+        "if(E_drive>0, 1-xode^(2*p_win), 1-(xode-1)^(2*p_win))",
+        "Biolek oynasi (yo'nalishga bog'liq, dir=sign(E_drive)): SET'da x=1 tomon, RESET'da x=0 tomon ochiq");
     model.component("comp1").variable("var1").set("dxdt_rhs",
         "k0*exp(-Ea/(kB_c*T_local))*sinh(q_c*a_hop*E_drive/(2*kB_c*T_local))*Fwin_x-xode/tau_rel",
         "dx/dt ifodasi (Global Equation da xode_t = dxdt_rhs sifatida ishlatiladi)");
+    // 3-bosqich, Time Dependent: uchburchak surish signali. t=0 da asin(sin(0))=0 -> V(0)=0.
+    model.component("comp1").variable("var1").set("V_wave", "Vamp*(2/pi)*asin(sin(2*pi*f0*t))",
+        "Uchburchak surish signali V(t) (faqat Time Dependent tadqiqotda term1.V0 sifatida ishlatiladi)");
 
     // Filament bo'yicha hajmiy o'rtacha (keyingi bosqichda Global ODE uchun <Ez> va <T>)
     model.component("comp1").cpl().create("aveop_fil", "Average");
@@ -617,6 +634,81 @@ public class Model1_Vertical {
       if (outX != null) outX.close();
       model.param().set("V_app", "V_read");
       model.param().set("xs", "0");
+    }
+
+    // =====================================================================================
+    // S4: TIME DEPENDENT (3-bosqich, 2-qism) - BITTA TSIKL, T_amb=300K (foydalanuvchi so'roviga
+    // ko'ra T_amb sweep va N1-N6 keyingi qadamga qoldirilgan).
+    // =====================================================================================
+    // OYNA TANLOVI (EMPIRIK ITERATSIYA - yuqoridagi Fwin_x izohiga qarang): dastlab Joglekar oynasi
+    // + x(0)=1e-3 sinaldi - SET to'g'ri ishladi, lekin RESET UMUMAN topilmadi (x=1 da Fwin=0 bo'lgani
+    // uchun x "yopishib qoldi"). YAKUNIY TANLOV: Biolek oynasi (yo'nalish = sign(E_drive), circular
+    // reference YO'Q) - bu ham x(0)=1e-3 talab qilmaydi (Fwin_biolek(x=0, E_drive>0) = 1-0^(2p) = 1,
+    // ya'ni x=0 SET yo'nalishida OCHIQ chegara), lekin xavfsizlik uchun baribir 1e-3 qoldirildi.
+    model.component("comp1").physics("ge").feature("ge1").label("Filament holati x (dinamik, Time Dependent)");
+    // TEKSHIRILSIN: "xode_t" (pastki chiziq bilan) Time Dependent'da ham ANIQLANMAGAN chiqdi
+    // ("Undefined variable: xode_t"). Hujjatdagi "f(u,ut,utt,t)" yozuvida "u" bilan "t" orasida
+    // pastki chiziq YO'Q - haqiqiy sintaksis "xodet" (qo'shilgan) bo'lishi mumkin.
+    model.component("comp1").physics("ge").feature("ge1").set("equation", new String[]{"xodet-dxdt_rhs"});
+    model.component("comp1").physics("ge").feature("ge1").set("initialValueU", new String[]{"1e-3"});
+
+    // Terminal endi doimiy V_app o'rniga uchburchak signal V_wave bilan boshqariladi. Bu o'zgarish
+    // S1/S2/S3 (std1-4, ular yuqorida allaqachon yechilgan va eksport qilingan) ga ta'sir qilmaydi.
+    model.component("comp1").physics("ec").feature("term1").set("V0", "V_wave");
+
+    model.study().create("std5");
+    model.study("std5").label("S4: Time Dependent (T_amb=300K, uchburchak signal, bitta tsikl)");
+    model.study("std5").create("time", "Transient");   // TEKSHIRILSIN: "Transient" - GUI "Time Dependent"
+    // 0-30ms, chiqish qadami 5e-5s (max ichki qadam talabi 1/(400*f0)=2.5e-5s ga yaqin holda,
+    // hisoblash vaqtini maqbul saqlash uchun; BDF solver ikkita chiqish nuqtasi orasida ham
+    // moslashuvchan kichikroq ichki qadamlar oladi).
+    model.study("std5").feature("time").set("tlist", "range(0,5e-5,0.03)");   // TEKSHIRILSIN
+    model.study("std5").run();
+
+    model.result().numerical().create("gev_S4", "EvalGlobal");
+    model.result().numerical("gev_S4").label("S4: t, V, I, x, T_max (vaqt qatori)");
+    model.result().numerical("gev_S4").set("data", "dset5");   // TEKSHIRILSIN: std5 -> dset5
+    model.result().numerical("gev_S4").set("expr", new String[]{"t", "V_wave", "ec.I0_1", "xode", "maxop_T(T)"});
+    model.result().numerical("gev_S4").set("unit", new String[]{"s", "V", "A", "1", "K"});
+    double[][] s4 = model.result().numerical("gev_S4").getReal();   // s4[expr][nuqta]: 0=t,1=V,2=I,3=x,4=Tmax
+
+    String xtCsv = "xt_cycle.csv";
+    String ivCsv = "iv_ugate0.csv";
+    PrintWriter outXt = null, outIv = null;
+    try {
+      outXt = new PrintWriter(new FileWriter(xtCsv));
+      outXt.println("t_s,V_V,I_A,x,Tmax_K");
+      outIv = new PrintWriter(new FileWriter(ivCsv));
+      outIv.println("V_V,I_A");
+      int n = (s4.length > 0) ? s4[0].length : 0;
+      for (int i = 0; i < n; i++) {
+        outXt.println(String.format(Locale.US, "%.6e,%.6e,%.6e,%.6e,%.6e", s4[0][i], s4[1][i], s4[2][i], s4[3][i], s4[4][i]));
+        outIv.println(String.format(Locale.US, "%.6e,%.6e", s4[1][i], s4[2][i]));
+      }
+
+      // V_SET / V_RESET: x = 0.5 dan o'tish momentidagi V (chiziqli interpolyatsiya).
+      double vSetFound = Double.NaN, vResetFound = Double.NaN;
+      for (int i = 1; i < n; i++) {
+        double xPrev = s4[3][i - 1], xCur = s4[3][i];
+        if (Double.isNaN(vSetFound) && xPrev < 0.5 && xCur >= 0.5) {
+          double frac = (0.5 - xPrev) / (xCur - xPrev);
+          vSetFound = s4[1][i - 1] + frac * (s4[1][i] - s4[1][i - 1]);
+        }
+        if (Double.isNaN(vResetFound) && xPrev > 0.5 && xCur <= 0.5) {
+          double frac = (xPrev - 0.5) / (xPrev - xCur);
+          vResetFound = s4[1][i - 1] + frac * (s4[1][i] - s4[1][i - 1]);
+        }
+      }
+      System.out.println(String.format(Locale.US,
+          "S4 NATIJA: n=%d nuqta, x(oxirgi)=%.4g, T_max(oxirgi)=%.4g K, V_SET(topilgan)=%s V (maqsad +3.5), V_RESET(topilgan)=%s V (maqsad -3.5)",
+          n, s4[3][n - 1], s4[4][n - 1],
+          Double.isNaN(vSetFound) ? "TOPILMADI" : String.format(Locale.US, "%.4g", vSetFound),
+          Double.isNaN(vResetFound) ? "TOPILMADI" : String.format(Locale.US, "%.4g", vResetFound)));
+    } catch (IOException ex) {
+      System.out.println("XATO (CSV xt_cycle/iv_ugate0): " + ex.getMessage());
+    } finally {
+      if (outXt != null) outXt.close();
+      if (outIv != null) outIv.close();
     }
 
     try {
