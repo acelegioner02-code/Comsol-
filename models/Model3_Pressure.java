@@ -194,9 +194,12 @@ public class Model3_Pressure {
     model.study("std1").create("stat2", "Stationary");
     model.study("std1").feature("stat2").label("2-qadam: Electric Currents");
     model.study("std1").feature("stat2").set("activate", new String[]{"solid", "off", "ec", "on"});
-    model.study("std1").feature("stat2").set("usesol", true);   // TEKSHIRILSIN: oldingi qadam yechimidan foydalanish
-    model.study("std1").feature("stat2").set("notsolmethod", "sol");
-    model.study("std1").feature("stat2").set("notstudy", "std1");
+    // TEKSHIRILSIN: aniq usesol/notsolmethod/notstudy o'rnatilmadi - COMSOL Programming Reference
+    // Manual (Table 6-95) ga ko'ra bir xil STUDY ichidagi ketma-ket STEP lar ODATIY holatda oldingi
+    // qadamning yechimini "yechilmagan" o'zgaruvchilar uchun avtomatik meros qilib oladi (standart
+    // ko'p bosqichli ketma-ket yechim naqshi). Agar bu yetarli bo'lmasa, keyingi urinishda
+    // stat2.set("notsolmethod","sol") + stat2.set("notstudy","std1") + stat2.set("usesol",true)
+    // qo'shiladi (xossalar hujjatda TASDIQLANGAN, faqat kerakligi noaniq).
 
     model.result().numerical().create("gev_R", "EvalGlobal");
     model.result().numerical("gev_R").set("expr", new String[]{"V_read/ec.I0_1"});

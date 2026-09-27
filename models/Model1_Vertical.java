@@ -818,7 +818,7 @@ public class Model1_Vertical {
             model.result("pg_N1_lin").feature("g1").set("xdataexpr", "V_wave");
             model.result().export().create("exp_N1_lin", "Image");
             model.result().export("exp_N1_lin").set("plotgroup", "pg_N1_lin");
-            model.result().export("exp_N1_lin").set("filename", "N1_iv_linear.png");
+            model.result().export("exp_N1_lin").set("pngfilename", "N1_iv_linear.png");
             model.result().export("exp_N1_lin").run();
           } catch (Exception ex) {
             System.out.println("XATO (N1 chiziqli): " + ex.getMessage());
@@ -833,7 +833,7 @@ public class Model1_Vertical {
             model.result("pg_N1_log").feature("g1").set("xdataexpr", "V_wave");
             model.result().export().create("exp_N1_log", "Image");
             model.result().export("exp_N1_log").set("plotgroup", "pg_N1_log");
-            model.result().export("exp_N1_log").set("filename", "N1_iv_log.png");
+            model.result().export("exp_N1_log").set("pngfilename", "N1_iv_log.png");
             model.result().export("exp_N1_log").run();
           } catch (Exception ex) {
             System.out.println("XATO (N1 log): " + ex.getMessage());
@@ -848,7 +848,7 @@ public class Model1_Vertical {
             model.result("pg_N3_x").feature("g1").set("expr", new String[]{"xode"});
             model.result().export().create("exp_N3_x", "Image");
             model.result().export("exp_N3_x").set("plotgroup", "pg_N3_x");
-            model.result().export("exp_N3_x").set("filename", "N3_x_t.png");
+            model.result().export("exp_N3_x").set("pngfilename", "N3_x_t.png");
             model.result().export("exp_N3_x").run();
           } catch (Exception ex) {
             System.out.println("XATO (N3 x(t)): " + ex.getMessage());
@@ -861,7 +861,7 @@ public class Model1_Vertical {
             model.result("pg_N3_V").feature("g1").set("expr", new String[]{"V_wave"});
             model.result().export().create("exp_N3_V", "Image");
             model.result().export("exp_N3_V").set("plotgroup", "pg_N3_V");
-            model.result().export("exp_N3_V").set("filename", "N3_V_t.png");
+            model.result().export("exp_N3_V").set("pngfilename", "N3_V_t.png");
             model.result().export("exp_N3_V").run();
           } catch (Exception ex) {
             System.out.println("XATO (N3 V(t)): " + ex.getMessage());
@@ -874,7 +874,7 @@ public class Model1_Vertical {
             model.result("pg_N3_I").feature("g1").set("expr", new String[]{"ec.I0_1*1e3"});
             model.result().export().create("exp_N3_I", "Image");
             model.result().export("exp_N3_I").set("plotgroup", "pg_N3_I");
-            model.result().export("exp_N3_I").set("filename", "N3_I_t.png");
+            model.result().export("exp_N3_I").set("pngfilename", "N3_I_t.png");
             model.result().export("exp_N3_I").run();
           } catch (Exception ex) {
             System.out.println("XATO (N3 I(t)): " + ex.getMessage());
@@ -890,7 +890,7 @@ public class Model1_Vertical {
             if (setIdxBefore >= 0) {
               model.result().dataset().create("dset_SET", "Solution");
               model.result().dataset("dset_SET").set("solution", "sol5");
-              model.result().dataset("dset_SET").set("looplevel", new int[]{setIdxBefore + 2});
+              model.result().dataset("dset_SET").set("solnum", String.valueOf(setIdxBefore + 2));
               model.result().create("pg_N4_map", "PlotGroup2D");
               model.result("pg_N4_map").label("N4: T xaritasi (SET paytida)");
               model.result("pg_N4_map").set("data", "dset_SET");
@@ -898,7 +898,7 @@ public class Model1_Vertical {
               model.result("pg_N4_map").feature("surf1").set("expr", "T");
               model.result().export().create("exp_N4_map", "Image");
               model.result().export("exp_N4_map").set("plotgroup", "pg_N4_map");
-              model.result().export("exp_N4_map").set("filename", "N4_Tmap_SET.png");
+              model.result().export("exp_N4_map").set("pngfilename", "N4_Tmap_SET.png");
               model.result().export("exp_N4_map").run();
             }
           } catch (Exception ex) {
@@ -913,7 +913,7 @@ public class Model1_Vertical {
             model.result("pg_N4_Tmax").feature("g1").set("legend", true);
             model.result().export().create("exp_N4_Tmax", "Image");
             model.result().export("exp_N4_Tmax").set("plotgroup", "pg_N4_Tmax");
-            model.result().export("exp_N4_Tmax").set("filename", "N4_Tmax_t.png");
+            model.result().export("exp_N4_Tmax").set("pngfilename", "N4_Tmax_t.png");
             model.result().export("exp_N4_Tmax").run();
           } catch (Exception ex) {
             System.out.println("XATO (N4 Tmax(t)): " + ex.getMessage());
@@ -924,10 +924,10 @@ public class Model1_Vertical {
             if (setIdxBefore >= 1) {
               model.result().dataset().create("dset_before", "Solution");
               model.result().dataset("dset_before").set("solution", "sol5");
-              model.result().dataset("dset_before").set("looplevel", new int[]{setIdxBefore + 1});
+              model.result().dataset("dset_before").set("solnum", String.valueOf(setIdxBefore + 1));
               model.result().dataset().create("dset_after", "Solution");
               model.result().dataset("dset_after").set("solution", "sol5");
-              model.result().dataset("dset_after").set("looplevel", new int[]{setIdxBefore + 2});
+              model.result().dataset("dset_after").set("solnum", String.valueOf(setIdxBefore + 2));
 
               String[][] n5jobs = {
                   {"pg_N5_Ebefore", "dset_before", "ec.normE", "N5_E_before.png", "N5: |E| SET dan oldin"},
@@ -943,7 +943,7 @@ public class Model1_Vertical {
                 model.result(job[0]).feature("surf1").set("expr", job[2]);
                 model.result().export().create("exp_" + job[0], "Image");
                 model.result().export("exp_" + job[0]).set("plotgroup", job[0]);
-                model.result().export("exp_" + job[0]).set("filename", job[3]);
+                model.result().export("exp_" + job[0]).set("pngfilename", job[3]);
                 model.result().export("exp_" + job[0]).run();
               }
             }
