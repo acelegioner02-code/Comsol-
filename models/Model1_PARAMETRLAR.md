@@ -11,12 +11,12 @@ Belgilar: **M** — maqoladan (Fig. 1a, grafikdan taxminan o'qilgan); **T** — 
 
 | Nomi | Qiymati | Birligi | Manba / asos |
 |---|---|---|---|
-| R_dev | 50 | nm | T (topshiriq) |
+| R_dev | 1000 (1 um) | nm | T -> **2-bosqichdan 50 dan 1000 ga oshirilgan**, farazlar #10 ga qarang |
 | t_be, t_te | 10, 10 | nm | T (elektrodlar, natijaga deyarli ta'sir qilmaydi) |
 | t_ST | 20 | nm | T (topshiriq) |
 | t_int | 1.5 | nm | T (bitta vdW bo'shlig'i + qo'shni Te qatlamlari tartibi) |
 | t_GT | 20 | nm | T (topshiriq) |
-| r_f | 5 | nm | T (topshiriq) |
+| r_f | 200 | nm | T -> **2-bosqichdan 5 dan 200 ga oshirilgan**, farazlar #10 ga qarang |
 | sig_m | 5e6 | S/m | T, TiN (ρ ≈ 20 µΩ·cm) — TEKSHIRILSIN |
 | sig_ST | 1e5 | S/m | T, degenerat p-Sb2Te3 (ρ ~ 1e-3…1e-4 Ω·cm) — TEKSHIRILSIN |
 | sig_GT | 1e5 | S/m | T, degenerat p-GeTe (ρ ~ 1e-3…1e-4 Ω·cm) — TEKSHIRILSIN |
@@ -65,6 +65,19 @@ Ea ≈ 0.89 eV. Joul isishi bu bahoni o'zgartiradi, shuning uchun Ea va a keyinr
 7. Ferroelektrik maydon aniq modellashtirilmaydi. Uning barqarorlashtiruvchi roli τ_rel orqali fenomenologik beriladi (katta τ_rel → xotira).
 8. Fig. 1 qiymatlari grafikdan ko'z bilan o'qilgan (±20 % noaniqlik).
 9. Material qiymatlari yupqa plyonka uchun emas, hajmiy material uchun (TEKSHIRILSIN belgili qiymatlar).
+10. **r_f = 200 nm va R_dev = 1 um (2-bosqichdan boshlab), boshlang'ich taxminlar (5 nm / 50 nm) EMAS.**
+    Sabab: boshlang'ich o'lchamlar bilan Heat Transfer + Electromagnetic Heating qo'shilgach, ON holatda
+    (x=1, |V_app|=3.5 V) T_max ~ 3.5e4 K chiqdi — Tm_GT (998 K) va Tm_ST (891 K) dan o'nlab marta yuqori,
+    fizik jihatdan mumkin emas. Model chiziqli (σ dan E/T ga bog'liqlik yo'q, hech qanday teskira aloqa
+    yo'q) bo'lgani uchun, juda kichik filament radiusida issiqlik manbai deyarli **nuqtaviy** bo'lib
+    qoladi: issiqlik nuqtaviy manbadan silindrsimon/sferik tarqalganda barqaror holatdagi T_max markazga
+    yaqinlashgan sayin manba o'lchami kichraygani sari CHEKSIZ o'sadi (1D/2D o'tkazuvchanlik yechimi
+    T ~ ln(R/r_f) yoki T ~ 1/r_f xarakterida). Amaliyotda bu — modelning JISMONIY LIMITI, kinetika
+    (3-bosqich) xatosi emas. r_f va R_dev ni ~40x/~20x oshirish issiqlik manbai hajmini va tarqalish
+    yuzasini kattalashtirib, T_max ni jismoniy diapazonga (~T_amb dan bir necha yuz K gacha) tushiradi
+    (tekshirilgan: x=1, 4.5 V da T_max ≈ 460 K — analitik bahoga ~450 K mos). Bu R_ON/R_OFF fitting
+    natijalariga ta'sir qilmaydi (sig_off/sig_on avtomatik qayta kalibrlanadi), faqat mutlaq o'lchamni
+    o'zgartiradi — model baribir fenomenologik va mutlaq o'lchamlarni "isbotlamaydi".
 
 ## Ishga tushirish (Windows, COMSOL 6.0)
 

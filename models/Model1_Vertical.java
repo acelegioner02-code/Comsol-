@@ -66,13 +66,13 @@ public class Model1_Vertical {
     // PARAMETERS
     // =====================================================================================
     // --- Geometriya ---
-    p(model, "R_dev", "50[nm]", "Element radiusi");
+    p(model, "R_dev", "1[um]", "Element radiusi (2-bosqich: T_max cheklovi uchun kattalashtirilgan)");
     p(model, "t_be", "10[nm]", "Pastki elektrod qalinligi (faraz)");
     p(model, "t_ST", "20[nm]", "Sb2Te3 qalinligi");
     p(model, "t_int", "1.5[nm]", "Interfeys (vdW) qatlami qalinligi");
     p(model, "t_GT", "20[nm]", "GeTe qalinligi");
     p(model, "t_te", "10[nm]", "Yuqori elektrod qalinligi (faraz)");
-    p(model, "r_f", "5[nm]", "Filament radiusi");
+    p(model, "r_f", "200[nm]", "Filament radiusi (2-bosqich: T_max cheklovi uchun kattalashtirilgan)");
     p(model, "z_ST", "t_be", "Sb2Te3 pastki chegarasi");
     p(model, "z_int", "t_be+t_ST", "Interfeys pastki chegarasi");
     p(model, "z_GT", "z_int+t_int", "GeTe pastki chegarasi");
@@ -128,8 +128,11 @@ public class Model1_Vertical {
     p(model, "V_RESET_t", "-3.5[V]", "Maqsad V_RESET");
 
     // --- To'r ---
-    p(model, "h_int", "0.5[nm]", "Interfeys va filamentda maksimal element");
-    p(model, "h_glob", "2[nm]", "Qolgan joyda maksimal element");
+    // h_int endi ishlatilmaydi: interfeys qatlami (r_f=200nm, R_dev=1um bilan juda yassi/keng domen)
+    // Mapped to'r bilan mesh qilinadi (z bo'yicha aniq element soni, r bo'yicha r_f atrofida
+    // zichlashtirilgan taqsimot) -- FreeTri + hmax=0.5nm butun radius bo'ylab juda ko'p element
+    // hosil qilardi.
+    p(model, "h_glob", "2[nm]", "Qolgan joyda maksimal element (FreeTri: elektrodlar, ST, GT)");
 
     // =====================================================================================
     // GEOMETRY
@@ -153,6 +156,11 @@ public class Model1_Vertical {
     boxSel(g, "box_top", "-1", "R_dev+1[nm]", "z_top-0.01[nm]", "z_top+0.01[nm]");   // Terminal
     boxSel(g, "box_bot", "-1", "R_dev+1[nm]", "-0.01", "0.01");                        // Ground
     boxSel(g, "box_out", "R_dev-0.01[nm]", "R_dev+0.01[nm]", "-1", "z_top+1[nm]");      // tashqi yon devor (keyinchalik)
+
+    // Interfeys qatlami uchun Mapped to'r qirralari (2-bosqich, r_f=200nm/R_dev=1um bilan):
+    boxSel(g, "box_v_rf", "r_f-0.01[nm]", "r_f+0.01[nm]", "z_int-0.01[nm]", "z_int+t_int+0.01[nm]");   // umumiy filament/halqa qirrasi (z bo'yicha taqsimot)
+    boxSel(g, "box_fil_bot", "-1", "r_f-0.01[nm]", "z_int-0.01[nm]", "z_int+0.01[nm]");                 // filament pastki qirrasi (r bo'yicha taqsimot)
+    boxSel(g, "box_ring_bot", "r_f+0.01[nm]", "R_dev+1[nm]", "z_int-0.01[nm]", "z_int+0.01[nm]");       // halqa pastki qirrasi (r bo'yicha taqsimot)
     g.run();
 
     // Domen birlashmalari
@@ -248,13 +256,40 @@ public class Model1_Vertical {
     model.component("comp1").mesh("mesh1").feature("size").set("hmin", "0.02[nm]");
     model.component("comp1").mesh("mesh1").feature("size").set("hgrad", 1.2);
 
-    model.component("comp1").mesh("mesh1").create("size_int", "Size");
-    model.component("comp1").mesh("mesh1").feature("size_int").selection().geom("geom1", 2);
-    model.component("comp1").mesh("mesh1").feature("size_int").selection().named("sel_int");
-    model.component("comp1").mesh("mesh1").feature("size_int").set("custom", "on");
-    model.component("comp1").mesh("mesh1").feature("size_int").set("hmaxactive", true);
-    model.component("comp1").mesh("mesh1").feature("size_int").set("hmax", "h_int");
+    // Interfeys (filament+halqa, t_int=1.5nm x R_dev=1um -- juda yassi/keng domen) uchun Mapped
+    // (strukturaviy) to'r: FreeTri + hmax=0.5nm butun radius bo'ylab ishlatilsa mos kelmagan
+    // darajada ko'p element hosil bo'lardi. sel_int (1-bosqichda yaratilgan) qayta ishlatiladi.
+    // TASDIQLANDI: "Mapped" GUI da ("Operation cannot be created in this context" - "Mapped" ishlamadi),
+    // ichki tur nomi "Map".
+    model.component("comp1").mesh("mesh1").create("map1", "Map");
+    model.component("comp1").mesh("mesh1").feature("map1").selection().geom("geom1", 2);
+    model.component("comp1").mesh("mesh1").feature("map1").selection().named("sel_int");
 
+    // z bo'yicha (t_int=1.5nm qalinlik): umumiy filament/halqa qirrasida taqsimot -- Mapped to'r
+    // qarama-qarshi qirralarni avtomatik moslashtiradi, shu bilan ikkala domen ham 3 elementli bo'ladi.
+    model.component("comp1").mesh("mesh1").feature("map1").create("dis_z", "Distribution");
+    model.component("comp1").mesh("mesh1").feature("map1").feature("dis_z").selection().named("geom1_box_v_rf");
+    model.component("comp1").mesh("mesh1").feature("map1").feature("dis_z").set("numelem", 3);
+
+    // r bo'yicha: filament ichida r_f chegarasi tomon zichlashuv (oqim zichligi keskin o'zgaradigan joy).
+    // TASDIQLANDI: "type"/"numelem"/"elemratio"/"reverse" xossalari birinchi urinishdayoq ishladi.
+    model.component("comp1").mesh("mesh1").feature("map1").create("dis_rfil", "Distribution");
+    model.component("comp1").mesh("mesh1").feature("map1").feature("dis_rfil").selection().named("geom1_box_fil_bot");
+    model.component("comp1").mesh("mesh1").feature("map1").feature("dis_rfil").set("type", "predefined");
+    model.component("comp1").mesh("mesh1").feature("map1").feature("dis_rfil").set("numelem", 20);
+    model.component("comp1").mesh("mesh1").feature("map1").feature("dis_rfil").set("elemratio", 20);
+    model.component("comp1").mesh("mesh1").feature("map1").feature("dis_rfil").set("reverse", true);   // zich uchi r=r_f tomonda
+
+    // halqada ham xuddi shu r_f chegarasidan tashqariga tomon siyraklashuv.
+    model.component("comp1").mesh("mesh1").feature("map1").create("dis_rring", "Distribution");
+    model.component("comp1").mesh("mesh1").feature("map1").feature("dis_rring").selection().named("geom1_box_ring_bot");
+    model.component("comp1").mesh("mesh1").feature("map1").feature("dis_rring").set("type", "predefined");
+    model.component("comp1").mesh("mesh1").feature("map1").feature("dis_rring").set("numelem", 20);
+    model.component("comp1").mesh("mesh1").feature("map1").feature("dis_rring").set("elemratio", 20);
+    // reverse=false (default): zich uchi qirraning boshida, ya'ni r=r_f tomonda.
+
+    // Qolgan domenlar (elektrodlar, ST, GT): sel_int mesh qilingandan keyin "qolgan" domenlar sifatida
+    // avtomatik tanlanadi (hmax=h_glob, size feature orqali).
     model.component("comp1").mesh("mesh1").create("ftri1", "FreeTri");
     model.component("comp1").mesh("mesh1").run();
 
@@ -443,8 +478,8 @@ public class Model1_Vertical {
     try {
       outT = new PrintWriter(new FileWriter(tmaxCsv));
       outT.println("xs,V_app_V,T_max_K,Tm_ST_K,Tm_GT_K,note");
-      double[] xsVals = {0, 0, 1, 1};
-      double[] vVals  = {3.5, -3.5, 3.5, -3.5};
+      double[] xsVals = {0, 0, 0, 1, 1, 1};
+      double[] vVals  = {3.5, -3.5, 4.5, 3.5, -3.5, 4.5};
       for (int i = 0; i < xsVals.length; i++) {
         model.param().set("xs", String.format(Locale.US, "%.0f", xsVals[i]));
         model.param().set("V_app", String.format(Locale.US, "%.4g[V]", vVals[i]));
