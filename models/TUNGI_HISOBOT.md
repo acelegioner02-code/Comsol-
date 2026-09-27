@@ -74,3 +74,26 @@ ikkinchi Stationary qadamni birinchisining yechimidan boshlash mexanizmi ("useso
 
 Model1 jarayoni tugashini kutish (log har 3-5 daqiqada tekshirilmoqda), keyin Model2_FET.java ni
 kompilyatsiya+test qilish navbatda.
+
+## Optimallashtirish: bazaviy tsiklni qayta hisoblashdan saqlanish
+
+Birinchi to'liq ishga tushirish (~21 daqiqa, jarayon boshida) 300K, 3-davrli bazaviy tsiklni QAYTA
+hisoblab yuborayotganini payqadim - bu natija allaqachon (kechqurungi sessiyadan) saqlangan va
+tasdiqlangan edi (V_SET=3.513V, V_RESET=-3.278V). Jarayonni to'xtatib,
+`RUN_BASELINE_300K_3CYCLE=false` bayrog'ini qo'shdim (Model1_Vertical.java) - bu std5 (bazaviy
+tsikl) yaratilishi/ishga tushirilishini butunlay o'tkazib yuboradi, faqat "ge1" tenglamasi va
+"term1.V0" ni Time Dependent uchun kerakli holatga o'rnatadi (bular std6 uchun ham zarur).
+
+## MUHIM TOPILMA: dset/sol raqamlanishi
+
+Qayta ishga tushirilgandan keyin (~21 daqiqa, T_amb=300K nuqtasining o'zi muvaffaqiyatli yechildi),
+"Unknown dataset: dset6" xatosi chiqdi. Sabab: dset/sol raqamlanishi STUDY TEGI nomiga (masalan
+"std6") EMAS, balki HAQIQIY YARATILGAN yechimlar SONIGA asoslanadi. std5 (bazaviy tsikl)
+yaratilmagani uchun std6 aslida 5-YARATILGAN yechim bo'lib, "dset5"/"sol5" nomini oldi. Barcha
+N1/N3/N4/N5 kod qismlaridagi "dset6"/"sol6" murojaatlari "dset5"/"sol5" ga tuzatildi. Bu QIMMATLI
+METODOLOGIK SABOQ: COMSOL Java API da avtomatik nomlanish RAQAMLI TARTIB (creation order) asosida
+ishlaydi, siz bergan TEG NOMI (masalan "std6") bilan hech qanday bog'liqligi yo'q.
+
+Hozircha 3-marta ishga tushirish kerak bo'ldi (birinchisi bazaviy tsiklni behuda qayta hisobladi
+~21 daqiqa, ikkinchisi dset6/sol6 xatosi bilan yana ~21 daqiqa behuda ketdi post-processing
+bosqichida). Endi tuzatilgan holda qayta ishga tushirilmoqda.
