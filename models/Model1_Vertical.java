@@ -1,5 +1,5 @@
 /*
- * Model1_Vertical.java  —  1-MODEL, 1-BOSQICH ("tutun testi")
+ * Model1_Vertical.java  —  1-MODEL, 1-2 BOSQICH ("tutun testi")
  *
  * Troyan & Doronin, ICCS 2020 (LNNS 186, 427-433, 2021, doi:10.1007/978-3-030-66093-2_41)
  * maqolasidagi GeTe/Sb2Te3 interfeysli xotira elementining FENOMENOLOGIK modeli.
@@ -7,14 +7,24 @@
  * Struktura (2D o'q-simmetrik, pastdan yuqoriga, r = 0 simmetriya o'qi):
  *   pastki elektrod (BE) / Sb2Te3 / interfeys qatlami [filament r<r_f | halqa r>r_f] / GeTe / yuqori elektrod (TE)
  *
- * Bu bosqichda:  GEOMETRY + MATERIALS + Electric Currents (ec) + S1 Stationary (x = 0 va x = 1).
- * Keyingi bosqichlar (hali YO'Q): Heat Transfer + Electromagnetic Heating, x uchun Global ODE,
- * Time Dependent, to'liq natijalar.
+ * Bu bosqichda:  GEOMETRY + MATERIALS + Electric Currents (ec) + S1 Stationary (x = 0 va x = 1);
+ * + Heat Transfer (ht) + Electromagnetic Heating (emh1) + S2 Stationary: x=0/1, V_app=+-3.5V -> T_max
+ * (S2_Tmax.csv). std1/std2 (S1) da ht ataylab o'chirilgan ("activate"), S1 natijalari 1-bosqichdagidek qoladi.
  *
- * Holat o'zgaruvchisi x bu bosqichda oddiy PARAMETR (xs). 2-bosqichda u Global ODE ga almashtiriladi,
+ * S2 NATIJASI (2026-09-27): x=0 (OFF) da T_max ~ 415 K (T_amb=300K dan sal yuqori, muammosiz).
+ * x=1 (ON) da T_max ~ 3.5e4 K — bu Tm_GT (998K) va Tm_ST (891K) dan O'NLAB MARTA YUQORI, fizik jihatdan
+ * mumkin emas. Sabab: model chiziqli (sigma dan E ga bog'liqlik yo'q, temperaturaga bog'liqlik yo'q,
+ * teskari aloqa yo'q) va filament radiusi r_f=5nm juda kichik -> Joule isishi cheksiz o'sadi.
+ * SHU SABABLI Global ODE bosqichiga (3-bosqich) O'TILMAGAN — foydalanuvchi qaror qilishi kerak
+ * (r_f/R_dev ni oshirish, ketma-ket R_s qo'shish, yoki issiqlikni faqat sifat jihatidan ko'rsatish).
+ *
+ * Keyingi bosqich (hali YO'Q, foydalanuvchi qaroridan keyin): x uchun Global ODE, Time Dependent,
+ * to'liq natijalar (N1-N6, iv_ugate0.csv, xt_cycle.csv, Tmax_t.csv va h.k.).
+ *
+ * Holat o'zgaruvchisi x hozircha oddiy PARAMETR (xs). Global ODE bosqichida u almashtiriladi,
  * sig_fil o'zgaruvchisining ko'rinishi esa o'zgarmaydi: sig_fil = sig_off^(1-x) * sig_on^x.
  *
- * Kerakli litsenziya: faqat COMSOL Multiphysics (ConductiveMedia bazaviy paketda bor).
+ * Kerakli litsenziya: COMSOL Multiphysics (ConductiveMedia, HeatTransfer bazaviy paketda bor).
  *
  * "// TEKSHIRILSIN" belgisi: COMSOL 6.0 API da nomi yoki xatti-harakati 100% aniq bo'lmagan chaqiruv.
  *
@@ -148,6 +158,8 @@ public class Model1_Vertical {
     // Domen birlashmalari
     union(model, "sel_int", 2, new String[]{"geom1_r_fil_dom", "geom1_r_ring_dom"}, "Interfeys qatlami (filament + halqa)");
     union(model, "sel_el", 2, new String[]{"geom1_r_be_dom", "geom1_r_te_dom"}, "Elektrodlar");
+    // Chegara birlashmasi: T = T_amb (yuqori + pastki elektrod tashqi yuzalari), 2-bosqich uchun.
+    union(model, "sel_Tbc", 1, new String[]{"geom1_box_top", "geom1_box_bot"}, "T=T_amb chegaralari (yuqori+pastki elektrod)");
 
     // =====================================================================================
     // DEFINITIONS (o'zgaruvchilar va operatorlar)
@@ -166,6 +178,12 @@ public class Model1_Vertical {
     model.component("comp1").cpl("intop_top").selection().geom("geom1", 1);
     model.component("comp1").cpl("intop_top").selection().named("geom1_box_top");
     model.component("comp1").cpl("intop_top").set("axisym", true);   // TEKSHIRILSIN
+
+    // 2-bosqich: butun qurilma bo'yicha maksimal harorat (Heat Transfer qo'shilgach ishlatiladi).
+    // TASDIQLANDI: "Average"/"Integration" kabi "Maximum" ham to'g'ri cpl operator turi.
+    model.component("comp1").cpl().create("maxop_T", "Maximum");
+    model.component("comp1").cpl("maxop_T").selection().geom("geom1", 2);
+    model.component("comp1").cpl("maxop_T").selection().all();
 
     // =====================================================================================
     // MATERIALS (qiymatlar faqat parametrlardan; Material Library ishlatilmaydi)
@@ -197,9 +215,29 @@ public class Model1_Vertical {
     // Bu maqoladagi SET qutbiga mos keladi (keyingi bosqichda E_drive = -<Ez> ishlatiladi).
 
     // =====================================================================================
+    // PHYSICS: Heat Transfer in Solids (2-bosqich)
+    // =====================================================================================
+    // TASDIQLANDI (ishga tushirish orqali): "HeatTransferInSolids" COMSOL 6.0 da MAVJUD EMAS
+    // ("Unknown physics interface"); to'g'ri tur nomi "HeatTransfer" (yagona bazaviy interfeys,
+    // domenlarda default "Solid" feature qo'shiladi).
+    model.component("comp1").physics().create("ht", "HeatTransfer", "geom1");
+    // solid1 (domen) k/rho/Cp ni materiallardan oladi (default "from material").
+    // Yon devor (geom1_box_out): chegara shart qo'yilmagan -> default Thermal Insulation (ec dagi
+    // Electric Insulation kabi), alohida feature kerak emas.
+
+    // TASDIQLANDI: "TemperatureBoundary" va "T0" birinchi urinishdayoq xatosiz ishladi.
+    model.component("comp1").physics("ht").create("temp1", "TemperatureBoundary", 1);
+    model.component("comp1").physics("ht").feature("temp1").label("T = T_amb (yuqori+pastki elektrod)");
+    model.component("comp1").physics("ht").feature("temp1").selection().named("sel_Tbc");
+    model.component("comp1").physics("ht").feature("temp1").set("T0", "T_amb");
+
+    // =====================================================================================
     // MULTIPHYSICS
     // =====================================================================================
-    // 1-bosqichda yo'q. 2-bosqichda: Heat Transfer in Solids + Electromagnetic Heating.
+    // Electromagnetic Heating: ec dagi Joule isishi (J*E) ni ht ga issiqlik manbai sifatida qo'shadi.
+    // TASDIQLANDI: "ElectromagneticHeating" tur nomi va dim=2 (2D domen darajasi) xatosiz ishladi.
+    model.component("comp1").multiphysics().create("emh1", "ElectromagneticHeating", 2);
+    model.component("comp1").multiphysics("emh1").selection().all();
 
     // =====================================================================================
     // MESH
@@ -227,6 +265,9 @@ public class Model1_Vertical {
     model.study().create("std1");
     model.study("std1").label("S1a: Stationary (kalibrovka, bitta holat)");
     model.study("std1").create("stat", "Stationary");
+    // Faqat ec: S1 kalibrovkasi 1-bosqichdagidek toza elektr masala bo'lib qolishi uchun ht o'chirilgan.
+    // TASDIQLANDI: "activate" 2D String[][] emas, balki tekis String[] (kalit,qiymat,...) kutadi.
+    model.study("std1").feature("stat").set("activate", new String[]{"ec", "on", "ht", "off"});
 
     // std2: Stationary + auxiliary sweep xs = 0, 1 -> R_OFF va R_ON bitta datasetda (GUI va eksport uchun).
     model.study().create("std2");
@@ -236,6 +277,12 @@ public class Model1_Vertical {
     model.study("std2").feature("stat").set("pname", new String[]{"xs"});
     model.study("std2").feature("stat").set("plistarr", new String[]{"0 1"});
     model.study("std2").feature("stat").set("punit", new String[]{""});
+    model.study("std2").feature("stat").set("activate", new String[]{"ec", "on", "ht", "off"});
+
+    // std3: Stationary, ec + ht birgalikda (Electromagnetic Heating orqali) -> 2-bosqich, S2_Tmax.csv.
+    model.study().create("std3");
+    model.study("std3").label("S2: Stationary (Electric Currents + Heat Transfer)");
+    model.study("std3").create("stat", "Stationary");
 
     // =====================================================================================
     // SOLVER
@@ -369,6 +416,52 @@ public class Model1_Vertical {
       model.result().export("exp_Vz").run();
     } catch (Exception ex) {
       System.out.println("XATO (eksport S1_V_axis.csv): " + ex.getMessage());
+    }
+
+    // =====================================================================================
+    // S2: HEAT TRANSFER + ELECTROMAGNETIC HEATING (2-bosqich, "tutun testi")
+    // =====================================================================================
+    // x = 0 (OFF) va x = 1 (ON) holatlarida, V_app = +3.5 V va -3.5 V da (V_SET_t/V_RESET_t) T_max.
+    // OGOHLANTIRISH: analitik baho bo'yicha x=1, |V_app|=3.5V da T_max ~1e4 K tartibida bo'lishi
+    // mumkin (J ~ 5e12 A/m^2, r_f=5nm, sig_int past termik o'tkazuvchanlik bilan). Bu holda modelga
+    // tegilmaydi -- natija xom holida hisobot qilinadi, chora tanlovi foydalanuvchiga qoldiriladi.
+    // std3 birinchi marta ishga tushmaguncha uning dataseti (dsetN) mavjud bo'lmaydi ("Unknown
+    // dataset"), shuning uchun baholash tugunini yaratishdan oldin bitta "priming" yechim kerak.
+    // TASDIQLANDI: naqsh dset1->std1, dset2->std2 ga o'xshab, std3 -> dset3.
+    model.param().set("xs", "0");
+    model.param().set("V_app", "3.5[V]");
+    model.study("std3").run();
+
+    model.result().numerical().create("gev_Tmax", "EvalGlobal");
+    model.result().numerical("gev_Tmax").label("S2: T_max (butun qurilma)");
+    model.result().numerical("gev_Tmax").set("data", "dset3");
+    model.result().numerical("gev_Tmax").set("expr", new String[]{"maxop_T(T)"});
+    model.result().numerical("gev_Tmax").set("unit", new String[]{"K"});
+
+    String tmaxCsv = "S2_Tmax.csv";
+    PrintWriter outT = null;
+    try {
+      outT = new PrintWriter(new FileWriter(tmaxCsv));
+      outT.println("xs,V_app_V,T_max_K,Tm_ST_K,Tm_GT_K,note");
+      double[] xsVals = {0, 0, 1, 1};
+      double[] vVals  = {3.5, -3.5, 3.5, -3.5};
+      for (int i = 0; i < xsVals.length; i++) {
+        model.param().set("xs", String.format(Locale.US, "%.0f", xsVals[i]));
+        model.param().set("V_app", String.format(Locale.US, "%.4g[V]", vVals[i]));
+        model.study("std3").run();
+        double tmax = model.result().numerical("gev_Tmax").getReal()[0][0];
+        String note = (tmax >= 998.0) ? "T_max >= Tm_GT (998 K)"
+            : (tmax >= 891.0) ? "T_max >= Tm_ST (891 K)" : "OK (erish haroratidan past)";
+        outT.println(String.format(Locale.US, "%.0f,%.4g,%.6e,891,998,%s", xsVals[i], vVals[i], tmax, note));
+        System.out.println(String.format(Locale.US,
+            "S2 T_max: xs=%.0f  V_app=%.2f V  ->  T_max=%.6e K  [%s]", xsVals[i], vVals[i], tmax, note));
+      }
+    } catch (IOException ex) {
+      System.out.println("XATO (CSV S2_Tmax): " + tmaxCsv + " : " + ex.getMessage());
+    } finally {
+      if (outT != null) outT.close();
+      model.param().set("xs", "0");
+      model.param().set("V_app", "V_read");
     }
 
     try {
