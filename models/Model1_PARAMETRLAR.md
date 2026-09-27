@@ -75,3 +75,21 @@ cd <Model1_Vertical.java joylashgan papka>
 ```
 
 Chiqish fayllari: `Model1_Vertical.mph`, `S1_calibration.csv`, `S1_R_on_off.csv`, `S1_V_axis.csv` va `log_S1.txt`.
+
+### Muhim: "File system access" xavfsizlik sozlamasi
+
+Standart COMSOL 6.0 o'rnatishda `comsolbatch -inputfile *.class` orqali ishga tushirilgan Java kod
+"external"/cheklangan xavfsizlik rejimida ishlaydi (`security.external.filepermission=limited` —
+`~\.comsol\v60\comsol.prefs`). Bu rejimda kod faqat vaqtinchalik/ilova papkalariga yoza oladi va
+hatto COMSOL'ning o'z recovery-fayllarini yozishi ham bloklanadi:
+
+```
+Error running java class.
+ - Detail: Security preference 'File system access' does not allow 'write' access to
+   '...\.comsol\v60\recoveries\MPHRecovery....mph'.
+```
+
+Tuzatish: COMSOL Desktop'ni oching → **File > Preferences > Security > File system access** →
+**All files** ni tanlang → COMSOL'ni yoping (sozlama diskka yozilishi uchun) → keyin
+`comsolbatch`ni qayta ishga tushiring. Shundan keyin model o'z natija fayllarini (`.mph`, `.csv`)
+ishga tushirilgan papkaga muammosiz yoza oladi.

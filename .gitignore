@@ -4,7 +4,6 @@ models/*.mph
 models/*.mph.status
 models/*.mph.recovery
 models/log_*.txt
-models/*.csv
 
 # Claude Code mahalliy sozlamalari
 .claude/

@@ -1,0 +1,7 @@
+% Model,Untitled.mph
+% Version,COMSOL 6.0.0.318
+% Date,"Sep 27 2026, 10:11"
+% Table,S1: R_OFF va R_ON - 
+% xs,R = V_app/I (kohm),Terminal toki (uA),Chiziqli ekstrapolyatsiya: I(3 V) (mA),Filamentdagi kuchlanish ulushi (1),Tekshiruv: yuqori chegara orqali tok (uA)
+0,100.57035023198658,0.9943288431364617,0.02982986529409385,0.999488528403707,0.9943288429212599
+1,6.971663669924869,14.343778577757707,0.4303133573327312,0.8699777595358174,14.346681280534611
