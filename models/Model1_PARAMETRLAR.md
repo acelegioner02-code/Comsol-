@@ -78,6 +78,21 @@ Ea ≈ 0.89 eV. Joul isishi bu bahoni o'zgartiradi, shuning uchun Ea va a keyinr
     (tekshirilgan: x=1, 4.5 V da T_max ≈ 460 K — analitik bahoga ~450 K mos). Bu R_ON/R_OFF fitting
     natijalariga ta'sir qilmaydi (sig_off/sig_on avtomatik qayta kalibrlanadi), faqat mutlaq o'lchamni
     o'zgartiradi — model baribir fenomenologik va mutlaq o'lchamlarni "isbotlamaydi".
+11. **V_SET va V_RESET assimetriyasi (|V_RESET| < |V_SET|) — kutilgan, issiqlik-yordamli fizik natija,
+    fitting xatosi emas.** 3-bosqich (Time Dependent, bitta tsikl, T_amb=300 K) natijasi: V_SET = +3.51 V
+    (maqsad +3.5 V, ~0.4% farq), V_RESET = −3.28 V (maqsad −3.5 V, ~6.3% farq). Sabab: kinetika tezligi
+    Arrhenius qonuniga bo'ysunadi, k0·exp(−Ea/kBT). SET paytida filament hali OFF holatida (past
+    o'tkazuvchanlik), Joule isishi kichik, T ≈ T_amb = 300 K — shuning uchun V_SET deyarli sof maydon
+    (E_drive) bilan belgilanadi va fitting maqsadiga (Ea=0.9 eV asosida) deyarli aynan mos keladi. RESET
+    boshlanganda esa filament ALLAQACHON ON holatida (yuqori o'tkazuvchanlik, katta oqim), shuning uchun
+    Joule isishi filamentni T ≈ 400 K gacha qizdiradi (2-bosqich S2 natijasi bilan mos). Bu haroratda
+    exp(−Ea/kBT) eksponent jihatdan ~10^3 marta ortadi (Ea/kB(1/300−1/400) ≈ 0.9·11600·(1/300−1/400) ≈
+    9.7, exp(9.7) ≈ 1.6e4 — tartib bo'yicha mos), demak RESET kinetikasi ANCHA TEZLASHADI va kamroq
+    maydon (demak kamroq |V_RESET|) kifoya qiladi xuddi shu vaqt oynasida x=0.5 chegarasidan o'tish uchun.
+    XULOSA: Ea va a_hop qo'shimcha fitting QILINMADI — natija maqsadga yetarlicha yaqin (V_SET ~0.4%,
+    V_RESET ~6.3%) va assimetriya yo'nalishi termodinamik jihatdan to'g'ri bashorat qilingan edi (yuqoriga
+    qarang), shuning uchun bu ARTEFAKT emas, balki modelning ELEKTR-ISSIQLIK-KINETIKA o'zaro ta'sirining
+    tabiiy natijasi hisoblanadi.
 
 ## Ishga tushirish (Windows, COMSOL 6.0)
 

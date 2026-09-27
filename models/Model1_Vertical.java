@@ -125,6 +125,7 @@ public class Model1_Vertical {
     p(model, "a_hop", "0.3[nm]", "Sakrash masofasi (fitting)");
     p(model, "tau_rel", "1e3[s]", "Relaksatsiya vaqti (katta -> nonvolatil)");
     p(model, "p_win", "2", "Oyna funksiyasi darajasi (Biolek: Fwin = 1-x^(2p) yoki 1-(x-1)^(2p))");
+    p(model, "E_s", "1e7[V/m]", "Silliq Biolek yo'nalish funksiyasi uchun maydon miqyosi (tanh)");
     p(model, "kB_c", "1.380649e-23[J/K]", "Boltsman doimiysi");
     p(model, "q_c", "1.602176634e-19[C]", "Elektron zaryadi");
 
@@ -216,9 +217,18 @@ public class Model1_Vertical {
     // RESET signalini bostirmaydi. Yo'nalish sifatida haqiqiy dx/dt (o'z-o'ziga bog'liq bo'lardi)
     // o'rniga sign(E_drive) ishlatiladi - bu matematik jihatdan bir xil (sinh argumentning ishorasini
     // saqlaydi), lekin circular reference yo'q.
+    // SILLIQLASHTIRISH (T_amb sweepdan oldin, hisoblash tezligi uchun): "if(E_drive>0, ...)" keskin
+    // uzilish har bir nol-kesishmada (davrga 6 marta) BDF qadamini juda kichraytirib yubordi
+    // (~45 daqiqa, bitta tsikl). "dir_smooth" endi tanh bilan silliq: E_drive >> E_s da ~1 (SET),
+    // E_drive << -E_s da ~0 (RESET), oralig'ida silliq o'tish. E_s=1e7 V/m tanlovi: SET/RESET paytida
+    // |E_drive| ~ 1e9 V/m tartibida (interfeys ustidagi V/t_int), demak E_s ancha kichik bo'lib,
+    // o'tish V=0 atrofida ingichka (E_drive~E_s ga mos V juda kichik) qoladi va V_SET/V_RESET
+    // qiymatlariga deyarli ta'sir qilmaydi.
+    model.component("comp1").variable("var1").set("dir_smooth", "0.5*(1+tanh(E_drive/E_s))",
+        "Silliq yo'nalish funksiyasi: ~1 SET (E_drive>0), ~0 RESET (E_drive<0)");
     model.component("comp1").variable("var1").set("Fwin_x",
-        "if(E_drive>0, 1-xode^(2*p_win), 1-(xode-1)^(2*p_win))",
-        "Biolek oynasi (yo'nalishga bog'liq, dir=sign(E_drive)): SET'da x=1 tomon, RESET'da x=0 tomon ochiq");
+        "dir_smooth*(1-xode^(2*p_win))+(1-dir_smooth)*(1-(xode-1)^(2*p_win))",
+        "Silliqlashtirilgan Biolek oynasi: SET'da x=1 tomon, RESET'da x=0 tomon ochiq");
     model.component("comp1").variable("var1").set("dxdt_rhs",
         "k0*exp(-Ea/(kB_c*T_local))*sinh(q_c*a_hop*E_drive/(2*kB_c*T_local))*Fwin_x-xode/tau_rel",
         "dx/dt ifodasi (Global Equation da xode_t = dxdt_rhs sifatida ishlatiladi)");
