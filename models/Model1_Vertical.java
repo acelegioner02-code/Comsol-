@@ -34,8 +34,11 @@ import java.util.Locale;
 
 public class Model1_Vertical {
 
-  // Natija fayllari (CSV, MPH) comsolbatch ishga tushirilgan papkaga yoziladi.
-  static final String OUT_DIR = System.getProperty("user.dir");
+  // Natija fayllari (CSV, MPH) comsolbatch ishga tushirilgan papkaga (nisbiy yo'l bilan) yoziladi.
+  // TEKSHIRILSIN edi: System.getProperty("user.dir") comsolbatch xavfsizlik menejeri tomonidan
+  // rad etiladi (AccessControlException: PropertyPermission "user.dir" "read"), shuning uchun
+  // barcha chiqish fayllari uchun oddiy nisbiy fayl nomlari ishlatiladi (getAbsolutePath() ham
+  // ichida yo'l hal qiluvchi kod orqali xuddi shu tekshiruvni chaqirishi mumkin).
 
   // S1 da sig_off va sig_on ni R_OFF / R_ON maqsadlariga avtomatik moslash (oddiy qat'iy nuqta iteratsiyasi).
   // false qilinsa, parametrlar jadvalidagi boshlang'ich qiymatlar o'zgarmaydi.
@@ -248,8 +251,10 @@ public class Model1_Vertical {
 
     double rOffT = 100e3, rOnT = 7e3;   // R_OFF_t, R_ON_t parametrlari bilan bir xil
     double sigOff = 1.9, sigOn = 3e3;   // sig_off, sig_on boshlang'ich qiymatlari [S/m]
-    String calCsv = new File(OUT_DIR, "S1_calibration.csv").getAbsolutePath();
-    try (PrintWriter out = new PrintWriter(new FileWriter(calCsv))) {
+    String calCsv = "S1_calibration.csv";
+    PrintWriter out = null;
+    try {
+      out = new PrintWriter(new FileWriter(calCsv));
       out.println("step,state,sig_off_S_per_m,sig_on_S_per_m,R_ohm,target_ohm");
       if (CALIBRATE) {
         // (1) R_OFF faqat sig_off ga bog'liq (x = 0 da filament ham sig_off).
@@ -280,6 +285,8 @@ public class Model1_Vertical {
           sigOff, sigOn, rOff, rOn, rOff / rOn, 3.0 / rOn * 1e3));
     } catch (IOException ex) {
       System.out.println("XATO (CSV): " + calCsv + " : " + ex.getMessage());
+    } finally {
+      if (out != null) out.close();
     }
     model.param().set("xs", "0");
 
@@ -349,7 +356,7 @@ public class Model1_Vertical {
     try {
       model.result().export().create("exp_S1", "Table");
       model.result().export("exp_S1").set("table", "tbl_S1");
-      model.result().export("exp_S1").set("filename", new File(OUT_DIR, "S1_R_on_off.csv").getAbsolutePath());
+      model.result().export("exp_S1").set("filename", "S1_R_on_off.csv");
       model.result().export("exp_S1").run();
     } catch (Exception ex) {
       System.out.println("XATO (eksport S1_R_on_off.csv): " + ex.getMessage());
@@ -358,18 +365,18 @@ public class Model1_Vertical {
       model.result().export().create("exp_Vz", "Plot");
       model.result().export("exp_Vz").set("plotgroup", "pg_Vz");
       model.result().export("exp_Vz").set("plot", "lngr1");
-      model.result().export("exp_Vz").set("filename", new File(OUT_DIR, "S1_V_axis.csv").getAbsolutePath());
+      model.result().export("exp_Vz").set("filename", "S1_V_axis.csv");
       model.result().export("exp_Vz").run();
     } catch (Exception ex) {
       System.out.println("XATO (eksport S1_V_axis.csv): " + ex.getMessage());
     }
 
     try {
-      model.save(new File(OUT_DIR, "Model1_Vertical.mph").getAbsolutePath());
+      model.save("Model1_Vertical.mph");
     } catch (IOException ex) {
       throw new RuntimeException("MPH faylni saqlab bo'lmadi", ex);
     }
-    System.out.println("TAYYOR: " + OUT_DIR);
+    System.out.println("TAYYOR.");
     return model;
   }
 

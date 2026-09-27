@@ -1,0 +1,10 @@
+# COMSOL kompilyatsiya/ishga tushirish artefaktlari (qayta generatsiya qilinadi)
+models/*.class
+models/*.mph
+models/*.mph.status
+models/*.mph.recovery
+models/log_*.txt
+models/*.csv
+
+# Claude Code mahalliy sozlamalari
+.claude/
