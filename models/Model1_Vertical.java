@@ -721,6 +721,237 @@ public class Model1_Vertical {
       if (outIv != null) outIv.close();
     }
 
+    // =====================================================================================
+    // S5: T_amb SWEEP (Tungi vazifa, 1-topshiriq) - har bir T_amb uchun BITTA davr (0-10ms).
+    // N1 (I-V), N3 (x/V/I(t)), N4 (T xaritasi+T_max(t)), N5 (|E|/|J| xaritalari), N6 (jadval).
+    // =====================================================================================
+    model.study().create("std6");
+    model.study("std6").label("S5: Time Dependent (T_amb sweep, bitta davr)");
+    model.study("std6").create("time", "Transient");
+    model.study("std6").feature("time").set("tlist", "range(0,5e-5,0.01)");
+
+    double[] tambSweep = {300, 350, 400, 450};
+    String ivSweepCsv = "iv_Tamb_sweep.csv";
+    String tmaxTCsv = "Tmax_t.csv";
+    String n6Csv = "N6_table.csv";
+    PrintWriter outIvSweep = null, outTmaxT = null, outN6 = null;
+    double[][] s5_300 = null;   // 300K natijasi N1/N3/N4/N5 chizmalar uchun saqlanadi
+    try {
+      outIvSweep = new PrintWriter(new FileWriter(ivSweepCsv));
+      outIvSweep.println("T_amb_K,t_s,V_V,I_A");
+      outTmaxT = new PrintWriter(new FileWriter(tmaxTCsv));
+      outTmaxT.println("T_amb_K,t_s,Tmax_K");
+      outN6 = new PrintWriter(new FileWriter(n6Csv));
+      outN6.println("T_amb_K,R_OFF_ohm,R_ON_ohm,V_SET_V,V_RESET_V,R_OFF_over_R_ON");
+
+      for (int k = 0; k < tambSweep.length; k++) {
+        double tamb = tambSweep[k];
+        model.param().set("T_amb", String.format(Locale.US, "%.4g[K]", tamb));
+        model.param().set("xs", "0");
+        model.study("std6").run();
+
+        if (k == 0) {
+          // dset6 birinchi marta shu yerda paydo bo'ladi (S1/S2/S3 dagi dset1/dset2/dset3/dset4/dset5
+          // naqshiga o'xshab).   // TEKSHIRILSIN: std6 -> dset6
+          model.result().numerical().create("gev_S5", "EvalGlobal");
+          model.result().numerical("gev_S5").label("S5: t, V, I, x, T_max (T_amb sweep)");
+          model.result().numerical("gev_S5").set("data", "dset6");
+          model.result().numerical("gev_S5").set("expr", new String[]{"t", "V_wave", "ec.I0_1", "xode", "maxop_T(T)"});
+          model.result().numerical("gev_S5").set("unit", new String[]{"s", "V", "A", "1", "K"});
+        }
+
+        double[][] s5 = model.result().numerical("gev_S5").getReal();
+        int n5 = (s5.length > 0) ? s5[0].length : 0;
+
+        double vSet = Double.NaN, vReset = Double.NaN;
+        int setIdxBefore = -1;
+        for (int i = 1; i < n5; i++) {
+          double xPrev = s5[3][i - 1], xCur = s5[3][i];
+          if (Double.isNaN(vSet) && xPrev < 0.5 && xCur >= 0.5) {
+            double frac = (0.5 - xPrev) / (xCur - xPrev);
+            vSet = s5[1][i - 1] + frac * (s5[1][i] - s5[1][i - 1]);
+            setIdxBefore = i - 1;
+          }
+          if (Double.isNaN(vReset) && xPrev > 0.5 && xCur <= 0.5) {
+            double frac = (xPrev - 0.5) / (xPrev - xCur);
+            vReset = s5[1][i - 1] + frac * (s5[1][i] - s5[1][i - 1]);
+          }
+        }
+
+        for (int i = 0; i < n5; i++) {
+          outIvSweep.println(String.format(Locale.US, "%.4g,%.6e,%.6e,%.6e", tamb, s5[0][i], s5[1][i], s5[2][i]));
+          outTmaxT.println(String.format(Locale.US, "%.4g,%.6e,%.6e", tamb, s5[0][i], s5[4][i]));
+        }
+        // R_OFF/R_ON: bu modelda sig_off/sig_on T_amb ga bog'liq EMAS (faqat kinetika Arrhenius
+        // orqali T ga bog'liq), shuning uchun x=0/x=1 holatlaridagi qarshilik S1 dan olingan doimiy
+        // qiymatlar bilan bir xil (R_OFF=99.99 kOhm, R_ON=6.99 kOhm barcha T_amb uchun).
+        double rOffConst = 9.999e4, rOnConst = 6.989e3;   // S1 NATIJA bilan mos (yuqorida hisoblangan)
+        outN6.println(String.format(Locale.US, "%.4g,%.6e,%.6e,%s,%s,%.4g",
+            tamb, rOffConst, rOnConst,
+            Double.isNaN(vSet) ? "NaN" : String.format(Locale.US, "%.4g", vSet),
+            Double.isNaN(vReset) ? "NaN" : String.format(Locale.US, "%.4g", vReset),
+            rOffConst / rOnConst));
+        System.out.println(String.format(Locale.US,
+            "S5 SWEEP: T_amb=%.0fK  V_SET=%s V  V_RESET=%s V",
+            tamb, Double.isNaN(vSet) ? "TOPILMADI" : String.format(Locale.US, "%.4g", vSet),
+            Double.isNaN(vReset) ? "TOPILMADI" : String.format(Locale.US, "%.4g", vReset)));
+
+        if (k == 0) {
+          s5_300 = s5;   // 300K natijasini saqlab qolamiz
+
+          // ---- N1: I-V egri chizig'i (chiziqli va log|I|) ----
+          try {
+            model.result().create("pg_N1_lin", "PlotGroup1D");
+            model.result("pg_N1_lin").label("N1: I-V (chiziqli, T_amb=300K)");
+            model.result("pg_N1_lin").set("data", "dset6");
+            model.result("pg_N1_lin").create("g1", "Global");
+            model.result("pg_N1_lin").feature("g1").set("expr", new String[]{"ec.I0_1*1e3"});
+            model.result("pg_N1_lin").feature("g1").set("xdata", "expr");
+            model.result("pg_N1_lin").feature("g1").set("xdataexpr", "V_wave");
+            model.result().export().create("exp_N1_lin", "Image");
+            model.result().export("exp_N1_lin").set("plotgroup", "pg_N1_lin");
+            model.result().export("exp_N1_lin").set("filename", "N1_iv_linear.png");
+            model.result().export("exp_N1_lin").run();
+          } catch (Exception ex) {
+            System.out.println("XATO (N1 chiziqli): " + ex.getMessage());
+          }
+          try {
+            model.result().create("pg_N1_log", "PlotGroup1D");
+            model.result("pg_N1_log").label("N1: log10|I| (T_amb=300K)");
+            model.result("pg_N1_log").set("data", "dset6");
+            model.result("pg_N1_log").create("g1", "Global");
+            model.result("pg_N1_log").feature("g1").set("expr", new String[]{"log10(abs(ec.I0_1)/1[A]+1e-15)"});
+            model.result("pg_N1_log").feature("g1").set("xdata", "expr");
+            model.result("pg_N1_log").feature("g1").set("xdataexpr", "V_wave");
+            model.result().export().create("exp_N1_log", "Image");
+            model.result().export("exp_N1_log").set("plotgroup", "pg_N1_log");
+            model.result().export("exp_N1_log").set("filename", "N1_iv_log.png");
+            model.result().export("exp_N1_log").run();
+          } catch (Exception ex) {
+            System.out.println("XATO (N1 log): " + ex.getMessage());
+          }
+
+          // ---- N3: x(t), V(t), I(t) - alohida uchta PNG ----
+          try {
+            model.result().create("pg_N3_x", "PlotGroup1D");
+            model.result("pg_N3_x").label("N3: x(t)");
+            model.result("pg_N3_x").set("data", "dset6");
+            model.result("pg_N3_x").create("g1", "Global");
+            model.result("pg_N3_x").feature("g1").set("expr", new String[]{"xode"});
+            model.result().export().create("exp_N3_x", "Image");
+            model.result().export("exp_N3_x").set("plotgroup", "pg_N3_x");
+            model.result().export("exp_N3_x").set("filename", "N3_x_t.png");
+            model.result().export("exp_N3_x").run();
+          } catch (Exception ex) {
+            System.out.println("XATO (N3 x(t)): " + ex.getMessage());
+          }
+          try {
+            model.result().create("pg_N3_V", "PlotGroup1D");
+            model.result("pg_N3_V").label("N3: V(t)");
+            model.result("pg_N3_V").set("data", "dset6");
+            model.result("pg_N3_V").create("g1", "Global");
+            model.result("pg_N3_V").feature("g1").set("expr", new String[]{"V_wave"});
+            model.result().export().create("exp_N3_V", "Image");
+            model.result().export("exp_N3_V").set("plotgroup", "pg_N3_V");
+            model.result().export("exp_N3_V").set("filename", "N3_V_t.png");
+            model.result().export("exp_N3_V").run();
+          } catch (Exception ex) {
+            System.out.println("XATO (N3 V(t)): " + ex.getMessage());
+          }
+          try {
+            model.result().create("pg_N3_I", "PlotGroup1D");
+            model.result("pg_N3_I").label("N3: I(t)");
+            model.result("pg_N3_I").set("data", "dset6");
+            model.result("pg_N3_I").create("g1", "Global");
+            model.result("pg_N3_I").feature("g1").set("expr", new String[]{"ec.I0_1*1e3"});
+            model.result().export().create("exp_N3_I", "Image");
+            model.result().export("exp_N3_I").set("plotgroup", "pg_N3_I");
+            model.result().export("exp_N3_I").set("filename", "N3_I_t.png");
+            model.result().export("exp_N3_I").run();
+          } catch (Exception ex) {
+            System.out.println("XATO (N3 I(t)): " + ex.getMessage());
+          }
+
+          // ---- N4: SET paytidagi T xaritasi + T_max(t) (Tm_GT, Tm_ST chiziqlari bilan) ----
+          // TEKSHIRILSIN: "sol6" (std6 -> 6-tadqiqot -> sol6 naqshi) va "looplevel" (vaqt indeksini
+          // tanlash uchun, 1-asosli) - dset1..dset5 naqshiga o'xshab taxmin qilindi.
+          try {
+            if (setIdxBefore >= 0) {
+              model.result().dataset().create("dset_SET", "Solution");
+              model.result().dataset("dset_SET").set("solution", "sol6");
+              model.result().dataset("dset_SET").set("looplevel", new int[]{setIdxBefore + 2});
+              model.result().create("pg_N4_map", "PlotGroup2D");
+              model.result("pg_N4_map").label("N4: T xaritasi (SET paytida)");
+              model.result("pg_N4_map").set("data", "dset_SET");
+              model.result("pg_N4_map").create("surf1", "Surface");
+              model.result("pg_N4_map").feature("surf1").set("expr", "T");
+              model.result().export().create("exp_N4_map", "Image");
+              model.result().export("exp_N4_map").set("plotgroup", "pg_N4_map");
+              model.result().export("exp_N4_map").set("filename", "N4_Tmap_SET.png");
+              model.result().export("exp_N4_map").run();
+            }
+          } catch (Exception ex) {
+            System.out.println("XATO (N4 T xaritasi): " + ex.getMessage());
+          }
+          try {
+            model.result().create("pg_N4_Tmax", "PlotGroup1D");
+            model.result("pg_N4_Tmax").label("N4: T_max(t) va erish haroratlari");
+            model.result("pg_N4_Tmax").set("data", "dset6");
+            model.result("pg_N4_Tmax").create("g1", "Global");
+            model.result("pg_N4_Tmax").feature("g1").set("expr", new String[]{"maxop_T(T)", "Tm_ST", "Tm_GT"});
+            model.result("pg_N4_Tmax").feature("g1").set("legend", true);
+            model.result().export().create("exp_N4_Tmax", "Image");
+            model.result().export("exp_N4_Tmax").set("plotgroup", "pg_N4_Tmax");
+            model.result().export("exp_N4_Tmax").set("filename", "N4_Tmax_t.png");
+            model.result().export("exp_N4_Tmax").run();
+          } catch (Exception ex) {
+            System.out.println("XATO (N4 Tmax(t)): " + ex.getMessage());
+          }
+
+          // ---- N5: SET dan oldin/keyin |E| va |J| xaritalari ----
+          try {
+            if (setIdxBefore >= 1) {
+              model.result().dataset().create("dset_before", "Solution");
+              model.result().dataset("dset_before").set("solution", "sol6");
+              model.result().dataset("dset_before").set("looplevel", new int[]{setIdxBefore + 1});
+              model.result().dataset().create("dset_after", "Solution");
+              model.result().dataset("dset_after").set("solution", "sol6");
+              model.result().dataset("dset_after").set("looplevel", new int[]{setIdxBefore + 2});
+
+              String[][] n5jobs = {
+                  {"pg_N5_Ebefore", "dset_before", "ec.normE", "N5_E_before.png", "N5: |E| SET dan oldin"},
+                  {"pg_N5_Eafter", "dset_after", "ec.normE", "N5_E_after.png", "N5: |E| SET dan keyin"},
+                  {"pg_N5_Jbefore", "dset_before", "ec.normJ", "N5_J_before.png", "N5: |J| SET dan oldin"},
+                  {"pg_N5_Jafter", "dset_after", "ec.normJ", "N5_J_after.png", "N5: |J| SET dan keyin"}
+              };
+              for (String[] job : n5jobs) {
+                model.result().create(job[0], "PlotGroup2D");
+                model.result(job[0]).label(job[4]);
+                model.result(job[0]).set("data", job[1]);
+                model.result(job[0]).create("surf1", "Surface");
+                model.result(job[0]).feature("surf1").set("expr", job[2]);
+                model.result().export().create("exp_" + job[0], "Image");
+                model.result().export("exp_" + job[0]).set("plotgroup", job[0]);
+                model.result().export("exp_" + job[0]).set("filename", job[3]);
+                model.result().export("exp_" + job[0]).run();
+              }
+            }
+          } catch (Exception ex) {
+            System.out.println("XATO (N5 E/J xaritalari): " + ex.getMessage());
+          }
+        }
+      }
+    } catch (IOException ex) {
+      System.out.println("XATO (CSV T_amb sweep): " + ex.getMessage());
+    } finally {
+      if (outIvSweep != null) outIvSweep.close();
+      if (outTmaxT != null) outTmaxT.close();
+      if (outN6 != null) outN6.close();
+      model.param().set("T_amb", "300[K]");
+      model.param().set("V_app", "V_read");
+      model.param().set("xs", "0");
+    }
+
     try {
       model.save("Model1_Vertical.mph");
     } catch (IOException ex) {
