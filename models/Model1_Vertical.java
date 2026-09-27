@@ -818,7 +818,7 @@ public class Model1_Vertical {
             model.result("pg_N1_lin").feature("g1").set("xdataexpr", "V_wave");
             model.result().export().create("exp_N1_lin", "Image");
             model.result().export("exp_N1_lin").set("plotgroup", "pg_N1_lin");
-            model.result().export("exp_N1_lin").set("pngfilename", "N1_iv_linear.png");
+            model.result().export("exp_N1_lin").set("pngfilename", "C:/comsol_ish/models/N1_iv_linear.png");
             model.result().export("exp_N1_lin").run();
           } catch (Exception ex) {
             System.out.println("XATO (N1 chiziqli): " + ex.getMessage());
@@ -833,7 +833,7 @@ public class Model1_Vertical {
             model.result("pg_N1_log").feature("g1").set("xdataexpr", "V_wave");
             model.result().export().create("exp_N1_log", "Image");
             model.result().export("exp_N1_log").set("plotgroup", "pg_N1_log");
-            model.result().export("exp_N1_log").set("pngfilename", "N1_iv_log.png");
+            model.result().export("exp_N1_log").set("pngfilename", "C:/comsol_ish/models/N1_iv_log.png");
             model.result().export("exp_N1_log").run();
           } catch (Exception ex) {
             System.out.println("XATO (N1 log): " + ex.getMessage());
@@ -848,7 +848,7 @@ public class Model1_Vertical {
             model.result("pg_N3_x").feature("g1").set("expr", new String[]{"xode"});
             model.result().export().create("exp_N3_x", "Image");
             model.result().export("exp_N3_x").set("plotgroup", "pg_N3_x");
-            model.result().export("exp_N3_x").set("pngfilename", "N3_x_t.png");
+            model.result().export("exp_N3_x").set("pngfilename", "C:/comsol_ish/models/N3_x_t.png");
             model.result().export("exp_N3_x").run();
           } catch (Exception ex) {
             System.out.println("XATO (N3 x(t)): " + ex.getMessage());
@@ -861,7 +861,7 @@ public class Model1_Vertical {
             model.result("pg_N3_V").feature("g1").set("expr", new String[]{"V_wave"});
             model.result().export().create("exp_N3_V", "Image");
             model.result().export("exp_N3_V").set("plotgroup", "pg_N3_V");
-            model.result().export("exp_N3_V").set("pngfilename", "N3_V_t.png");
+            model.result().export("exp_N3_V").set("pngfilename", "C:/comsol_ish/models/N3_V_t.png");
             model.result().export("exp_N3_V").run();
           } catch (Exception ex) {
             System.out.println("XATO (N3 V(t)): " + ex.getMessage());
@@ -874,7 +874,7 @@ public class Model1_Vertical {
             model.result("pg_N3_I").feature("g1").set("expr", new String[]{"ec.I0_1*1e3"});
             model.result().export().create("exp_N3_I", "Image");
             model.result().export("exp_N3_I").set("plotgroup", "pg_N3_I");
-            model.result().export("exp_N3_I").set("pngfilename", "N3_I_t.png");
+            model.result().export("exp_N3_I").set("pngfilename", "C:/comsol_ish/models/N3_I_t.png");
             model.result().export("exp_N3_I").run();
           } catch (Exception ex) {
             System.out.println("XATO (N3 I(t)): " + ex.getMessage());
@@ -888,17 +888,19 @@ public class Model1_Vertical {
           // TASDIQLANDI). "looplevel" (vaqt indeksini tanlash, 1-asosli) hali TEKSHIRILMOQDA.
           try {
             if (setIdxBefore >= 0) {
-              model.result().dataset().create("dset_SET", "Solution");
-              model.result().dataset("dset_SET").set("solution", "sol5");
-              model.result().dataset("dset_SET").set("solnum", String.valueOf(setIdxBefore + 2));
+              // TASDIQLANDI (3 urinishdan keyin): alohida "Solution" dataset + "solnum"/"looplevel"
+              // ISHLAMAYDI ("Unknown_property"). To'g'ri yechim: "dset5" (barcha vaqt qadamlari)
+              // to'g'ridan-to'g'ri ishlatilib, "solnum" (butun son, STRING EMAS) PLOT FEATURE
+              // (surf1) ning o'ziga qo'yiladi - "solnumtype" kabi qo'shimcha xossa KERAK EMAS.
               model.result().create("pg_N4_map", "PlotGroup2D");
               model.result("pg_N4_map").label("N4: T xaritasi (SET paytida)");
-              model.result("pg_N4_map").set("data", "dset_SET");
+              model.result("pg_N4_map").set("data", "dset5");
               model.result("pg_N4_map").create("surf1", "Surface");
               model.result("pg_N4_map").feature("surf1").set("expr", "T");
+              model.result("pg_N4_map").feature("surf1").set("solnum", setIdxBefore + 2);
               model.result().export().create("exp_N4_map", "Image");
               model.result().export("exp_N4_map").set("plotgroup", "pg_N4_map");
-              model.result().export("exp_N4_map").set("pngfilename", "N4_Tmap_SET.png");
+              model.result().export("exp_N4_map").set("pngfilename", "C:/comsol_ish/models/N4_Tmap_SET.png");
               model.result().export("exp_N4_map").run();
             }
           } catch (Exception ex) {
@@ -913,7 +915,7 @@ public class Model1_Vertical {
             model.result("pg_N4_Tmax").feature("g1").set("legend", true);
             model.result().export().create("exp_N4_Tmax", "Image");
             model.result().export("exp_N4_Tmax").set("plotgroup", "pg_N4_Tmax");
-            model.result().export("exp_N4_Tmax").set("pngfilename", "N4_Tmax_t.png");
+            model.result().export("exp_N4_Tmax").set("pngfilename", "C:/comsol_ish/models/N4_Tmax_t.png");
             model.result().export("exp_N4_Tmax").run();
           } catch (Exception ex) {
             System.out.println("XATO (N4 Tmax(t)): " + ex.getMessage());
@@ -922,29 +924,29 @@ public class Model1_Vertical {
           // ---- N5: SET dan oldin/keyin |E| va |J| xaritalari ----
           try {
             if (setIdxBefore >= 1) {
-              model.result().dataset().create("dset_before", "Solution");
-              model.result().dataset("dset_before").set("solution", "sol5");
-              model.result().dataset("dset_before").set("solnum", String.valueOf(setIdxBefore + 1));
-              model.result().dataset().create("dset_after", "Solution");
-              model.result().dataset("dset_after").set("solution", "sol5");
-              model.result().dataset("dset_after").set("solnum", String.valueOf(setIdxBefore + 2));
-
-              String[][] n5jobs = {
-                  {"pg_N5_Ebefore", "dset_before", "ec.normE", "N5_E_before.png", "N5: |E| SET dan oldin"},
-                  {"pg_N5_Eafter", "dset_after", "ec.normE", "N5_E_after.png", "N5: |E| SET dan keyin"},
-                  {"pg_N5_Jbefore", "dset_before", "ec.normJ", "N5_J_before.png", "N5: |J| SET dan oldin"},
-                  {"pg_N5_Jafter", "dset_after", "ec.normJ", "N5_J_after.png", "N5: |J| SET dan keyin"}
+              // N4 dagi kabi: "dset5" to'g'ridan-to'g'ri ishlatiladi, "solnum" surf1 feature'da.
+              Object[][] n5jobs = {
+                  {"pg_N5_Ebefore", setIdxBefore + 1, "ec.normE", "N5_E_before.png", "N5: |E| SET dan oldin"},
+                  {"pg_N5_Eafter", setIdxBefore + 2, "ec.normE", "N5_E_after.png", "N5: |E| SET dan keyin"},
+                  {"pg_N5_Jbefore", setIdxBefore + 1, "ec.normJ", "N5_J_before.png", "N5: |J| SET dan oldin"},
+                  {"pg_N5_Jafter", setIdxBefore + 2, "ec.normJ", "N5_J_after.png", "N5: |J| SET dan keyin"}
               };
-              for (String[] job : n5jobs) {
-                model.result().create(job[0], "PlotGroup2D");
-                model.result(job[0]).label(job[4]);
-                model.result(job[0]).set("data", job[1]);
-                model.result(job[0]).create("surf1", "Surface");
-                model.result(job[0]).feature("surf1").set("expr", job[2]);
-                model.result().export().create("exp_" + job[0], "Image");
-                model.result().export("exp_" + job[0]).set("plotgroup", job[0]);
-                model.result().export("exp_" + job[0]).set("pngfilename", job[3]);
-                model.result().export("exp_" + job[0]).run();
+              for (Object[] job : n5jobs) {
+                String tag = (String) job[0];
+                int solnum = (Integer) job[1];
+                String expr = (String) job[2];
+                String fname = (String) job[3];
+                String label = (String) job[4];
+                model.result().create(tag, "PlotGroup2D");
+                model.result(tag).label(label);
+                model.result(tag).set("data", "dset5");
+                model.result(tag).create("surf1", "Surface");
+                model.result(tag).feature("surf1").set("expr", expr);
+                model.result(tag).feature("surf1").set("solnum", solnum);
+                model.result().export().create("exp_" + tag, "Image");
+                model.result().export("exp_" + tag).set("plotgroup", tag);
+                model.result().export("exp_" + tag).set("pngfilename", "C:/comsol_ish/models/" + fname);
+                model.result().export("exp_" + tag).run();
               }
             }
           } catch (Exception ex) {
