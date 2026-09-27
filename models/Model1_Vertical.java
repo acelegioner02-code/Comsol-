@@ -1,5 +1,5 @@
 /*
- * Model1_Vertical.java  —  1-MODEL, 1-2 BOSQICH ("tutun testi")
+ * Model1_Vertical.java  —  1-MODEL, 1-2-3(a) BOSQICH ("tutun testi")
  *
  * Troyan & Doronin, ICCS 2020 (LNNS 186, 427-433, 2021, doi:10.1007/978-3-030-66093-2_41)
  * maqolasidagi GeTe/Sb2Te3 interfeysli xotira elementining FENOMENOLOGIK modeli.
@@ -7,24 +7,34 @@
  * Struktura (2D o'q-simmetrik, pastdan yuqoriga, r = 0 simmetriya o'qi):
  *   pastki elektrod (BE) / Sb2Te3 / interfeys qatlami [filament r<r_f | halqa r>r_f] / GeTe / yuqori elektrod (TE)
  *
- * Bu bosqichda:  GEOMETRY + MATERIALS + Electric Currents (ec) + S1 Stationary (x = 0 va x = 1);
- * + Heat Transfer (ht) + Electromagnetic Heating (emh1) + S2 Stationary: x=0/1, V_app=+-3.5V -> T_max
- * (S2_Tmax.csv). std1/std2 (S1) da ht ataylab o'chirilgan ("activate"), S1 natijalari 1-bosqichdagidek qoladi.
+ * Bu bosqichda: GEOMETRY + MATERIALS + Electric Currents (ec) + S1 Stationary (x=0/1, r_f=200nm,
+ * R_dev=1um, Mapped to'r); + Heat Transfer (ht) + Electromagnetic Heating (emh1) + S2 Stationary
+ * (x=0/1, V_app=+-3.5/4.5V -> T_max, hammasi Tm dan past); + Global ODE (ge, "xode") + S3 Stationary
+ * (ec+ht+ge birgalikda, muvozanat xode qidiruvi) - natijalar va CHEKLOV pastda.
  *
- * S2 NATIJASI (2026-09-27): x=0 (OFF) da T_max ~ 415 K (T_amb=300K dan sal yuqori, muammosiz).
- * x=1 (ON) da T_max ~ 3.5e4 K — bu Tm_GT (998K) va Tm_ST (891K) dan O'NLAB MARTA YUQORI, fizik jihatdan
- * mumkin emas. Sabab: model chiziqli (sigma dan E ga bog'liqlik yo'q, temperaturaga bog'liqlik yo'q,
- * teskari aloqa yo'q) va filament radiusi r_f=5nm juda kichik -> Joule isishi cheksiz o'sadi.
- * SHU SABABLI Global ODE bosqichiga (3-bosqich) O'TILMAGAN — foydalanuvchi qaror qilishi kerak
- * (r_f/R_dev ni oshirish, ketma-ket R_s qo'shish, yoki issiqlikni faqat sifat jihatidan ko'rsatish).
+ * S1/S2 o'zgarishsiz: std1/std2/std3 (S1a/S1/S2) da "ge" o'chirilgan ("activate"), sig_fil "xode"
+ * ga bog'liq bo'lsa-da, xode ge1 ning initialValueU="xs" ifodasi orqali "xs" parametriga
+ * muzlatiladi - eski xs-boshqaruvli mexanizm (kalibrovka, aux sweep) TO'LIQ saqlanadi.
  *
- * Keyingi bosqich (hali YO'Q, foydalanuvchi qaroridan keyin): x uchun Global ODE, Time Dependent,
- * to'liq natijalar (N1-N6, iv_ugate0.csv, xt_cycle.csv, Tmax_t.csv va h.k.).
+ * S3 NATIJASI VA MUHIM CHEKLOV (2026-09-27): Global ODE fizikasi (ec+ht+ge) MEXANIK jihatdan
+ * to'g'ri ishlaydi (kompilyatsiya, yechim, S1/S2 ga ta'sir qilmaydi). LEKIN Stationary orqali
+ * "muvozanat x" qidirish bu BISTABIL/qattiq-nochiziqli tizim uchun ISHONCHSIZ: Joglekar oynasi
+ * Fwin(0)=Fwin(1)=0 qilib quriladi, shuning uchun x=0 (deyarli) HAR QANDAY V_app da dxdt_rhs ning
+ * ILDIZI bo'lib qoladi (Newton boshlang'ich taxmin qanchalik yaqin bo'lsa ham o'sha yerda "qotib
+ * qolishi" yoki, aksincha, kichik boshlang'ich siljish bilan (x0=0.01) V_read=0.1V da ham xode
+ * ~0.95 ga "sakrab ketishi" mumkin - FIZIK JIHATDAN NOTO'G'RI, chunki o'qish kuchlanishi hech
+ * qanday holatni o'zgartirmasligi kerak). Sabab: Stationary Newton iteratsiyasi shunchaki eng
+ * yaqin ILDIZNI topadi (barqaror yoki beqaror farqlanmaydi), real vaqt evolyutsiyasini aks
+ * ettirmaydi. XULOSA: Stationary "muvozanat x" tekshiruvi faqat MEXANIZM ishlashini tasdiqlash
+ * uchun ishlatildi (S3_ODE_check.csv); haqiqiy x(t) dinamikasi FAQAT Time Dependent orqali to'g'ri
+ * aniqlanadi (keyingi bosqich).
  *
- * Holat o'zgaruvchisi x hozircha oddiy PARAMETR (xs). Global ODE bosqichida u almashtiriladi,
- * sig_fil o'zgaruvchisining ko'rinishi esa o'zgarmaydi: sig_fil = sig_off^(1-x) * sig_on^x.
+ * Keyingi bosqich (hali YO'Q): Time Dependent - V(t)=Vamp*(2/pi)*asin(sin(2*pi*f0*t)), 0-30ms,
+ * BDF, T_amb sweep (300/350/400/450K), to'liq natijalar (N1-N6, iv_ugate0.csv, xt_cycle.csv,
+ * Tmax_t.csv va h.k.).
  *
- * Kerakli litsenziya: COMSOL Multiphysics (ConductiveMedia, HeatTransfer bazaviy paketda bor).
+ * Kerakli litsenziya: COMSOL Multiphysics (ConductiveMedia, HeatTransfer, GlobalEquations bazaviy
+ * paketda bor).
  *
  * "// TEKSHIRILSIN" belgisi: COMSOL 6.0 API da nomi yoki xatti-harakati 100% aniq bo'lmagan chaqiruv.
  *
@@ -107,13 +117,16 @@ public class Model1_Vertical {
     p(model, "Tm_ST", "891[K]", "Sb2Te3 erish harorati (~618 C)");
     p(model, "T_amb", "300[K]", "Atrof harorati");
 
-    // --- Filament kinetikasi (3-bosqichda ishlatiladi) ---
-    p(model, "xs", "0", "Filament holati (1-bosqichda parametr, keyin Global ODE)");
+    // --- Filament kinetikasi (3-bosqich: Global ODE, xs endi statik PARAMETR sifatida S1/S2 uchun
+    //     saqlanadi, dinamik holat esa alohida "xode" global o'zgaruvchisida - pastga qarang) ---
+    p(model, "xs", "0", "Filament holati (S1/S2 uchun statik parametr; 3-bosqich: xode)");
     p(model, "k0", "1e13[1/s]", "Urinish chastotasi (fonon chastotasi tartibi)");
     p(model, "Ea", "0.9[eV]", "Migratsiya aktivatsiya energiyasi (fitting)");
     p(model, "a_hop", "0.3[nm]", "Sakrash masofasi (fitting)");
     p(model, "tau_rel", "1e3[s]", "Relaksatsiya vaqti (katta -> nonvolatil)");
-    p(model, "p_win", "2", "Joglekar/Biolek oynasi darajasi");
+    p(model, "p_win", "2", "Joglekar oynasi darajasi (Fwin(x) = 1-(2x-1)^(2*p_win))");
+    p(model, "kB_c", "1.380649e-23[J/K]", "Boltsman doimiysi");
+    p(model, "q_c", "1.602176634e-19[C]", "Elektron zaryadi");
 
     // --- Signal ---
     p(model, "V_read", "0.1[V]", "S1 dagi o'qish kuchlanishi");
@@ -175,8 +188,26 @@ public class Model1_Vertical {
     model.component("comp1").variable().create("var1");
     model.component("comp1").variable("var1").label("Filament o'tkazuvchanligi");
     // sig_off^(1-x)*sig_on^x ni birliklar bo'yicha to'g'ri ko'rinishda yozamiz:
-    model.component("comp1").variable("var1").set("sig_fil", "sig_off*(sig_on/sig_off)^xs",
+    // sig_fil "xode" ga bog'liq (S1/S2/S3(issiqlik)da ge o'chirilgan bo'lsa, xode ge1 ning
+    // initialValueU="xs" ifodasi orqali "xs" parametrining joriy qiymatiga "muzlatiladi" - shu
+    // tarzda eski xs-boshqaruvli kalibrovka/aux sweep mexanizmi o'zgarishsiz ishlayveradi).
+    model.component("comp1").variable("var1").set("sig_fil", "sig_off*(sig_on/sig_off)^xode",
         "Filament o'tkazuvchanligi: sig_off^(1-x)*sig_on^x");
+
+    // 3-bosqich: Global ODE uchun haydovchi kattaliklar va Joglekar oynasi. "xode" quyida
+    // "ge" (Global ODEs and DAEs) fizikasi orqali aniqlanadigan global bog'liq o'zgaruvchi
+    // (aveop_fil/ec/ht dan oldin/keyin yaratilgan bo'lishidan qat'i nazar, COMSOL butun model
+    // bo'yicha simvolik jadvalni model.build() vaqtida hal qiladi - 1-bosqichdagi ec.Ez -> aveop_fil
+    // naqshiga o'xshab).
+    model.component("comp1").variable("var1").set("E_drive", "-aveop_fil(ec.Ez)",
+        "Filamentdagi haydovchi maydon (V_app>0 -> E_drive>0 -> SET yo'nalishi)");
+    model.component("comp1").variable("var1").set("T_local", "aveop_fil(T)",
+        "Filamentning o'rtacha harorati (Heat Transfer dan)");
+    model.component("comp1").variable("var1").set("Fwin_x", "1-(2*xode-1)^(2*p_win)",
+        "Joglekar oynasi: chegaralarda (x=0,1) dx/dt ni nolga olib boradi");
+    model.component("comp1").variable("var1").set("dxdt_rhs",
+        "k0*exp(-Ea/(kB_c*T_local))*sinh(q_c*a_hop*E_drive/(2*kB_c*T_local))*Fwin_x-xode/tau_rel",
+        "dx/dt ifodasi (Global Equation da xode_t = dxdt_rhs sifatida ishlatiladi)");
 
     // Filament bo'yicha hajmiy o'rtacha (keyingi bosqichda Global ODE uchun <Ez> va <T>)
     model.component("comp1").cpl().create("aveop_fil", "Average");
@@ -248,6 +279,34 @@ public class Model1_Vertical {
     model.component("comp1").multiphysics("emh1").selection().all();
 
     // =====================================================================================
+    // PHYSICS: Global ODE (x kinetikasi, 3-bosqich)
+    // =====================================================================================
+    // "ge" (Global ODEs and DAEs) -- bitta skalyar (0D) bog'liq o'zgaruvchi "xode" uchun.
+    // Tenglama: xode_t = dxdt_rhs (Stationary'da solver xode_t=0 deb hisoblab muvozanat xode'ni
+    // topadi; Time Dependent'da to'liq integrallanadi). Fizik masala (ec/ht) bilan bog'liq
+    // (E_drive, T_local orqali) va sig_fil ga ta'sir qilishi uchun (keyingi bosqichda) xode
+    // sig_fil ifodasida xs o'rniga ishlatiladi.
+    // TEKSHIRILSIN: "GlobalODEsAndDAEs"/"GlobalODE"/"GlobalODEs" (geom1 bilan) ishlamadi. Programming
+    // Reference Manual: 0D (fazoga bog'liq bo'lmagan) interfeyslar geomtag ARGUMENTISIZ yaratiladi.
+    model.component("comp1").physics().create("ge", "GlobalEquations");
+    model.component("comp1").physics("ge").feature("ge1").label("Filament holati x");
+    // TASDIQLANDI: "name"/"equation"/"initialValueU"/"initialValueUt" xossalari (jadval ustunlari
+    // sifatida) birinchi urinishdayoq to'g'ri ishladi.
+    model.component("comp1").physics("ge").feature("ge1").set("name", new String[]{"xode"});
+    // TEKSHIRILSIN -> QISMAN TASDIQLANDI: "xode_t" Stationary tadqiqotda ANIQLANMAGAN ("Undefined
+    // variable: xode_t. Global scope") - vaqt hosilasi faqat Time Dependent tadqiqotda mavjud bo'ladi.
+    // Hozircha (Stationary, 3-bosqichning birinchi qismi) tenglama shunchaki muvozanat sharti
+    // dxdt_rhs=0. Time Dependent bosqichida bu ifoda "xode_t-dxdt_rhs" ga almashtirilishi kerak
+    // (o'sha paytda haqiqiy vaqt o'lchami mavjud bo'lgani uchun xode_t aniqlangan bo'lishi kutiladi).
+    model.component("comp1").physics("ge").feature("ge1").set("equation", new String[]{"dxdt_rhs"});
+    // initialValueU = "xs" (SON emas, IFODA): std1/std2/std3'da ge o'chirilgan bo'lgani uchun xode
+    // "xs" parametrining joriy qiymatiga muzlatiladi (eski xs-boshqaruvli mexanizm bilan mos keladi);
+    // std4'da esa bu shunchaki Newton iteratsiyasi uchun BOSHLANG'ICH TAXMIN bo'ladi (xode erkin
+    // yechiladi). Shu sababli 3-bosqich tekshiruvida boshlang'ich taxminni "xs" orqali beramiz.
+    model.component("comp1").physics("ge").feature("ge1").set("initialValueU", new String[]{"xs"});
+    model.component("comp1").physics("ge").feature("ge1").set("initialValueUt", new String[]{"0"});
+
+    // =====================================================================================
     // MESH
     // =====================================================================================
     model.component("comp1").mesh().create("mesh1");
@@ -302,7 +361,7 @@ public class Model1_Vertical {
     model.study("std1").create("stat", "Stationary");
     // Faqat ec: S1 kalibrovkasi 1-bosqichdagidek toza elektr masala bo'lib qolishi uchun ht o'chirilgan.
     // TASDIQLANDI: "activate" 2D String[][] emas, balki tekis String[] (kalit,qiymat,...) kutadi.
-    model.study("std1").feature("stat").set("activate", new String[]{"ec", "on", "ht", "off"});
+    model.study("std1").feature("stat").set("activate", new String[]{"ec", "on", "ht", "off", "ge", "off"});
 
     // std2: Stationary + auxiliary sweep xs = 0, 1 -> R_OFF va R_ON bitta datasetda (GUI va eksport uchun).
     model.study().create("std2");
@@ -312,12 +371,18 @@ public class Model1_Vertical {
     model.study("std2").feature("stat").set("pname", new String[]{"xs"});
     model.study("std2").feature("stat").set("plistarr", new String[]{"0 1"});
     model.study("std2").feature("stat").set("punit", new String[]{""});
-    model.study("std2").feature("stat").set("activate", new String[]{"ec", "on", "ht", "off"});
+    model.study("std2").feature("stat").set("activate", new String[]{"ec", "on", "ht", "off", "ge", "off"});
 
     // std3: Stationary, ec + ht birgalikda (Electromagnetic Heating orqali) -> 2-bosqich, S2_Tmax.csv.
     model.study().create("std3");
     model.study("std3").label("S2: Stationary (Electric Currents + Heat Transfer)");
     model.study("std3").create("stat", "Stationary");
+    model.study("std3").feature("stat").set("activate", new String[]{"ec", "on", "ht", "on", "ge", "off"});
+
+    // std4: Stationary, ec + ht + ge birgalikda -> 3-bosqich (Global ODE, muvozanat x).
+    model.study().create("std4");
+    model.study("std4").label("S3: Stationary (Electric Currents + Heat Transfer + Global ODE)");
+    model.study("std4").create("stat", "Stationary");
 
     // =====================================================================================
     // SOLVER
@@ -497,6 +562,61 @@ public class Model1_Vertical {
       if (outT != null) outT.close();
       model.param().set("xs", "0");
       model.param().set("V_app", "V_read");
+    }
+
+    // =====================================================================================
+    // S3: GLOBAL ODE (3-bosqich, Stationary -- muvozanat x). sig_fil endi "xode" dan foydalanadi;
+    // "xs" parametri esa (a) S1/S2/std3'da ge o'chirilgani uchun xode ni muzlatish, (b) std4'da
+    // ge1 ning initialValueU="xs" orqali Newton iteratsiyasi uchun BOSHLANG'ICH TAXMIN berish
+    // uchun ishlatiladi (haqiqiy qattiq bog'lanish emas -- std4'da xode erkin yechiladi).
+    // =====================================================================================
+    // Har bir holat uchun boshlang'ich taxmin (x0="xs") berilib, Stationary Newton iteratsiyasi
+    // qaysi muvozanatga (agar bir nechta bo'lsa - bistabillik) yaqinlashishini ko'ramiz:
+    //  1) V_read (0.1V), x0=0    -> kutilgan: xode ~ 0 (o'qishda o'zgarish bo'lmasligi kerak)
+    //  2) V_SET_t (+3.5V), x0=0  -> kutilgan: xode -> 1 ga yaqin (SET, OFF dan)
+    //  3) V_RESET_t (-3.5V), x0=1 -> kutilgan: xode -> 0 ga yaqin (RESET, ON dan)
+    //  4) +4.5V, x0=0            -> kutilgan: xode -> 1 ga yaqin (kuchliroq SET)
+    // MUHIM TOPILMA: Fwin(0)=Fwin(1)=0 (Joglekar oynasi qurilishi bo'yicha), shuning uchun x=0 HAR
+    // QANDAY V_app da dxdt_rhs ning ANIQ ILDIZI (haydovchi had 0 ga ko'payadi) - agar boshlang'ich
+    // taxmin ANIQ 0 bo'lsa, Newton "yaqinlashdi" deb 0 qatorida qotib qoladi (u beqaror muvozanat
+    // bo'lsa ham). Shu sababli boshlang'ich taxminlar 0/1 chekkalaridan birmuncha ichkariga (0.5)
+    // qo'yiladi -- Stationary'da bistabillikni to'g'ri qidirish uchun standart texnika.
+    double[] vApp3   = {0.1, 3.5, -3.5, 4.5};
+    double[] x0guess = {0.01, 0.5, 0.5, 0.5};
+    String[] lbl3 = {"V_read,x0=0.01", "V_SET_t,x0=0.5", "V_RESET_t,x0=0.5", "V=4.5V,x0=0.5"};
+
+    model.param().set("V_app", String.format(Locale.US, "%.4g[V]", vApp3[0]));
+    model.param().set("xs", String.format(Locale.US, "%.4g", x0guess[0]));
+    model.study("std4").run();
+
+    model.result().numerical().create("gev_S3", "EvalGlobal");
+    model.result().numerical("gev_S3").label("S3: xode, R, T_max (muvozanat)");
+    model.result().numerical("gev_S3").set("data", "dset4");   // TASDIQLANDI: naqsh davom etadi, std4 -> dset4
+    model.result().numerical("gev_S3").set("expr", new String[]{"xode", "V_app/ec.I0_1", "maxop_T(T)"});
+    model.result().numerical("gev_S3").set("unit", new String[]{"1", "ohm", "K"});
+
+    String odeCsv = "S3_ODE_check.csv";
+    PrintWriter outX = null;
+    try {
+      outX = new PrintWriter(new FileWriter(odeCsv));
+      outX.println("case,V_app_V,x0_guess,xode_final,R_ohm,T_max_K");
+      for (int i = 0; i < vApp3.length; i++) {
+        model.param().set("V_app", String.format(Locale.US, "%.4g[V]", vApp3[i]));
+        model.param().set("xs", String.format(Locale.US, "%.4g", x0guess[i]));
+        model.study("std4").run();
+        double[][] res = model.result().numerical("gev_S3").getReal();
+        double xodeFinal = res[0][0], rOhm = res[1][0], tmax = res[2][0];
+        outX.println(String.format(Locale.US, "%s,%.4g,%.4g,%.6e,%.6e,%.6e", lbl3[i], vApp3[i], x0guess[i], xodeFinal, rOhm, tmax));
+        System.out.println(String.format(Locale.US,
+            "S3 ODE: [%s]  V_app=%.2f V  x0=%.2f  ->  xode=%.6e  R=%.6e ohm  T_max=%.6e K",
+            lbl3[i], vApp3[i], x0guess[i], xodeFinal, rOhm, tmax));
+      }
+    } catch (IOException ex) {
+      System.out.println("XATO (CSV S3_ODE_check): " + odeCsv + " : " + ex.getMessage());
+    } finally {
+      if (outX != null) outX.close();
+      model.param().set("V_app", "V_read");
+      model.param().set("xs", "0");
     }
 
     try {
