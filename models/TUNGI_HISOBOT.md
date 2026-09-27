@@ -97,3 +97,32 @@ ishlaydi, siz bergan TEG NOMI (masalan "std6") bilan hech qanday bog'liqligi yo'
 Hozircha 3-marta ishga tushirish kerak bo'ldi (birinchisi bazaviy tsiklni behuda qayta hisobladi
 ~21 daqiqa, ikkinchisi dset6/sol6 xatosi bilan yana ~21 daqiqa behuda ketdi post-processing
 bosqichida). Endi tuzatilgan holda qayta ishga tushirilmoqda.
+
+## 1-vazifa YAKUNLANDI: barcha raqamli natijalar va PNG'lar tayyor
+
+To'liq sweep (4 T_amb nuqta, dset5/sol5 tuzatilgan) muvaffaqiyatli yakunlandi (~66 daqiqa,
+3979s). N6_table.csv toza monoton tendentsiya bilan:
+
+| T_amb (K) | V_SET (V) | V_RESET (V) | R_OFF/R_ON |
+|---|---|---|---|
+| 300 | 3.513 | -3.279 | 14.31 |
+| 350 | 2.570 | -2.429 | 14.31 |
+| 400 | 1.630 | -1.529 | 14.31 |
+| 450 | 0.778 | -0.739 | 14.31 |
+
+Kutilgan tendensiya ("T_amb oshgani sari V_SET va |V_RESET| kamayadi") TO'LIQ TASDIQLANDI, aniq
+monoton kamayish bilan. R_OFF/R_ON T_amb ga bog'liq emas (modelda kutilganidek - faqat sig_off/
+sig_on orqali aniqlanadi, kinetika esa alohida T ga bog'liq).
+
+PNG eksportida ikkita qo'shimcha COMSOL API muammosi topildi va TUZATILDI:
+1. Image eksport uchun xossa nomi "pngfilename" (nisbiy yo'l bilan "Failed_to_create_directory"
+   berdi) - ABSOLYUT yo'l ("C:/comsol_ish/models/...") kerak ekan.
+2. Vaqt-kesimi (SET oldidan/keyin) tanlash uchun alohida "Solution" dataset yaratib "solnum"/
+   "looplevel" qo'yish ISHLAMAYDI ("Unknown_property"). To'g'ri yechim: asosiy dataset
+   to'g'ridan-to'g'ri ishlatilib, "solnum" (INTEGER) PLOT FEATURE (surf1)ning o'ziga qo'yiladi.
+
+Barcha 11 PNG (N1 x2: chiziqli+log I-V, N3 x3: x(t)/V(t)/I(t), N4 x2: T xaritasi SET paytida +
+T_max(t) bilan Tm chiziqlari, N5 x4: |E|/|J| SET dan oldin/keyin) muvaffaqiyatli yaratildi va
+tasdiqlandi (T_amb=300K tezkor tekshiruvda). Hozir to'liq 4-nuqtali production yakuniy marta
+ishga tushirilmoqda (~66-90 daqiqa kutilmoqda) - CSV va PNG fayllarni bitta izchil to'plamda olish
+uchun. Tugagach commit+push qilinadi va 2-vazifaga (Model2_FET.java test) o'tiladi.
