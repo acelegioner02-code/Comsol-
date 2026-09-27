@@ -66,6 +66,12 @@ public class Model1_Vertical {
   static final int CAL_MAX_IT = 8;
   static final double CAL_TOL = 0.01;   // 1 %
 
+  // Tungi vazifa: 300K, 3-davrli (0-30ms) bazaviy tsikl NATIJASI ALLAQACHON TASDIQLANGAN va
+  // saqlangan (xt_cycle.csv, iv_ugate0.csv - V_SET=3.513V, V_RESET=-3.278V, Biolek+tanh oynasi
+  // bilan). Uni qayta hisoblash ~45-50 daqiqa behuda vaqt sarflaydi, shuning uchun default
+  // o'chirilgan. true qilinsa, std5 qaytadan ishga tushadi va shu fayllarni qayta yozadi.
+  static final boolean RUN_BASELINE_300K_3CYCLE = false;
+
   public static Model run() {
     Model model = ModelUtil.create("Model");
     model.label("Model1_Vertical.mph");
@@ -666,59 +672,61 @@ public class Model1_Vertical {
     // S1/S2/S3 (std1-4, ular yuqorida allaqachon yechilgan va eksport qilingan) ga ta'sir qilmaydi.
     model.component("comp1").physics("ec").feature("term1").set("V0", "V_wave");
 
-    model.study().create("std5");
-    model.study("std5").label("S4: Time Dependent (T_amb=300K, uchburchak signal, bitta tsikl)");
-    model.study("std5").create("time", "Transient");   // TEKSHIRILSIN: "Transient" - GUI "Time Dependent"
-    // 0-30ms, chiqish qadami 5e-5s (max ichki qadam talabi 1/(400*f0)=2.5e-5s ga yaqin holda,
-    // hisoblash vaqtini maqbul saqlash uchun; BDF solver ikkita chiqish nuqtasi orasida ham
-    // moslashuvchan kichikroq ichki qadamlar oladi).
-    model.study("std5").feature("time").set("tlist", "range(0,5e-5,0.03)");   // TEKSHIRILSIN
-    model.study("std5").run();
+    if (RUN_BASELINE_300K_3CYCLE) {
+      model.study().create("std5");
+      model.study("std5").label("S4: Time Dependent (T_amb=300K, uchburchak signal, bitta tsikl)");
+      model.study("std5").create("time", "Transient");
+      model.study("std5").feature("time").set("tlist", "range(0,5e-5,0.03)");
+      model.study("std5").run();
 
-    model.result().numerical().create("gev_S4", "EvalGlobal");
-    model.result().numerical("gev_S4").label("S4: t, V, I, x, T_max (vaqt qatori)");
-    model.result().numerical("gev_S4").set("data", "dset5");   // TEKSHIRILSIN: std5 -> dset5
-    model.result().numerical("gev_S4").set("expr", new String[]{"t", "V_wave", "ec.I0_1", "xode", "maxop_T(T)"});
-    model.result().numerical("gev_S4").set("unit", new String[]{"s", "V", "A", "1", "K"});
-    double[][] s4 = model.result().numerical("gev_S4").getReal();   // s4[expr][nuqta]: 0=t,1=V,2=I,3=x,4=Tmax
+      model.result().numerical().create("gev_S4", "EvalGlobal");
+      model.result().numerical("gev_S4").label("S4: t, V, I, x, T_max (vaqt qatori)");
+      model.result().numerical("gev_S4").set("data", "dset5");
+      model.result().numerical("gev_S4").set("expr", new String[]{"t", "V_wave", "ec.I0_1", "xode", "maxop_T(T)"});
+      model.result().numerical("gev_S4").set("unit", new String[]{"s", "V", "A", "1", "K"});
+      double[][] s4 = model.result().numerical("gev_S4").getReal();
 
-    String xtCsv = "xt_cycle.csv";
-    String ivCsv = "iv_ugate0.csv";
-    PrintWriter outXt = null, outIv = null;
-    try {
-      outXt = new PrintWriter(new FileWriter(xtCsv));
-      outXt.println("t_s,V_V,I_A,x,Tmax_K");
-      outIv = new PrintWriter(new FileWriter(ivCsv));
-      outIv.println("V_V,I_A");
-      int n = (s4.length > 0) ? s4[0].length : 0;
-      for (int i = 0; i < n; i++) {
-        outXt.println(String.format(Locale.US, "%.6e,%.6e,%.6e,%.6e,%.6e", s4[0][i], s4[1][i], s4[2][i], s4[3][i], s4[4][i]));
-        outIv.println(String.format(Locale.US, "%.6e,%.6e", s4[1][i], s4[2][i]));
-      }
-
-      // V_SET / V_RESET: x = 0.5 dan o'tish momentidagi V (chiziqli interpolyatsiya).
-      double vSetFound = Double.NaN, vResetFound = Double.NaN;
-      for (int i = 1; i < n; i++) {
-        double xPrev = s4[3][i - 1], xCur = s4[3][i];
-        if (Double.isNaN(vSetFound) && xPrev < 0.5 && xCur >= 0.5) {
-          double frac = (0.5 - xPrev) / (xCur - xPrev);
-          vSetFound = s4[1][i - 1] + frac * (s4[1][i] - s4[1][i - 1]);
+      String xtCsv = "xt_cycle.csv";
+      String ivCsv = "iv_ugate0.csv";
+      PrintWriter outXt = null, outIv = null;
+      try {
+        outXt = new PrintWriter(new FileWriter(xtCsv));
+        outXt.println("t_s,V_V,I_A,x,Tmax_K");
+        outIv = new PrintWriter(new FileWriter(ivCsv));
+        outIv.println("V_V,I_A");
+        int n = (s4.length > 0) ? s4[0].length : 0;
+        for (int i = 0; i < n; i++) {
+          outXt.println(String.format(Locale.US, "%.6e,%.6e,%.6e,%.6e,%.6e", s4[0][i], s4[1][i], s4[2][i], s4[3][i], s4[4][i]));
+          outIv.println(String.format(Locale.US, "%.6e,%.6e", s4[1][i], s4[2][i]));
         }
-        if (Double.isNaN(vResetFound) && xPrev > 0.5 && xCur <= 0.5) {
-          double frac = (xPrev - 0.5) / (xPrev - xCur);
-          vResetFound = s4[1][i - 1] + frac * (s4[1][i] - s4[1][i - 1]);
+
+        double vSetFound = Double.NaN, vResetFound = Double.NaN;
+        for (int i = 1; i < n; i++) {
+          double xPrev = s4[3][i - 1], xCur = s4[3][i];
+          if (Double.isNaN(vSetFound) && xPrev < 0.5 && xCur >= 0.5) {
+            double frac = (0.5 - xPrev) / (xCur - xPrev);
+            vSetFound = s4[1][i - 1] + frac * (s4[1][i] - s4[1][i - 1]);
+          }
+          if (Double.isNaN(vResetFound) && xPrev > 0.5 && xCur <= 0.5) {
+            double frac = (xPrev - 0.5) / (xPrev - xCur);
+            vResetFound = s4[1][i - 1] + frac * (s4[1][i] - s4[1][i - 1]);
+          }
         }
+        System.out.println(String.format(Locale.US,
+            "S4 NATIJA: n=%d nuqta, x(oxirgi)=%.4g, T_max(oxirgi)=%.4g K, V_SET(topilgan)=%s V (maqsad +3.5), V_RESET(topilgan)=%s V (maqsad -3.5)",
+            n, s4[3][n - 1], s4[4][n - 1],
+            Double.isNaN(vSetFound) ? "TOPILMADI" : String.format(Locale.US, "%.4g", vSetFound),
+            Double.isNaN(vResetFound) ? "TOPILMADI" : String.format(Locale.US, "%.4g", vResetFound)));
+      } catch (IOException ex) {
+        System.out.println("XATO (CSV xt_cycle/iv_ugate0): " + ex.getMessage());
+      } finally {
+        if (outXt != null) outXt.close();
+        if (outIv != null) outIv.close();
       }
-      System.out.println(String.format(Locale.US,
-          "S4 NATIJA: n=%d nuqta, x(oxirgi)=%.4g, T_max(oxirgi)=%.4g K, V_SET(topilgan)=%s V (maqsad +3.5), V_RESET(topilgan)=%s V (maqsad -3.5)",
-          n, s4[3][n - 1], s4[4][n - 1],
-          Double.isNaN(vSetFound) ? "TOPILMADI" : String.format(Locale.US, "%.4g", vSetFound),
-          Double.isNaN(vResetFound) ? "TOPILMADI" : String.format(Locale.US, "%.4g", vResetFound)));
-    } catch (IOException ex) {
-      System.out.println("XATO (CSV xt_cycle/iv_ugate0): " + ex.getMessage());
-    } finally {
-      if (outXt != null) outXt.close();
-      if (outIv != null) outIv.close();
+    } else {
+      System.out.println("S4 (300K, 3-davr bazaviy tsikl) O'TKAZIB YUBORILDI - natija allaqachon "
+          + "saqlangan (xt_cycle.csv, iv_ugate0.csv, tungi vazifa boshida). RUN_BASELINE_300K_3CYCLE=true "
+          + "qilib qayta hisoblash mumkin.");
     }
 
     // =====================================================================================
@@ -755,7 +763,7 @@ public class Model1_Vertical {
           // naqshiga o'xshab).   // TEKSHIRILSIN: std6 -> dset6
           model.result().numerical().create("gev_S5", "EvalGlobal");
           model.result().numerical("gev_S5").label("S5: t, V, I, x, T_max (T_amb sweep)");
-          model.result().numerical("gev_S5").set("data", "dset6");
+          model.result().numerical("gev_S5").set("data", "dset5");
           model.result().numerical("gev_S5").set("expr", new String[]{"t", "V_wave", "ec.I0_1", "xode", "maxop_T(T)"});
           model.result().numerical("gev_S5").set("unit", new String[]{"s", "V", "A", "1", "K"});
         }
@@ -803,7 +811,7 @@ public class Model1_Vertical {
           try {
             model.result().create("pg_N1_lin", "PlotGroup1D");
             model.result("pg_N1_lin").label("N1: I-V (chiziqli, T_amb=300K)");
-            model.result("pg_N1_lin").set("data", "dset6");
+            model.result("pg_N1_lin").set("data", "dset5");
             model.result("pg_N1_lin").create("g1", "Global");
             model.result("pg_N1_lin").feature("g1").set("expr", new String[]{"ec.I0_1*1e3"});
             model.result("pg_N1_lin").feature("g1").set("xdata", "expr");
@@ -818,7 +826,7 @@ public class Model1_Vertical {
           try {
             model.result().create("pg_N1_log", "PlotGroup1D");
             model.result("pg_N1_log").label("N1: log10|I| (T_amb=300K)");
-            model.result("pg_N1_log").set("data", "dset6");
+            model.result("pg_N1_log").set("data", "dset5");
             model.result("pg_N1_log").create("g1", "Global");
             model.result("pg_N1_log").feature("g1").set("expr", new String[]{"log10(abs(ec.I0_1)/1[A]+1e-15)"});
             model.result("pg_N1_log").feature("g1").set("xdata", "expr");
@@ -835,7 +843,7 @@ public class Model1_Vertical {
           try {
             model.result().create("pg_N3_x", "PlotGroup1D");
             model.result("pg_N3_x").label("N3: x(t)");
-            model.result("pg_N3_x").set("data", "dset6");
+            model.result("pg_N3_x").set("data", "dset5");
             model.result("pg_N3_x").create("g1", "Global");
             model.result("pg_N3_x").feature("g1").set("expr", new String[]{"xode"});
             model.result().export().create("exp_N3_x", "Image");
@@ -848,7 +856,7 @@ public class Model1_Vertical {
           try {
             model.result().create("pg_N3_V", "PlotGroup1D");
             model.result("pg_N3_V").label("N3: V(t)");
-            model.result("pg_N3_V").set("data", "dset6");
+            model.result("pg_N3_V").set("data", "dset5");
             model.result("pg_N3_V").create("g1", "Global");
             model.result("pg_N3_V").feature("g1").set("expr", new String[]{"V_wave"});
             model.result().export().create("exp_N3_V", "Image");
@@ -861,7 +869,7 @@ public class Model1_Vertical {
           try {
             model.result().create("pg_N3_I", "PlotGroup1D");
             model.result("pg_N3_I").label("N3: I(t)");
-            model.result("pg_N3_I").set("data", "dset6");
+            model.result("pg_N3_I").set("data", "dset5");
             model.result("pg_N3_I").create("g1", "Global");
             model.result("pg_N3_I").feature("g1").set("expr", new String[]{"ec.I0_1*1e3"});
             model.result().export().create("exp_N3_I", "Image");
@@ -873,12 +881,15 @@ public class Model1_Vertical {
           }
 
           // ---- N4: SET paytidagi T xaritasi + T_max(t) (Tm_GT, Tm_ST chiziqlari bilan) ----
-          // TEKSHIRILSIN: "sol6" (std6 -> 6-tadqiqot -> sol6 naqshi) va "looplevel" (vaqt indeksini
-          // tanlash uchun, 1-asosli) - dset1..dset5 naqshiga o'xshab taxmin qilindi.
+          // MUHIM TOPILMA: dset/sol raqamlanishi STUDY TEGI nomiga ("std6") EMAS, balki HAQIQIY
+          // yaratilgan yechim SONIGA asoslanadi. std5 (bazaviy tsikl) RUN_BASELINE_300K_3CYCLE=false
+          // bo'lgani uchun yaratilmadi, shuning uchun std6 aslida 5-YARATILGAN yechim bo'lib,
+          // "dset5"/"sol5" nomini oladi (dset6/sol6 EMAS - "Unknown dataset: dset6" xatosidan
+          // TASDIQLANDI). "looplevel" (vaqt indeksini tanlash, 1-asosli) hali TEKSHIRILMOQDA.
           try {
             if (setIdxBefore >= 0) {
               model.result().dataset().create("dset_SET", "Solution");
-              model.result().dataset("dset_SET").set("solution", "sol6");
+              model.result().dataset("dset_SET").set("solution", "sol5");
               model.result().dataset("dset_SET").set("looplevel", new int[]{setIdxBefore + 2});
               model.result().create("pg_N4_map", "PlotGroup2D");
               model.result("pg_N4_map").label("N4: T xaritasi (SET paytida)");
@@ -896,7 +907,7 @@ public class Model1_Vertical {
           try {
             model.result().create("pg_N4_Tmax", "PlotGroup1D");
             model.result("pg_N4_Tmax").label("N4: T_max(t) va erish haroratlari");
-            model.result("pg_N4_Tmax").set("data", "dset6");
+            model.result("pg_N4_Tmax").set("data", "dset5");
             model.result("pg_N4_Tmax").create("g1", "Global");
             model.result("pg_N4_Tmax").feature("g1").set("expr", new String[]{"maxop_T(T)", "Tm_ST", "Tm_GT"});
             model.result("pg_N4_Tmax").feature("g1").set("legend", true);
@@ -912,10 +923,10 @@ public class Model1_Vertical {
           try {
             if (setIdxBefore >= 1) {
               model.result().dataset().create("dset_before", "Solution");
-              model.result().dataset("dset_before").set("solution", "sol6");
+              model.result().dataset("dset_before").set("solution", "sol5");
               model.result().dataset("dset_before").set("looplevel", new int[]{setIdxBefore + 1});
               model.result().dataset().create("dset_after", "Solution");
-              model.result().dataset("dset_after").set("solution", "sol6");
+              model.result().dataset("dset_after").set("solution", "sol5");
               model.result().dataset("dset_after").set("looplevel", new int[]{setIdxBefore + 2});
 
               String[][] n5jobs = {

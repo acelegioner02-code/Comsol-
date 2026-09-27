@@ -459,6 +459,25 @@ public class Model2_FET {
             ug, Double.isNaN(vSet) ? "?" : String.format(Locale.US, "%.4g", vSet),
             Double.isNaN(vReset) ? "TOPILMADI" : String.format(Locale.US, "%.4g", vReset),
             Double.isNaN(iAt4V) ? "?" : String.format(Locale.US, "%.4g", iAt4V * 1e3), rejim));
+
+        // N2: har bir Ugate uchun alohida I-V PNG (Fig.1a-d ga o'xshab, 4 panel o'rniga
+        // 5 ta alohida rasm - COMSOL Java API bitta rasmda ko'p panelni oson qo'llab-quvvatlamaydi).
+        try {
+          String tag = "pg_N2_" + k;
+          model.result().create(tag, "PlotGroup1D");
+          model.result(tag).label(String.format(Locale.US, "N2: I-V, Ugate=%.2fV", ug));
+          model.result(tag).set("data", "dset4");
+          model.result(tag).create("g1", "Global");
+          model.result(tag).feature("g1").set("expr", new String[]{"ec.I0_1*1e3"});
+          model.result(tag).feature("g1").set("xdata", "expr");
+          model.result(tag).feature("g1").set("xdataexpr", "V_wave");
+          model.result().export().create("exp_" + tag, "Image");
+          model.result().export("exp_" + tag).set("plotgroup", tag);
+          model.result().export("exp_" + tag).set("filename", String.format(Locale.US, "N2_iv_ugate_%d.png", k));
+          model.result().export("exp_" + tag).run();
+        } catch (Exception ex) {
+          System.out.println("XATO (N2 PNG, k=" + k + "): " + ex.getMessage());
+        }
       }
     } catch (IOException ex) {
       System.out.println("XATO (CSV Ugate sweep): " + ex.getMessage());
@@ -495,25 +514,7 @@ public class Model2_FET {
       model.param().set("Ugate", "0[V]");
     }
 
-    // =====================================================================================
-    // N2: har bir Ugate uchun I-V (4 panel emas - COMSOL bitta plotda bir nechta egri chiziq
-    // sifatida amalga oshiriladi, keyin bitta rasm sifatida eksport qilinadi).
-    // =====================================================================================
-    try {
-      model.result().create("pg_N2", "PlotGroup1D");
-      model.result("pg_N2").label("N2: I-V, Ugate sweep");
-      model.result("pg_N2").set("data", "dset4");
-      model.result("pg_N2").create("g1", "Global");
-      model.result("pg_N2").feature("g1").set("expr", new String[]{"ec.I0_1*1e3"});
-      model.result("pg_N2").feature("g1").set("xdata", "expr");
-      model.result("pg_N2").feature("g1").set("xdataexpr", "V_wave");
-      model.result().export().create("exp_N2", "Image");
-      model.result().export("exp_N2").set("plotgroup", "pg_N2");
-      model.result().export("exp_N2").set("filename", "N2_iv_last_ugate.png");
-      model.result().export("exp_N2").run();
-    } catch (Exception ex) {
-      System.out.println("XATO (N2 PNG): " + ex.getMessage());
-    }
+    // N2 endi Ugate sweep siklining o'zida (har bir k uchun N2_iv_ugate_<k>.png) eksport qilindi.
 
     try {
       model.save("Model2_FET.mph");
