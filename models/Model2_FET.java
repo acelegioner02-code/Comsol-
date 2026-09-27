@@ -278,14 +278,10 @@ public class Model2_FET {
     model.study("std1").create("stat", "Stationary");
     model.study("std1").feature("stat").set("activate", new String[]{"ec", "on", "ht", "off", "ge", "off"});
 
-    model.study().create("std2");
-    model.study("std2").label("S1: Stationary, x=0/1");
-    model.study("std2").create("stat", "Stationary");
-    model.study("std2").feature("stat").set("useparam", true);
-    model.study("std2").feature("stat").set("pname", new String[]{"xs"});
-    model.study("std2").feature("stat").set("plistarr", new String[]{"0 1"});
-    model.study("std2").feature("stat").set("punit", new String[]{""});
-    model.study("std2").feature("stat").set("activate", new String[]{"ec", "on", "ht", "off", "ge", "off"});
+    // Eslatma: Model1 dagi std2 (aux sweep, S1_R_on_off.csv uchun) bu yerda ISHLATILMAYDI - Model2
+    // uchun alohida R_on_off jadvali kerak emas (FET_S1_calibration.csv yetarli). Ishlatilmaydigan
+    // studyni yaratmaslik dset/sol raqamlanishida chalkashlikning oldini oladi (Model1 dagi
+    // dset6->dset5 saboqiga qarang).
 
     model.study("std1").run();
 
