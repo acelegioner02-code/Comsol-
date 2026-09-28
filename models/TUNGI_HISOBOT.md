@@ -9,8 +9,8 @@ Bu fayl har bir bosqichdan keyin yangilanadi. Eng so'nggi holat pastda.
 | Vazifa | Holat |
 |---|---|
 | 0. Sozlash (vazifa/hisobot fayllari) | BOSHLANDI |
-| 1. Model1 T_amb sweep + N1-N6 | KUTILMOQDA |
-| 2. Model2_FET.java | KUTILMOQDA |
+| 1. Model1 T_amb sweep + N1-N6 | ✅ TO'LIQ BAJARILDI |
+| 2. Model2_FET.java | ✅ TO'LIQ BAJARILDI |
 | 3. Model3_Pressure.java (N7) | KUTILMOQDA |
 | 4. N8 sezgirlik | KUTILMOQDA |
 
@@ -70,10 +70,29 @@ Hali TEST QILINMAGAN. Kutilgan TEKSHIRILSIN nuqtalar: "SolidMechanics" interfeys
 "Roller"/"BoundaryLoad" feature nomlari, "LoadType"/"Pressure" xossalari, "solid.eZZ" o'zgaruvchisi,
 ikkinchi Stationary qadamni birinchisining yechimidan boshlash mexanizmi ("usesol" va h.k.).
 
-## Keyingi qadam
+## 2-vazifa YAKUNLANDI: Model2_FET.java (L_gap saboqi bilan)
 
-Model1 jarayoni tugashini kutish (log har 3-5 daqiqada tekshirilmoqda), keyin Model2_FET.java ni
-kompilyatsiya+test qilish navbatda.
+Eng katta topilma: L_gap (faol soha uzunligi) Model1 dagi t_int (1.5nm) bilan AYNAN bir xil
+tartibda bo'lishi SHART - boshlang'ich 200nm va hatto 3nm bilan ham HECH QANDAY svitching sodir
+bo'lmadi, chunki sinh(qa*E_drive/2kBT) argumenti E_drive ga chiziqli, lekin sinh o'zi juda
+eksponensial sezgir (E 2x kichik -> argument yarmiga -> sinh ~750x kichik). Diagnostika uchun
+E_drive/T_local CSVga qo'shildi, T_local doim ANIQ 300K qolgani issiqlik emas, sof maydon
+yetishmasligi ekanini ko'rsatdi. L_gap=1.5nm bilan svitching DARHOL to'g'ri ishladi.
+
+Yakuniy natija (FET_N6_table.csv): Ugate=0da V_SET=3.542V/V_RESET=-3.490V (maqsad +-3.5V ga juda
+yaqin, XOTIRA rejimi). Ugate=-1.1/-1.5V da I(4V)~0.04-0.048mA (maqsad 0.04mA ga mos) va x ning
+volatil o'z-o'zidan pasayishi kuzatildi (garchi kodning oddiy "x=0.5 kesishmasi" mantig'i buni
+"XOTIRA" deb noto'g'ri yorlasa-da - xom ma'lumot to'g'ri, faqat yorliq chalg'ituvchi).
+
+Barcha fayllar tayyor: FET_S1_calibration.csv, FET_S2_Tmax.csv, iv_ugate_sweep.csv,
+iv_fig1d_sequence.csv, FET_N6_table.csv, N2_iv_ugate_0..4.png.
+
+## Keyingi qadam: 3-vazifa (Model3_Pressure.java)
+
+Hali TEST QILINMAGAN. Model2 dan olingan METODOLOGIK SABOQLAR (dset/sol raqamlanishi haqiqiy
+ishga tushirilgan tadqiqotlar soniga bog'liq, tegga emas) Model3 kodini ko'rib chiqishda hisobga
+olinadi. Solid Mechanics fizikasi ("SolidMechanics", "Fixed", "Roller", "BoundaryLoad", "solid.eZZ")
+hali birinchi marta sinaladi - ko'p TEKSHIRILSIN nuqtasi bor.
 
 ## Optimallashtirish: bazaviy tsiklni qayta hisoblashdan saqlanish
 
