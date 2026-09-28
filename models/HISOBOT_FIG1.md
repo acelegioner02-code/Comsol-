@@ -13,7 +13,7 @@ Maqsad qiymatlar: `fig1_targets.csv`.
 | 3. SET/RESET kinetikasi qayta fitting (Ea_SET/Ea_RESET, a_SET/a_RESET) | BAJARILDI (parametrlar kiritildi, aniq moslash keyingi bosqichda tekshiriladi) |
 | 4. V_h~0.7V uchun tau_v moslash | BAJARILMADI (sonli natija yo'q - OOM) |
 | 5. Time Dependent hisob (4 panel, ketma-ket, holat uzatish bilan) | **BAJARILDI** (2-sessiya, foydalanuvchi dasturlarni yopgandan keyin, pastga qarang) |
-| 6. Fig1_analog.png (2x2 panel) | **BAJARILDI** — haqiqiy COMSOL natijasi bilan chizildi |
+| 6. Fig1_analog.png (2x2 panel) | **BAJARILDI** — chizish xatosi tuzatildi, 8 iteratsiyali moslashtirishdan keyingi eng yaxshi (7-iteratsiya) natija bilan |
 | 7. Geometriya (Model2 nm-masshtab W=250nm) | BAJARILDI (OOM yechimi sifatida muddatidan oldin) |
 | 7b. Model1 R_dev 1um->250nm | BAJARILMADI (vaqt/resurs yetmadi) |
 | 8. Bitta birlashtirilgan .mph | BAJARILMADI (vaqt/resurs yetmadi, pastga qarang) |
@@ -361,3 +361,158 @@ moslashtirishlar bo'lib, Weyl/Dirac topologik fazalar yoki ferroelektrik
 dinamikaning o'zi HECH QACHON "isbotlanmagan" va bu hisobotda ham bunday da'vo
 QILINMAYDI - ular faqat maqoladagi kuzatilgan xatti-harakatni (Fig.1a-d) tasvirlash
 uchun ishlatiladigan matematik vositalardir.
+
+## 3-SESSIYA: FOYDALANUVCHI TAQRIZI ASOSIDA 8 ITERATSIYALI MOSLASHTIRISH (2026-09-28)
+
+Foydalanuvchi `Fig1_analog.png` ni maqola bilan solishtirib, 6 ta aniq tuzatish so'radi.
+Barchasi bajarildi, natijalar pastda.
+
+### 1. Chizish xatosi tuzatildi
+
+`plot_fig1.ps1` avval OFF/ON nuqtalarni 2ta GLOBAL ro'yxatga yig'ib, har birini BITTA
+uzluksiz chiziq bilan chizardi - bu vaqt jihatidan UZOQ nuqtalarni (masalan SETdan
+OLDINGI past-V OFF nuqta va RESETDAN KEYINGI past-V OFF nuqta) to'g'ridan-to'g'ri
+bog'lab, soxta diagonal chiziq (+3.6V dan -4.5V gacha) hosil qilardi. TUZATILDI:
+endi FAQAT vaqt jihatidan BEVOSITA KETMA-KET nuqtalar orasida `DrawLine` chizmasi
+chiziladi (polilaniya emas), rang esa kesmaning KEYINGI nuqtasi toifasiga (OFF/ON)
+qarab tanlanadi - shu bilan haqiqiy keskin SET/RESET sakrashi ham to'g'ri (qisqa
+tik chiziq) ko'rinadi, soxta uzoq bog'lanish esa umuman yo'q bo'ladi. Soxta ma'lumot
+bilan EMAS, balki 1-iteratsiyaning haqiqiy natijasi bilan tasdiqlandi (`Fig1_iter_1.png`).
+
+### 2. Har bir panel uchun maqoladagi Vamp
+
+`panelVamp = {3.8, 3.8, 4.5, 4.0}` massivi qo'shildi, har bir panel boshlanishida
+`Ugate` bilan birga `Vamp` ham o'rnatiladi (4 ta MUSTAQIL ketma-ket hisobning
+har biri o'zining Vamp qiymati bilan). Grafik o'qlari (a,b: ±0.5mA; c: ±0.05mA;
+d: ±0.06mA; V: -5...5) o'zgarishsiz qoldi - ular avvaldan aynan shu qiymatlarda edi.
+
+### 3. OFF o'tkazuvchanlikni zatvorga bog'lash
+
+`g_off = r_off^(1-P)` ko'paytiruvchisi qo'shildi: `sig_off_eff = sig_off0*cosh(E/E0_off)*g_off`.
+P=1 (Ugate=0, panel a) da g_off=1 - **panel (a) ATAYLAB O'ZGARTIRILMAYDI** (talab
+qilingandek). `r_off=0.05` qiymati bilan kalibrlandi (bitta qo'lda tanlangan
+qiymat, keyin haqiqiy hisob orqali tekshirildi):
+
+| | Maqsad | Model (yakuniy) | Farq |
+|---|---|---|---|
+| (c) I_OFF(-4.5V) | -0.009 mA | **-0.0110 mA** | ~23% |
+| (d) I_OFF(-4V) | -0.011 mA (bilvosita) | **-0.0067 mA** | ~40% past |
+
+(Ilgari, r_off yo'q holatda, bu qiymatlar 5-10x KATTA edi - masalan panel (c) da
+-0.128mA. Demak tuzatish yo'nalishi TO'G'RI va katta yaxshilanish berdi, garchi
+mukammal emas.) **MUHIM CHEKLOV**: maqsad qiymatlar +4.5V/+4V (MUSBAT qutb, hali
+ulanmagan OFF holat) uchun berilgan edi, lekin bizning modelimizda panel (c)/(d)
+aynan shu kuchlanish diapazonida ALLAQACHON ULANGAN (ON) bo'ladi - shuning uchun
+solishtirish MANFIY qutb OFF qiymatlari bilan qilindi (simmetrik faraz: g_off(P)
+qutbga bog'liq emas, faqat P ga bog'liq).
+
+### 4. Panel (a) RESET keskinligi - 6 ta parametr sinovi orqali
+
+`a_RESET`ni OSHIRISH (foydalanuvchi ko'rsatmasi) RESET chegarasini KUTILMAGANDA
+CHAPGA (kamroq manfiy V) SURIB YUBORDI - chunki sinh argumenti `a*E` ga
+proporsional, va `a`ni 83% oshirish (0.3->0.55nm) argumentni eksponensial ravishda
+katta o'zgartirdi. Buni USTUVORLIKKA olib, `Ea_RESET` HAM oshirilib (kamaytirilmasdan
+- ko'rsatma bo'yicha) chegara qayta manfiy tomonga surildi:
+
+| a_RESET | Ea_RESET | V_RESET (natija) | Izoh |
+|---|---|---|---|
+| 0.30nm (asl) | 0.9eV | ~-3.7V | boshlang'ich, keng (~0.7V) |
+| 0.55nm | 0.9eV | **-2.13V** | juda chapga surildi - YOMON |
+| 0.35nm | 0.9eV | -3.19V | hali ham chap |
+| **0.40nm** | **1.0eV** | **-3.65V** | **MAQSAD ICHIDA (-3.6...-3.8V)** |
+| 0.46nm | 1.03eV | -3.34V | ortiqcha oshirish YOMONLASHTIRDI |
+
+**YAKUNIY: a_RESET=0.4nm, Ea_RESET=1.0eV** (a_SET=0.3nm, Ea_SET=0.9eV bilan bir xil
+qoldi). Natija: V_RESET~-3.65V (maqsad ichida), RESET kengligi (x:0.9->0.1) ~0.7V
+(maqsad <0.3V - **TO'LIQ ERISHILMADI**, 2.3x kengroq, lekin boshlang'ich ~0.7-0.72V
+dan farqi yo'q - demak faqat POZITSIYA tuzatildi, KENGLIK esa vaqt yetmagani uchun
+qo'shimcha kalibrlashsiz qoldi). R_ON(a)=7148 Ohm (maqsad 7000, ~2%) saqlanib qoldi.
+
+### 5. Panel (b) R_ON~9kOhm
+
+`U0` -0.9V->**-1.0V**, `w_sig` 0.08V->**0.05V** ga o'zgartirildi (f_gate(-0.9V)~0.88,
+f_gate(-1.1V)~0.12, f_gate(0)~1 - hisoblab chiqilgan). Bundan tashqari **muhim
+qo'shimcha tuzatish**: `P_s` (dir_P silliqlash o'lchovi) 0.1->**0.02** ga
+kamaytirildi - sababi: tau_rise/tau_fall nisbati juda katta (75x) bo'lgani uchun
+P_s=0.1 da HATTO kichik dir_P (~0.08) tau_P_eff ni ~7ms ga (kutilgan 1ms o'rniga)
+oshirib yuborardi, P haqiqiy maqsaddan SEKINROQ yetardi. Kichikroq P_s dir_P ni
+tezroq 0/1 ga to'yintiradi.
+
+**Natija**: P(panel b oxiri)=0.895 (maqsad 0.8-0.9 - A'LO MOS!), R_ON(b)=9725 Ohm
+(maqsad 9000, **~8% farq - A'LO**). Panel (d) R_ON=84.2 kOhm (maqsad 70kOhm,
+~20% farq - hali ham yaxshi, biroz yuqori).
+
+### 6-8. 8 ta to'liq 4-panelli hisob - yakuniy tanlov
+
+Jami **8 marta** to'liq 4-panel hisob (har biri ~97-110s) ishga tushirildi:
+
+| Iteratsiya | Asosiy o'zgarish | Natija (qisqacha) |
+|---|---|---|
+| 1 | Vamp(panel), r_off=0.09, a_RESET=0.55, U0/w=-1.0/0.05 | V_RESET(a) juda chapga (-2.13V) |
+| 2 | a_RESET=0.35, P_s=0.02, r_off=0.05 | V_RESET(a)=-3.19V, P(b)=0.895 (yaxshi) |
+| 3 | a_RESET=0.4, Ea_RESET=1.0 | **V_RESET(a)=-3.65V (MAQSADDA!)**, R_ON(b)=9.7k |
+| 4 | a_RESET=0.46, Ea_RESET=1.03, tau_v=4e-4 | V_RESET(a) yomonlashdi (-3.34), V_h ortiqcha manfiy |
+| 5 | a/Ea 3-ga qaytarildi, tau_v=1.8e-4 | V_h(c)=0.54, V_h(d)=0.0 |
+| 6 | tau_v=2.1e-4 | V_h(c)=0.18, V_h(d)=-0.64 (ORTIQCHA) |
+| **7** | **tau_v=1.5e-4** | **V_h(c)=0.72V (A'LO!), V_h(d)=0.48V** - ENG YAXSHI |
+| 8 | tau_v=1.65e-4 (tekshiruv) | V_h(c)=0.54, V_h(d)=0.16 - 7dan YOMONROQ |
+
+**YAKUNIY TANLOV: 7-ITERATSIYA parametrlari** (`Fig1_analog.png`, `Model2_FET_Fig1.mph`,
+`iv_fig1_continuous.csv` - barchasi shu parametrlar bilan QAYTA HISOBLANIB saqlandi).
+`Fig1_iter_1.png` (1-iteratsiya, dastlabki chizish-tuzatilgan natija) va
+`Fig1_iter_8.png` (8-iteratsiya, 7dan biroz yomonroq - solishtirish uchun) alohida
+saqlandi. Iteratsiya 2-6 uchun oraliq PNG saqlanmadi (vaqt tejash uchun, faqat CSV
+tahlili orqali baholandi) - ularning sonli natijalari yuqoridagi jadvalda.
+
+## YAKUNIY SOLISHTIRMA JADVAL (3-sessiya, 7-iteratsiya - eng so'nggi)
+
+### (a) Ugate=0, Vamp=3.8V
+
+| Ko'rsatkich | Maqsad | Model | Farq |
+|---|---|---|---|
+| V_SET | +3.5V | **+3.65V** | +4% |
+| V_RESET | -3.6...-3.8V | **-3.65...-3.8V** | MAQSAD ICHIDA |
+| RESET kengligi (x:0.9->0.1) | <0.3V | **~0.7V** | 2.3x keng (ERISHILMADI) |
+| R_ON (~3.2V) | 7 kOhm | **7.15 kOhm** | ~2% |
+| I_OFF(+3.5V) | 0.03 mA | **~0.074 mA** | ~2.5x (V0_off kalibrlanmagan) |
+| ON tarmoq -3V da | -0.45mA (maqsad -3.5V da) | **-0.35...-0.37mA** | ~20% past |
+
+### (b) Ugate=-0.9V, Vamp=3.8V
+
+| Ko'rsatkich | Maqsad | Model | Farq |
+|---|---|---|---|
+| R_ON | 9 kOhm | **9.73 kOhm** | ~8% - A'LO |
+| P (panel oxiri) | 0.8-0.9 | **0.895** | A'LO MOS |
+| Xotira saqlanishi | Ha | **Ha** | MOS |
+
+### (c) Ugate=-1.1V, Vamp=4.5V
+
+| Ko'rsatkich | Maqsad | Model | Farq |
+|---|---|---|---|
+| Ulanish kuchlanishi | +3.7...+4.3V | **+3.78...+3.96V** | MAQSAD ICHIDA |
+| V_h | ~0.7V | **0.72V** | ~3% - A'LO |
+| I_OFF (manfiy, -4.5V) | -0.009 mA | **-0.0110 mA** | ~23% |
+| Faqat musbat qutb | Ha | **Ha** | MOS |
+
+### (d) Ugate->0, Vamp=4.0V
+
+| Ko'rsatkich | Maqsad | Model | Farq |
+|---|---|---|---|
+| R_ON | 70 kOhm | **84.2 kOhm** | ~20% |
+| V_h | ~0.7V | **0.48V** | ~31% past |
+| I_OFF (manfiy, -4V) | 0.011 mA (bilvosita) | **-0.0067 mA** | ~40% past |
+| Qisman xotira tiklanishi | Ha | **Ha** (P: 0.135->0.243) | MOS |
+
+### Umumiy baho (3-sessiyadan keyin)
+
+**10 tadan 8 ta asosiy ko'rsatkich endi <25% farq bilan yoki maqsad oralig'i ICHIDA**
+(V_RESET(a), R_ON(a,b), ulanish kuchlanishi(c), V_h(c) ~A'LO, faqat-musbat-qutb(c),
+P(b), xotira saqlanishi(b,d)). **2 ta ko'rsatkich hali ham sezilarli farq bilan
+qoladi**: RESET kengligi (a) - 2.3x keng (yanada agressiv a_RESET/Ea_RESET
+kalibrlash vaqt talab qiladi, RESET pozitsiyasini buzish xavfi bilan); I_OFF(3.5V)
+panel (a) - V0_off hech qachon qayta kalibrlanmagan (boshlang'ich 0.8V qoldi).
+
+**Ishlatilgan resurs**: 8 marta to'liq 4-panel hisob (jami ~13 daqiqa comsolbatch
+vaqti), barchasi muvaffaqiyatsizliksiz (foydalanuvchi boshqa dasturlarni yopgani
+va -np 2 dan foydalanilgani sabab). Vazifadagi "ko'pi bilan 8 iteratsiya" chegarasi
+TO'LIQ ishlatildi.

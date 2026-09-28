@@ -68,24 +68,31 @@ for ($idx = 0; $idx -lt 4; $idx++) {
     $g.DrawString("Current [mA]", $fontAxis, $brushText, 0, 0)
     $g.Restore($gsState)
 
-    # Model ma'lumotlari: shu panelga tegishli qatorlar, OFF (x<0.5) / ON (x>=0.5) ga bo'lingan
+    # Model ma'lumotlari: shu panelga tegishli qatorlar, VAQT bo'yicha tartiblangan.
+    # MUHIM TUZATISH: avval OFF/ON nuqtalari 2ta GLOBAL ro'yxatga yig'ilib, har biri
+    # bitta uzluksiz chiziq bilan chizilardi - bu vaqt jihatidan UZOQ (masalan SETdan
+    # OLDINGI va RESETDAN KEYINGI) nuqtalarni to'g'ridan-to'g'ri bog'lab, soxta
+    # diagonal chiziq hosil qilardi (masalan +3.6V dan -4.5V gacha). ENDI: FAQAT vaqt
+    # jihatidan BEVOSITA KETMA-KET nuqtalar orasida alohida chiziq kesmasi chiziladi
+    # (DrawLine, polilaniya emas) - hech qachon uzoq nuqtalar bog'lanmaydi. Har bir
+    # kesma rangi UNING OXIRGI (keyingi vaqtdagi) nuqtasi toifasiga (OFF/ON) qarab
+    # tanlanadi - shu bilan haqiqiy keskin SET/RESET sakrashi ham to'g'ri (qisqa,
+    # tik chiziq sifatida) ko'rinadi, lekin soxta uzoq bog'lanish YO'QOLADI.
     $rows = $data | Where-Object { $_.panel -eq $panel } | Sort-Object { [double]$_.t_s }
-    $offPts = New-Object System.Collections.Generic.List[System.Drawing.PointF]
-    $onPts = New-Object System.Collections.Generic.List[System.Drawing.PointF]
-    $lastX = -1
+    $prevPt = $null
     foreach ($r in $rows) {
         $v = [double]$r.V_V
         $i_mA = [double]$r.I_A * 1000.0
         $xv = [double]$r.x
-        if ($v -lt $xMin -or $v -gt $xMax) { continue }
         $ivClamp = [math]::Max($yMin, [math]::Min($yMax, $i_mA))
-        $px = ToPx $v $xMin $xMax $plotX0 $plotW
+        $vClamp = [math]::Max($xMin, [math]::Min($xMax, $v))
+        $px = ToPx $vClamp $xMin $xMax $plotX0 $plotW
         $py = ToPy $ivClamp $yMin $yMax $plotY0 $plotH
         $pt = New-Object System.Drawing.PointF($px, $py)
-        if ($xv -lt 0.5) { $offPts.Add($pt) } else { $onPts.Add($pt) }
+        $pen = if ($xv -lt 0.5) { $penOff } else { $penOn }
+        if ($prevPt -ne $null) { $g.DrawLine($pen, $prevPt, $pt) }
+        $prevPt = $pt
     }
-    if ($offPts.Count -gt 1) { $g.DrawLines($penOff, $offPts.ToArray()) }
-    if ($onPts.Count -gt 1) { $g.DrawLines($penOn, $onPts.ToArray()) }
 
     # Maqsad nuqtalari (kulrang marker)
     $tgtRows = $targets | Where-Object { $_.panel -eq $panel }

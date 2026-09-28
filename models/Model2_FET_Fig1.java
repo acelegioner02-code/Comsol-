@@ -68,6 +68,11 @@ public class Model2_FET_Fig1 {
     p(model, "sig_off0", "1.6182e-8[S/m]", "Faol soha OFF bazaviy o'tkazuvchanligi (KALIBRLANGAN)");
     p(model, "V0_off", "0.8[V]", "Nochiziqli OFF uchun kuchlanish miqyosi (sinh)");
     p(model, "E0_off", "V0_off/L_gap", "Nochiziqli OFF uchun maydon miqyosi");
+    // YANGI: OFF o'tkazuvchanlikning zatvor (P) ga bog'liqligi - g(P)=r_off^(1-P).
+    // P=1 (panel a,Ugate=0) da g=r_off^0=1 (O'ZGARMAYDI). P kichik bo'lgan sari
+    // (Ugate manfiyroq) g->r_off (<1, OFF o'tkazuvchanlik BOSILADI) - panel (c)/(d)
+    // dagi ortiqcha OFF oqim (maqsaddan 5-10x katta edi) shu orqali tuzatiladi.
+    p(model, "r_off", "0.05[1]", "OFF-gate bog'liqlik nisbati (kalibrlanadi, 2-iteratsiya)");
     p(model, "sig_on0", "1.0712e-5[S/m]", "ON o'tkazuvchanlik, Ugate=0 (KALIBRLANGAN)");
     p(model, "sig_on_v", "6.0469e-7[S/m]", "ON o'tkazuvchanlik, volatil chegara (KALIBRLANGAN)");
     p(model, "epsr_ST", "50", "");
@@ -100,23 +105,56 @@ public class Model2_FET_Fig1 {
     p(model, "k0", "1e13[1/s]", "Urinish chastotasi");
     // SET/RESET uchun ALOHIDA barer parametrlari (qutbli elektromigratsiya asimmetriyasi farazi).
     p(model, "Ea_SET", "0.9[eV]", "SET (E_drive>0) uchun aktivatsiya energiyasi");
-    p(model, "Ea_RESET", "0.9[eV]", "RESET (E_drive<0) uchun aktivatsiya energiyasi - kalibrlanadi");
+    // 3-iteratsiya: a_RESET kattalashtirish RESET chegarasini -3.7Vdan -3.2V ga
+    // "yaqinlashtirib" (kamroq manfiy) yubordi. Ea_RESET OSHIRILDI (kamaytirilmadi -
+    // foydalanuvchi ko'rsatmasi) - bu chegarani yana manfiyroq tomonga suradi
+    // (kattaroq |V| talab qilinadi), a_RESET ning torayishini saqlab qolgan holda.
+    // 4-iteratsiyada (a=0.46,Ea=1.03) RESET holati -3.34V ga siljidi (3-iteratsiyadagi
+    // -3.65V dan YOMONROQ) - a ning kattalashishi Ea ning kompensatsiyasidan tezroq
+    // ta'sir qildi. 3-iteratsiya qiymatlariga (a=0.4, Ea=1.0, -3.65V - MAQSAD ICHIDA)
+    // QAYTARILDI.
+    p(model, "Ea_RESET", "1.0[eV]", "RESET aktivatsiya energiyasi (5-iteratsiya, 3-ga qaytarildi)");
     p(model, "a_SET", "0.3[nm]", "SET uchun sakrash masofasi");
-    p(model, "a_RESET", "0.3[nm]", "RESET uchun sakrash masofasi - kalibrlanadi");
+    // a_RESET OSHIRILDI (0.3->0.55nm): RESET ni maydonga (V) nisbatan KESKINROQ qiladi
+    // (sinh argumenti a*E ga proporsional - katta a, kichik dV da katta o'zgarish),
+    // Ea_RESET O'ZGARTIRILMADI (foydalanuvchi ko'rsatmasi: issiqlikka sezgirlikni
+    // oshirmasdan, faqat maydonga sezgirlikni oshirish).
+    // 1-iteratsiyada 0.55nm RESET chegarasini -3.7V dan -2.1V ga SURIB YUBORDI
+    // (sinh argumenti a ga proporsional - 83% oshirish argumentni ~1.83x oshirdi,
+    // bu EKSPONENSIAL ta'sir qildi). 2-iteratsiyada yumshoqroq oshirish sinaladi.
+    p(model, "a_RESET", "0.4[nm]", "RESET uchun sakrash masofasi (5-iteratsiya, 3-ga qaytarildi)");
     p(model, "tau_nv", "1e3[s]", "Relaksatsiya, nonvolatil chegara");
-    p(model, "tau_v", "1e-4[s]", "Relaksatsiya, volatil chegara - V_h~0.7V uchun moslashtiriladi");
+    // tau_v OSHIRILDI (1e-4->4e-4s): 3-iteratsiyada panel (c)/(d) V_h ~1.44V chiqdi
+    // (maqsad ~0.7V) - passiv relaksatsiya juda TEZ edi, x V hali baland bo'lganda
+    // 0.5 dan pastga tushib ketardi. tau_v oshishi tau_rel_eff ni oshiradi (SEKIN
+    // relaksatsiya), x V pastroq tushgunga qadar "ushlab turadi" - V_h pasayadi.
+    // 4e-4s V_h ni +1.44V dan -1.6...-3.0V ga (ORTIQCHA) surib yubordi - juda kuchli
+    // ta'sir. 1e-4 (V_h=+1.44) va 4e-4 (V_h=-1.6..-3.0) orasidagi qiymat sinaladi.
+    // 8-iteratsiyada 1.65e-4 SINALDI - V_h(c) 0.72->0.54, V_h(d) 0.48->0.16 ga
+    // YOMONLASHDI (ikkalasi ham noto'g'ri yo'nalishda siljidi). 7-iteratsiyadagi
+    // 1.5e-4 ENG YAXSHI natija berdi (V_h(c)=0.72V A'LO, V_h(d)=0.48V yaxshi) -
+    // shuning uchun YAKUNIY qiymat sifatida QAYTARILDI.
+    p(model, "tau_v", "1.5e-4[s]", "Relaksatsiya, volatil chegara (YAKUNIY - 7-iteratsiya eng yaxshisi)");
     p(model, "p_win", "2", "Oyna darajasi");
     p(model, "kB_c", "1.380649e-23[J/K]", "");
     p(model, "q_c", "1.602176634e-19[C]", "");
     p(model, "E_s", "1e7[V/m]", "Biolek yo'nalish silliqlash miqyosi");
 
     p(model, "Ugate", "0[V]", "Zatvor kuchlanishi (Stationary uchun parametr)");
-    p(model, "U0", "-0.9[V]", "Sigmoid markazi");
-    p(model, "w_sig", "0.08[V]", "Sigmoid kengligi");
+    // U0/w_sig MOSLASHTIRILDI: Ugate=-0.9V da f_gate~0.88 (panel b, P~0.8-0.9 maqsad
+    // uchun), Ugate=-1.1V da f_gate~0.12 (panel c, kuchli bostirish saqlanadi),
+    // Ugate=0 da f_gate~1 (panel a/d ta'sirlanmaydi).
+    p(model, "U0", "-1.0[V]", "Sigmoid markazi (moslashtirilgan)");
+    p(model, "w_sig", "0.05[V]", "Sigmoid kengligi (torroq)");
     // Zatvor XOTIRA holati P uchun asimmetrik vaqt doimiylari.
     p(model, "tau_P_fall", "1e-3[s]", "P pasayishi (f_gate kamayganda) - TEZ");
     p(model, "tau_P_rise", "75e-3[s]", "P tiklanishi (f_gate ortganda) - SEKIN");
-    p(model, "P_s", "0.1[1]", "Silliq yo'nalish funksiyasi uchun P-o'lchov (tanh)");
+    // P_s KICHRAYTIRILDI (0.1->0.02): 1-iteratsiyada tau_rise/tau_fall nisbati juda
+    // katta (75x) bo'lgani uchun HATTO kichik dir_P (~0.08) tau_P_eff ni ~7ms ga
+    // (pastga "sekinlashtirib") oshirib yuborardi - P kutilganidan SEKINROQ (masalan
+    // panel b oxirida 0.94, maqsad 0.88 o'rniga) yaqinlashardi. Torroq P_s dir_P ni
+    // TEZROQ 0/1 ga to'yintiradi - P haqiqiy tau_fall/tau_rise bilan aniqroq harakatlanadi.
+    p(model, "P_s", "0.02[1]", "Silliq yo'nalish funksiyasi uchun P-o'lchov (torroq, 2-iteratsiya)");
 
     p(model, "V_read", "0.1[V]", "");
     p(model, "V_app", "V_read", "");
@@ -175,9 +213,14 @@ public class Model2_FET_Fig1 {
     // TUZATISH (birinchi urinishda 40ms hisob o'ta sekin bo'ldi, ~0.4%/5min - sinh(x)/x dagi
     // BO'LINISH ehtimol Newton iteratsiyasida qattiqlikni oshirgan). "cosh(E/E0)" bilan
     // almashtirildi - bo'linishsiz, xuddi shu sifat (E=0 da 1, katta |E| da eksponensial o'sish).
+    // g_off(P)=r_off^(1-P): P=1 (Ugate=0) da g=1 (o'zgarmaydi), P kichik bo'lganda
+    // g->r_off (<1) - zatvor OFF o'tkazuvchanlikni ham bosadi (P COMSOL global ODE
+    // o'zgaruvchisi, pastda ge1 orqali aniqlanadi - ta'rif tartibi COMSOLda muhim emas).
+    model.component("comp1").variable("var1").set("g_off", "r_off^(1-P)",
+        "OFF o'tkazuvchanlikning zatvor(P)ga bog'liqligi");
     model.component("comp1").variable("var1").set("sig_off_eff",
-        "sig_off0*cosh(E_drive/E0_off)",
-        "Nochiziqli OFF o'tkazuvchanlik (cosh - Poole-Frenkel/tunnel farazi, bo'linishsiz shakl)");
+        "sig_off0*cosh(E_drive/E0_off)*g_off",
+        "Nochiziqli OFF o'tkazuvchanlik (cosh - Poole-Frenkel/tunnel farazi) * zatvor bosimi g_off(P)");
 
     // 2. Zatvor XOTIRA holati P: dP/dt=(f_gate-P)/tau_P_eff, ASIMMETRIK tau_P (Biolek uslubida
     // tanh bilan silliqlangan yo'nalish: f_gate>P -> tiklanish (sekin), f_gate<P -> pasayish (tez)).
@@ -397,6 +440,9 @@ public class Model2_FET_Fig1 {
 
     String[] panelNames = {"a", "b", "c", "d"};
     double[] panelUgate = {0, -0.9, -1.1, 0};
+    // Maqoladagi Fig.1 har bir panel uchun O'ZINING kuchlanish amplitudasi bilan
+    // olingan (foydalanuvchi ko'rsatmasi).
+    double[] panelVamp = {3.8, 3.8, 4.5, 4.0};
     double xPrev = 1e-3, pPrev = 1.0;
 
     String csvName = "iv_fig1_continuous.csv";
@@ -407,10 +453,11 @@ public class Model2_FET_Fig1 {
       out2.println("panel,Ugate_V,t_s,V_V,I_A,x,P,Tmax_K");
       for (int pnl = 0; pnl < panelNames.length; pnl++) {
         model.param().set("Ugate", String.format(Locale.US, "%.4g[V]", panelUgate[pnl]));
+        model.param().set("Vamp", String.format(Locale.US, "%.4g[V]", panelVamp[pnl]));
         model.component("comp1").physics("ge").feature("ge1").set("initialValueU",
             new String[]{String.format(Locale.US, "%.8e", xPrev), String.format(Locale.US, "%.8e", pPrev)});
-        System.out.println(String.format(Locale.US, "PANEL %s boshlanmoqda: Ugate=%.2fV, x0=%.4e, P0=%.4e",
-            panelNames[pnl], panelUgate[pnl], xPrev, pPrev));
+        System.out.println(String.format(Locale.US, "PANEL %s boshlanmoqda: Ugate=%.2fV, Vamp=%.2fV, x0=%.4e, P0=%.4e",
+            panelNames[pnl], panelUgate[pnl], panelVamp[pnl], xPrev, pPrev));
         model.study("std4").run();
 
         // dset3 std4 BIRINCHI marta ishlagandan keyingina mavjud bo'ladi (Model1/2 saboqi) -
