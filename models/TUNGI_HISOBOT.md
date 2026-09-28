@@ -11,8 +11,8 @@ Bu fayl har bir bosqichdan keyin yangilanadi. Eng so'nggi holat pastda.
 | 0. Sozlash (vazifa/hisobot fayllari) | BOSHLANDI |
 | 1. Model1 T_amb sweep + N1-N6 | ✅ TO'LIQ BAJARILDI |
 | 2. Model2_FET.java | ✅ TO'LIQ BAJARILDI |
-| 3. Model3_Pressure.java (N7) | KUTILMOQDA |
-| 4. N8 sezgirlik | KUTILMOQDA |
+| 3. Model3_Pressure.java (N7) | ✅ TO'LIQ BAJARILDI |
+| 4. N8 sezgirlik | BOSHLANMOQDA |
 
 ## Jurnalning boshlanishi
 

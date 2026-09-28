@@ -65,8 +65,46 @@ kerak bo'ladi.
 Haqiqiy ishga tushirish natijasidan keyin: qaysi E_int qiymatida topilgan beta_mem 15-30 oralig'iga
 (fizik jihatdan "real" tunnel parchalanish doimiysiga mos) yaqinroq tushishi shu yerga yoziladi.
 
-## Natijalar (ishga tushirilgandan keyin to'ldiriladi)
+## Natijalar (2026-09-28, yakuniy)
 
-- beta_mem (kalibrlangan): TEKSHIRILMOQDA / KUTILMOQDA
-- R_ON(p), R_OFF(p) jadvali: TEKSHIRILMOQDA / KUTILMOQDA
-- Fizik reallik xulosasi: TEKSHIRILMOQDA / KUTILMOQDA
+- **beta_mem (kalibrlangan) = 30** (boshlang'ich taxmin 10 dan; 10 bilan R_ON atigi ~5x pasaydi,
+  maqsad 100-1000x edi).
+- **R_ON(p), R_OFF(p) jadvali** (Ron_p.csv, E_int=10 GPa bilan):
+
+  | p (GPa) | d_gap (nm) | R_OFF (ohm) | R_ON, xotira (ohm) | R_ON, volatil (ohm) |
+  |---|---|---|---|---|
+  | 0.00 | 1.500 | 99993 | 6989 | 6989 |
+  | 0.25 | 1.469 | 99993 | 3863 | 6989 |
+  | 0.50 | 1.438 | 99993 | 2105 | 6989 |
+  | 1.00 | 1.375 | 99993 | 614.1 | 6989 |
+  | 1.50 | 1.313 | 99993 | 178.8 | 6989 |
+  | 2.00 | 1.250 | 99993 | 53.47 | 6989 |
+
+  **R_ON(2GPa)/R_ON(0) = 53.47/6989 = 0.00765** — MAQSAD ORALIG'IDA (1e-3...1e-2)!
+  R_OFF bosimga BUTUNLAY BOG'LIQ EMAS (kutilganidek — R_OFF formulasi sig_on(p) ni o'z ichiga
+  olmaydi, faqat x=1 (ON) holatida sig_on(p) ishlatiladi). Volatil holatda (beta=0) R_ON ham
+  bosimga bog'liq emas — dizayn bo'yicha to'g'ri.
+
+- **Fizik reallik xulosasi**: beta_mem=30, t_int=1.5nm bilan kappa = beta_mem/(2*t_int) = 10 1/nm —
+  bu "odatiy" tunnel parchalanish doimiysi oralig'ining (5-10 1/nm) YUQORI CHEGARASIDA joylashgan,
+  ya'ni FIZIK JIHATDAN REAL qiymat (juda katta yoki juda kichik emas). Bu E_int=10 GPa tanlovi
+  bilan mos keladi (o'rtacha qattiqlik, natijada o'rtacha siqilish ~16.7% 2 GPa da, kappa esa
+  o'rtacha-yuqori tunnel parchalanish tezligini talab qiladi bir xil R_ON pasayishini olish uchun).
+  YUMSHOQROQ E_int (masalan 5 GPa) tanlansa, siqilish kattaroq bo'lardi, demak KICHIKROQ beta_mem
+  (demak kichikroq, "realroq" kappa) kifoya qilardi — bu keyingi tekshirish uchun ochiq savol.
+
+## TEKSHIRILSIN -> TASDIQLANDI (COMSOL 6.0 API, shu ishlash jarayonida)
+
+- Fizika interfeysi: "SolidMechanics" (default tag "solid") — TASDIQLANDI, birinchi urinishda ishladi.
+- Chegaralar: "Fixed" (Fixed Constraint) va "Roller" — TASDIQLANDI, birinchi urinishda ishladi.
+- "BoundaryLoad" feature turi — TASDIQLANDI, birinchi urinishda ishladi.
+- "LoadType" qiymati "Pressure" ISHLAMAYDI — to'g'ri qiymat "FollowerPressure".
+- Bosim miqdori xossasi ("Pressure","P","p","p0" barchasi ISHLAMADI) — to'g'ri nom xuddi ENUM
+  qiymatining o'zi: "FollowerPressure". `.properties()` diagnostika metodi orqali topildi.
+- "solid.eZZ" (Green-Lagrange/muhandislik cho'zilish tenzori Z-komponenti) — TASDIQLANDI, birinchi
+  urinishda ishladi (Structural Mechanics Module qo'llanmasi, "solid.eXY" naqshiga mos).
+- Ketma-ket ikki STEP li Stationary STUDY (1-qadam Solid Mechanics, 2-qadam Electric Currents,
+  "activate" bilan boshqarilgan) — ODATIY holatda, HECH QANDAY qo'shimcha "usesol"/"notstudy"
+  sozlashsiz, oldingi qadam natijasini avtomatik meros qiladi — TASDIQLANDI.
+- EvalGlobal natijasi ("d_gap", t_int="1.5[nm]" dan olingan o'zgaruvchi) o'zining TABIIY birligida
+  (nm) qaytariladi, SI (metr)da EMAS — birlik konversiyasida (*1e9) xato qilingan va tuzatilgan.
