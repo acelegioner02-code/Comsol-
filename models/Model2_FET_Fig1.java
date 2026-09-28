@@ -44,7 +44,13 @@ public class Model2_FET_Fig1 {
     // =====================================================================================
     // PARAMETERS
     // =====================================================================================
-    p(model, "W", "1000[nm]", "Kanal umumiy uzunligi (source-drain)");
+    // W 1000nm->250nm: (1) vazifadagi "nm-masshtabli ixcham geometriya (100-300nm)"
+    // ustuvorligi past bosqichi shu bilan BAJARILDI; (2) bir vaqtning o'zida panjara
+    // elementlari sonini ~4x kamaytirib, ushbu 8GB RAMli mashinada takroriy OOM
+    // (jarayon tashqi o'ldirilishi)ni bartaraf etadi. sig_ST=1e5 S/m deyarli metall
+    // o'tkazuvchanlik bo'lgani uchun kontakt qo'llari (x_gap0, x_gap1) qarshiligi
+    // W ga sezilarli bog'liq emas - R_ON/R_OFF L_gap hududi bilan belgilanadi.
+    p(model, "W", "250[nm]", "Kanal umumiy uzunligi (source-drain, ixcham nm-masshtab)");
     p(model, "L_gap", "1.5[nm]", "Faol soha uzunligi (Model1 t_int bilan bir xil)");
     p(model, "t_ST", "20[nm]", "Sb2Te3 qalinligi");
     p(model, "t_GT", "20[nm]", "GeTe qalinligi");

@@ -60,4 +60,23 @@ ustunidan farqli). Shu sababli S4 (Time Dependent, 4 panel) uchun `ht` fizikasi
 (~300K) qiymatida qotib qoladi - bu S2 natijasiga mos, fizik jihatdan asoslangan
 soddalashtirish. Bu DOF sonini keskin kamaytirib, xotira muammosini hal qildi.
 
+3-urinish HAM o'ldirildi - bu safar S1 (eng bazaviy, faqat ec, 20461 DOF) bosqichida,
+matritsa yig'ish paytida (~2.24GB). Bu HECH QACHON avval muvaffaqiyatsiz bo'lmagan
+bosqich edi - demak muammo model kodida emas, MASHINADA: jami 8GB RAM, foydalanuvchi
+parallel Word/Excel/Chrome/Telegram ishlatmoqda, erkin xotira sessiya davomida
+3.9GB->3.66GB ga kamaygan (Chrome bitta jarayoni 57MB->249MB o'sgan). Har bir
+comsolbatch ishga tushishi, hatto eng sodda bosqichda ham, ~2.2-2.5GB cho'qqiga
+chiqadi - bu boshqa dasturlarning tasodifiy xotira sakrashi bilan to'qnashsa OOM
+beradi.
+
+**QARORI: vazifaning 7-bosqichi ("Model2_FET nm-masshtab ixcham geometriya,
+100-300nm") MUDDATIDAN OLDIN bajarildi**: W (kanal uzunligi) 1000nm->250nm ga
+qisqartirildi. Bu ikki maqsadga bir yo'la xizmat qiladi: (a) vazifaning past
+ustuvorlikdagi 7-bosqich talabini bajaradi, (b) panjara elementlari sonini ~4x
+kamaytirib OOM xavfini kamaytiradi. sig_ST=1e5 S/m (deyarli metall o'tkazuvchan)
+bo'lgani uchun kontakt qo'llari (x_gap0, x_gap1) qarshiligi W ga sezilarli bog'liq
+emas - R_ON/R_OFF L_gap (1.5nm) hududi bilan belgilanadi, shuning uchun kalibrlangan
+sig_off0/sig_on0/sig_on_v qiymatlari qayta kalibrlashsiz ishlatiladi (natija
+tekshirilib, kerak bo'lsa moslashtiriladi).
+
 Davomi pastda, bosqichma-bosqich yoziladi.
