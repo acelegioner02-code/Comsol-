@@ -1,0 +1,32 @@
+panel,Ugate_V,branch,V_V,I_mA,note
+a,0,OFF,-3.8,-0.04,I_OFF(-3.8V)
+a,0,OFF,-3.5,-0.02,before RESET approx
+a,0,OFF,0,0,
+a,0,OFF,3,0.015,small nonlinear rise
+a,0,OFF,3.5,0.03,I_OFF(+3.5V) just before SET
+a,0,ON,3.5,0.5,SET point (sharp)
+a,0,ON,3,0.429,R_ON~7kOhm target (0.43mA,3V)
+a,0,ON,0,0,
+a,0,ON,-3.5,-0.5,linear extension
+a,0,ON,-3.6,-0.514,about to RESET
+a,0,ON,-3.8,-0.05,RESET sharp back to OFF (dV<0.3V)
+b,-0.9,OFF,3.8,0.06,I_OFF(3.8V)
+b,-0.9,OFF,0,0,
+b,-0.9,OFF,-3.5,-0.02,
+b,-0.9,ON,3.5,0.47,ON branch +3.5V
+b,-0.9,ON,-3.7,-0.34,ON branch -3.7V (R_ON~9kOhm)
+b,-0.9,ON,0,0,
+b,-0.9,VOLATILE,2.0,0.09,small volatile branch start
+b,-0.9,VOLATILE,3.7,0.22,small volatile branch end
+c,-1.1,OFF,4.5,0.007,I_OFF(+4.5V)
+c,-1.1,OFF,-4.3,-0.009,I_OFF(-4.3V)
+c,-1.1,OFF,0,0,
+c,-1.1,OFF,3.7,0.005,just before threshold connect
+c,-1.1,ON,3.7,0.043,connect point (volatile threshold reconnect)
+c,-1.1,ON,0.7,0.01,holding voltage V_h~0.7V (return to OFF)
+d,0,OFF,4,0.011,I_OFF(4V) after (c)
+d,0,OFF,0,0,
+d,0,OFF,-3.5,-0.005,
+d,0,ON,3.7,0.057,R_ON~70kOhm branch +3.7V
+d,0,ON,-4,-0.05,R_ON~70kOhm branch -4V
+d,0,ON,0,0,
