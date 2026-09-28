@@ -171,6 +171,12 @@ qayta ishlab chiqarish uchun mos kelувchi fenomenologik tenglamalar to'plamidi
 
 ## Nima bajarilmadi va nima uchun
 
+0. **N8 da V_SET/V_RESET sezgirligi (Time Dependent, 1 tsikl) qilinmadi** - topshiriqda bu "vaqt
+   qolsa" (bonus ichidagi bonus) deb belgilangan edi. Faqat Stationary R_ON/R_OFF sezgirligi
+   qilindi (asosiy so'ralgan qism). Sabab: har bir Time Dependent tsikl ~15-40 daqiqa oladi,
+   3 parametr x 2 yo'nalish = 6 qo'shimcha uzun hisobni talab qilardi, umumiy vaqt byudjeti
+   Model1/2/3 ning asosiy vazifalariga sarflandi.
+
 1. **N7 (Model3) uchun PNG grafik yaratilmadi.** Sabab: bosim sweep Java-tsikli orqali (native
    COMSOL parametrik sweep emas) amalga oshirilgani uchun dataset har bir yechishda QAYTA
    YOZILADI - barcha 12 nuqtani bitta COMSOL plot sifatida ko'rsatish uchun qo'shimcha Table
