@@ -15,7 +15,8 @@ $panelTitles = @{a="(a) Ugate=0"; b="(b) Ugate=-0.9V"; c="(c) Ugate=-1.1V"; d="(
 $panelYRange = @{a=0.5; b=0.5; c=0.05; d=0.06}
 
 $W = 1600
-$H = 1400
+$Hgrid = 1400
+$H = $Hgrid + 40
 $bmp = New-Object System.Drawing.Bitmap($W,$H)
 $g = [System.Drawing.Graphics]::FromImage($bmp)
 $g.Clear([System.Drawing.Color]::White)
@@ -30,7 +31,7 @@ $fontAxis = New-Object System.Drawing.Font("Arial", 11)
 $brushText = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::Black)
 
 $cellW = $W / 2
-$cellH = $H / 2
+$cellH = $Hgrid / 2
 $margin = 90
 
 for ($idx = 0; $idx -lt 4; $idx++) {
@@ -48,8 +49,8 @@ for ($idx = 0; $idx -lt 4; $idx++) {
     $xMin = -5.0; $xMax = 5.0
     $yMin = -$yMax
 
-    function ToPx($v, $xm, $xM, $px0, $pw) { return $px0 + ($v - $xm) / ($xM - $xm) * $pw }
-    function ToPy($v, $ym, $yM, $py0, $ph) { return $py0 + $ph - ($v - $ym) / ($yM - $ym) * $ph }
+    function ToPx($v, $lo, $hi, $px0, $pw) { return $px0 + ($v - $lo) / ($hi - $lo) * $pw }
+    function ToPy($v, $lo, $hi, $py0, $ph) { return $py0 + $ph - ($v - $lo) / ($hi - $lo) * $ph }
 
     # Axes (V=0 va I=0 chiziqlari)
     $x0px = ToPx 0 $xMin $xMax $plotX0 $plotW
@@ -107,7 +108,7 @@ for ($idx = 0; $idx -lt 4; $idx++) {
 # Umumiy sarlavha va izoh
 $fontTitle = New-Object System.Drawing.Font("Arial", 16, [System.Drawing.FontStyle]::Bold)
 $g.DrawString("Model2_FET vs Fig.1 (Troyan & Doronin 2021) - havo rangi=OFF, to'q sariq=ON, kulrang=maqola nishoni",
-    $fontAxis, $brushText, 10, $H-20)
+    $fontAxis, $brushText, 10, $Hgrid+12)
 
 $bmp.Save($outPath, [System.Drawing.Imaging.ImageFormat]::Png)
 $g.Dispose()
