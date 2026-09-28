@@ -250,3 +250,36 @@ Ikkinchi kichik kamchilik: panel (b) maqolasidagi "kichik volatil sub-tarmoq"
 (2-3.7V oralig'ida, 0.09-0.22mA) bizning uzluksiz sinh-kinetikamizda alohida
 xususiyat sifatida chiqmaydi - buning uchun ikkinchi metastabil holat yoki
 qo'shimcha vaqt doimiysi kerak bo'lardi (bajarilmadi).
+
+### YANGILANISH 2 (2026-09-28, 3-sessiya): 8 iteratsiyali kalibrlash - yakuniy parametrlar
+
+Foydalanuvchi taqrizidan keyin quyidagi YAKUNIY qiymatlar 8 ta to'liq hisob orqali
+tanlandi (batafsil jadval: `HISOBOT_FIG1.md`, "3-SESSIYA" bo'limi):
+
+- `r_off=0.05[1]` — OFF o'tkazuvchanlikning zatvorga bog'liqligi `g_off=r_off^(1-P)`
+  orqali. Panel (c)/(d) dagi ortiqcha OFF oqim (avval 5-10x katta) endi ~1.2-1.7x
+  farqqa tushdi.
+- `a_RESET=0.4[nm]`, `Ea_RESET=1.0[eV]` (a_SET=0.3nm, Ea_SET=0.9eV o'zgarmadi) —
+  panel (a) RESET pozitsiyasini -3.65V ga (maqsad -3.6...-3.8V ICHIDA) qaytardi.
+  **MUHIM SABOQ**: `a_RESET`ni oshirish sinh argumentini (a*E ga proporsional)
+  EKSPONENSIAL ravishda o'zgartiradi - kichik o'zgarish (masalan 83% oshirish)
+  chegara kuchlanishini KUTILMAGANDA katta miqdorda (1.5V+) surib yuborishi mumkin.
+  `Ea_RESET`ni MOS RAVISHDA oshirish (kamaytirmasdan) buni kompensatsiya qiladi.
+  RESET KENGLIGI (x:0.9->0.1) hali ham ~0.7V (maqsad <0.3V) - bu ALOHIDA muammo,
+  vaqt yetmagani uchun hal qilinmadi.
+- `U0=-1.0[V]`, `w_sig=0.05[V]` (avval -0.9V/0.08V) — f_gate(-0.9V)~0.88,
+  f_gate(-1.1V)~0.12, f_gate(0)~1 berish uchun hisoblangan.
+- `P_s=0.02[1]` (avval 0.1) — **MUHIM TOPILMA**: `tau_P_rise/tau_P_fall` nisbati
+  juda katta (75x) bo'lgani uchun `P_s=0.1` bilan HATTO kichik `dir_P` (~0.08)
+  qiymati `tau_P_eff` ni kutilgan 1ms o'rniga ~7ms ga oshirib yuborardi (chiziqli
+  aralashtirish katta assimetriya bilan nomutanosib ta'sir qiladi). `P_s` ni
+  kamaytirish `dir_P` ni tezroq 0/1 ga to'yintiradi, P dinamikasini aniqroq
+  qiladi. Natija: P(panel b oxiri)=0.895 (maqsad 0.8-0.9 ga A'LO mos).
+- `tau_v=1.5e-4[s]` (avval 1e-4) — V_h (panel c/d holding kuchlanishi) ni
+  boshqarish uchun asosiy dastak (P=1 bo'lganda, ya'ni panel (a) da, tau_v
+  formuladan BUTUNLAY YO'QOLADI - tau_rel_eff=tau_v*(tau_nv/tau_v)^1=tau_nv -
+  shuning uchun panel (a) ga TA'SIR QILMAYDI, faqat b/c/d ga). Natija:
+  V_h(c)=0.72V (maqsad 0.7V, A'LO), V_h(d)=0.48V (maqsad 0.7V, ~31% past).
+
+Barcha 8 iteratsiyaning sonli natijalari va tanlash mantiqi `HISOBOT_FIG1.md`
+da to'liq jadval sifatida keltirilgan.
