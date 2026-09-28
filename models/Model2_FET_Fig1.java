@@ -358,6 +358,13 @@ public class Model2_FET_Fig1 {
     model.study().create("std4");
     model.study("std4").create("time", "Transient");
     model.study("std4").feature("time").set("tlist", "range(0,5e-5,0.01)");
+    // ht (Issiqlik) FAOLSIZLASHTIRILDI: S2 T_max=300K (xs=1, V=4.5V) - ya'ni bu lateral
+    // FET geometriyasida Joule isishi ahamiyatsiz (Model1 vertikal ustunidan farqli
+    // o'laroq). ht ni o'chirish DOF sonini (51042+19636 ichki -> faqat ec+ge) keskin
+    // kamaytiradi - bu 8GB RAM li mashinada xotira yetishmasligi (OOM, jarayon
+    // o'ldirildi) muammosini hal qilish uchun ZARUR edi. T_local=aveop_a(T) T_amb
+    // (300K) atrofida qotib qoladi - fizik jihatdan to'g'ri taxmin.
+    model.study("std4").feature("time").set("activate", new String[]{"ec", "on", "ht", "off", "ge", "on"});
 
     String[] panelNames = {"a", "b", "c", "d"};
     double[] panelUgate = {0, -0.9, -1.1, 0};
