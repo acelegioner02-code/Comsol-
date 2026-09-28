@@ -123,8 +123,13 @@ public class Model2_FET_Fig1 {
     p(model, "Vamp", "4.5[V]", "");
     p(model, "f0", "100[Hz]", "");
 
-    p(model, "h_gap", "0.15[nm]", "");
-    p(model, "h_glob", "5[nm]", "");
+    // Foydalanuvchi so'rovi bo'yicha qo'shimcha xotira tejash: panjara yanada
+    // bo'shashtirildi (0.15->0.3nm, 5->8nm). Bu FENOMENOLOGIK modelda oqlanadi,
+    // chunki E_drive faqat aveop_a(ec.Ex) - L_gap bo'ylab O'RTACHA maydon, aniq
+    // profil emas; oddiy to'rtburchak rezistiv domenda past tartibli panjara ham
+    // o'rtacha qiymatni yetarlicha aniq beradi.
+    p(model, "h_gap", "0.3[nm]", "");
+    p(model, "h_glob", "8[nm]", "");
 
     // =====================================================================================
     // GEOMETRY
@@ -258,7 +263,7 @@ public class Model2_FET_Fig1 {
     model.component("comp1").mesh().create("mesh1");
     model.component("comp1").mesh("mesh1").feature("size").set("custom", "on");
     model.component("comp1").mesh("mesh1").feature("size").set("hmax", "h_glob");
-    model.component("comp1").mesh("mesh1").feature("size").set("hmin", "0.05[nm]");
+    model.component("comp1").mesh("mesh1").feature("size").set("hmin", "0.1[nm]");
     model.component("comp1").mesh("mesh1").feature("size").set("hgrad", 1.2);
     model.component("comp1").mesh("mesh1").create("size_gap", "Size");
     model.component("comp1").mesh("mesh1").feature("size_gap").selection().geom("geom1", 2);
@@ -373,7 +378,15 @@ public class Model2_FET_Fig1 {
 
     model.study().create("std4");
     model.study("std4").create("time", "Transient");
-    model.study("std4").feature("time").set("tlist", "range(0,5e-5,0.01)");
+    // Xotira tejash (foydalanuvchi so'rovi): chiqish vaqt nuqtalari 200->100/panel ga
+    // siyraklashtirildi (1e-4s qadam). LOG DALILI: avvalgi urinishlarda xotira
+    // cho'qqisi "Assembling matrices"/"Matrix factorization" bosqichlarida sodir
+    // bo'lgan (HAR BIR Newton iteratsiyasida, saqlangan qadamlar soniga bog'liq
+    // EMAS) - shuning uchun asosiy tejash panjara (DOF) kamaytirishdan keladi,
+    // tlist siyraklashtirish esa QO'SHIMCHA, kichikroq ta'sir (saqlanadigan maydon
+    // vektorlari soni ~2x kamayadi). 1e-4s hali ham ~0.17ms li keskin SET/RESET
+    // o'tishini (dV<0.3V, ~1.8V/ms qiyalik) bir necha nuqta bilan qamrab oladi.
+    model.study("std4").feature("time").set("tlist", "range(0,1e-4,0.01)");
     // ht (Issiqlik) FAOLSIZLASHTIRILDI: S2 T_max=300K (xs=1, V=4.5V) - ya'ni bu lateral
     // FET geometriyasida Joule isishi ahamiyatsiz (Model1 vertikal ustunidan farqli
     // o'laroq). ht ni o'chirish DOF sonini (51042+19636 ichki -> faqat ec+ge) keskin

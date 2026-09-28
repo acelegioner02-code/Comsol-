@@ -12,8 +12,8 @@ Maqsad qiymatlar: `fig1_targets.csv`.
 | 2. Zatvor holati P (2-Global ODE, asimmetrik tau_P) | BAJARILDI |
 | 3. SET/RESET kinetikasi qayta fitting (Ea_SET/Ea_RESET, a_SET/a_RESET) | BAJARILDI (parametrlar kiritildi, aniq moslash keyingi bosqichda tekshiriladi) |
 | 4. V_h~0.7V uchun tau_v moslash | BAJARILMADI (sonli natija yo'q - OOM) |
-| 5. Time Dependent hisob (4 panel, ketma-ket, holat uzatish bilan) | TO'XTATILDI (OOM, 5 urinish - pastga qarang) |
-| 6. Fig1_analog.png (2x2 panel) | QISMAN: skript (`plot_fig1.ps1`) yozilgan, TUZATILGAN, soxta ma'lumot bilan tasdiqlangan; haqiqiy ma'lumot yo'qligi uchun rasm chizilmadi |
+| 5. Time Dependent hisob (4 panel, ketma-ket, holat uzatish bilan) | **BAJARILDI** (2-sessiya, foydalanuvchi dasturlarni yopgandan keyin, pastga qarang) |
+| 6. Fig1_analog.png (2x2 panel) | **BAJARILDI** — haqiqiy COMSOL natijasi bilan chizildi |
 | 7. Geometriya (Model2 nm-masshtab W=250nm) | BAJARILDI (OOM yechimi sifatida muddatidan oldin) |
 | 7b. Model1 R_dev 1um->250nm | BAJARILMADI (vaqt/resurs yetmadi) |
 | 8. Bitta birlashtirilgan .mph | BAJARILMADI (vaqt/resurs yetmadi, pastga qarang) |
@@ -115,9 +115,115 @@ hisobini qayta ishga tushiraman - bu "keyingi xato" hisoblanadi, chunki sharoit
 
 Davomi pastda, bosqichma-bosqich yoziladi.
 
-## YAKUNIY XULOSA (sessiya yopilishi)
+## 2-SESSIYA: TO'LIQ HISOB MUVAFFAQIYATLI YAKUNLANDI (2026-09-28, kech)
 
-### Nima BAJARILDI
+Foydalanuvchi boshqa dasturlarni (Word, Excel, Chrome) yopib, qo'shimcha xotira
+tejash choralarini so'radi. Qo'llanilgan choralar:
+- Mesh yanada bo'shashtirildi: `h_gap` 0.15nm->0.3nm, `h_glob` 5nm->8nm, `hmin`
+  0.05nm->0.1nm. Natija: elementlar soni 10082 -> **3941** (yana ~2.6x kamaydi).
+- `tlist` siyraklashtirildi: 200 -> 100 nuqta/panel (`range(0,1e-4,0.01)`).
+- `comsolbatch -np 2` bilan ishga tushirildi (foydalanuvchi so'rovi).
+- 4 panelga bo'lingan, x/P holatini qo'lda uzatuvchi arxitektura (avvaldan tayyor)
+  ishlatildi.
+
+**NATIJA: hisob 97 SONIYADA (!) to'liq yakunlandi** — barcha 4 panel (a,b,c,d),
+hech qanday OOM xatosiz. `Model2_FET_Fig1.mph` (16.5MB, yechimlar bilan saqlangan)
+va `iv_fig1_continuous.csv` (404 qator, 4x101 nuqta) hosil bo'ldi. Ishga tushirish
+paytida haqiqiy erkin xotira ~2.7-2.9GB edi (foydalanuvchi taxmin qilgan 5+GB EMAS —
+Windows "Memory Compression" hali ko'p joy band qilgan edi), lekin panjara DOF
+sonining keskin kamayishi (10082->3941 element) muammoni hal qildi — bu yana bir
+bor tasdiqladiki, asosiy xotira cho'qqisi DOF/panjara zichligiga bog'liq edi,
+saqlash chastotasiga emas.
+
+## Fig.1 solishtirma jadvali (maqola vs model, 2026-09-28)
+
+Barcha qiymatlar `iv_fig1_continuous.csv` dan ekstraksiya qilingan (V_SET/V_RESET —
+x=0.5 kesishmasi bo'yicha; R_ON — ko'rsatilgan V nuqtasidagi I dan V/I; I_OFF —
+eng yaqin mavjud panjaradagi nuqta).
+
+### (a) Ugate=0, xotira
+
+| Ko'rsatkich | Maqsad (maqola) | Model (2026-09-28) | Farq |
+|---|---|---|---|
+| V_SET | +3.5V, keskin | **+3.7V**, keskin (x 0.05->0.96 da dV=0.18V ichida) | +0.2V (~6%) |
+| V_RESET | -3.6...-3.8V, keskin | **-3.7V** (x 0.76->0.02, dV=0.54V ichida) | oraliq ICHIDA — MOS |
+| R_ON (3V atrofida) | 7 kOhm (0.43mA @ 3V) | **7.04 kOhm** (0.435mA @ 3.06V) | ~1% — A'LO MOS |
+| I_OFF(+3.5V) | +0.03 mA | **~+0.05 mA** (V=3.42 da) | ~1.7x yuqori |
+| I_OFF(-3.8V) | -0.04 mA | **-0.045 mA** | ~13% — YAXSHI MOS |
+
+### (b) Ugate=-0.9V
+
+| Ko'rsatkich | Maqsad (maqola) | Model (2026-09-28) | Farq |
+|---|---|---|---|
+| Xotira saqlanishi | Ha | **Ha** (x ON holatda V=0 orqali o'tadi) | MOS (sifat) |
+| R_ON (+3.5V, 0.47mA kutilgan) | ~9 kOhm | **~20.9 kOhm** (I=0.164mA @ 3.42V) | ~2.3x yuqori |
+| R_ON (-3.7V, -0.34mA kutilgan) | ~9 kOhm | **~-0.098mA @ -3.42V** (R~34.9kOhm) | ~2.6-3.9x yuqori |
+| I_OFF(3.8V) | 0.06 mA | **~0.070 mA** (V=3.6 da) | ~16% — YAXSHI MOS |
+| Kichik volatil tarmoq (2-3.7V, 0.09-0.22mA) | bor | **YO'Q** (uzluksiz OFF egri, alohida sublopp emas) | MOS EMAS |
+
+### (c) Ugate=-1.1V, faqat musbat qutb
+
+| Ko'rsatkich | Maqsad (maqola) | Model (2026-09-28) | Farq |
+|---|---|---|---|
+| Faqat musbat qutbda ulanish | Ha (asimmetrik) | **Ha** (manfiy tarafda x=0 butun vaqt) | MOS — A'LO |
+| Ulanish kuchlanishi | +3.7...+4.3V | **+3.78...+3.96V** | oraliq ICHIDA — MOS |
+| ON tarmoq (3.7V) | 0.043 mA | **0.056 mA** | ~30% yuqori |
+| V_h (OFF ga qaytish) | ~0.7V | **~0.45-0.5V** | ~30-35% past |
+| I_OFF (yuqori V da, <0.01mA) | +4.5V: 0.007mA, -4.3V: -0.009mA | **+4.5V: ~0.068mA (ON!), -4.3V: -0.106mA** | MOS EMAS (pastga qarang) |
+
+### (d) Ugate->0 (qisman xotira)
+
+| Ko'rsatkich | Maqsad (maqola) | Model (2026-09-28) | Farq |
+|---|---|---|---|
+| Xotira qisman tiklanishi | Ha (R_ON oshgan) | **Ha** (P=0.144->0.251, to'liq 1.0 ga qaytmagan) | MOS — A'LO (sifat) |
+| R_ON | ~70 kOhm | **~78.6 kOhm** (3.78V da I=0.048mA) | ~12% — A'LO MOS |
+| I(+3.7V) | 0.057 mA | **0.048 mA** | ~16% past |
+| I(-4V) | -0.05 mA | **-0.062 mA** | ~25% yuqori |
+| V_h | ~0.7V (bilvosita) | **~0.72-0.9V** | YAXSHI MOS |
+| I_OFF(4V) | 0.011 mA | **~0.059 mA** | MOS EMAS (pastga qarang) |
+
+### Umumiy xulosa
+
+**KUCHLI TOMONLAR** (10 dan 6 ta asosiy ko'rsatkich <30% farq bilan yoki oraliq
+ichida): V_RESET(a), R_ON(a) (~1%!), I_OFF(-3.8V)(a), ulanish kuchlanishi(c),
+R_ON(d) (~12%!), faqat-musbat-qutb asimmetriyasi(c) va xotira saqlanishi/qisman
+tiklanishi (b,d) — BARCHASI SIFAT jihatidan TO'G'RI YO'NALISHDA va ko'plari
+miqdoriy jihatdan ham yaqin.
+
+**SISTEMATIK KAMCHILIK** (barcha panellarda takrorlanadi): OFF tarmoq yuqori |V|
+da (>~3.5V, hali ulanmagan holatda) MAQOLADAGIDAN SEZILARLI YUQORI oqim beradi,
+ayniqsa panel (c) va (d) da (I_OFF maqsadlari <0.01mA, biz 0.05-0.1mA olamiz -
+5-10x farq). **SABAB**: bizning modelimizda `sig_off_eff = sig_off0*cosh(E/E0_off)`
+Ugate/P ga BOG'LIQ EMAS - faqat E_drive (kuchlanish) ga bog'liq. Lekin maqoladagi
+(c)/(d) panellarida OFF oqim panel (a) dagidan ANCHA KICHIK bo'lib chiqadi xuddi
+shu kuchlanish diapazonida - bu shuni ko'rsatadiki, HAQIQIY qurilmada zatvor
+kuchlanishi NAFAQAT ON holatni (sig_on, tau_rel), balki OFF holat o'tkazuvchanligini
+HAM bostiradi (masalan filament atrofidagi elektrostatik depletion effekti orqali).
+Bu FENOMENOLOGIK modelimizda ISHLATILMAGAN qo'shimcha bog'liqlik - agar vaqt
+bo'lganida, `sig_off_eff` ga ham P (yoki f_gate) orqali kamayuvchi ko'paytiruvchi
+qo'shish kerak bo'lardi (masalan `sig_off_eff*(1-c*(1-P))` shaklida, c - yangi
+kalibrlanadigan parametr). **Bu ANIQ, KEYINGI QADAM UCHUN TAVSIYA sifatida
+qayd etiladi** — vaqt yetishmagani uchun ushbu sessiyada amalga oshirilmadi.
+
+Ikkinchi kamchilik: panel (b) dagi kichik volatil sub-tarmoq (2-3.7V oralig'ida)
+modelda alohida xususiyat sifatida chiqmaydi - bizning uzluksiz sinh-kinetikamiz
+bunday ikkilamchi metastabil tarmoqni tabiiy ravishda hosil qilmaydi; buni olish
+uchun qo'shimcha metastabil holat yoki ikkinchi vaqt doimiysi kerak bo'lardi.
+
+**MUHIM**: yuqoridagi barcha son qiymatlar (V0_off, Ea_SET/RESET va a_SET/RESET
+tengligi, tau_P_fall/rise, tau_v) KALIBRLANMAGAN (boshlang'ich taxminlar) - olingan
+mos kelish darajasi shu holda ham nisbatan yaxshi, demak ANIQ kalibrlash (vaqt
+bo'lganda) natijalarni yanada yaxshilashi mumkin.
+
+## YAKUNIY XULOSA (1-sessiya yopilishi - OOM bilan to'xtagan holat)
+
+**ESLATMA: bu bo'lim 1-sessiya (OOM bilan to'xtagan) holatini tasvirlaydi. Foydalanuvchi
+boshqa dasturlarni yopib qayta so'raganidan keyin (2-SESSIYA bo'limiga qarang, yuqorida)
+S4 hisobi, Fig1_analog.png va solishtirma jadval MUVAFFAQIYATLI BAJARILDI. Quyidagi
+"Nima BAJARILMADI" ro'yxati ESKIRGAN - yangilangan holat uchun pastdagi "YAKUNIY
+XULOSA v2" bo'limiga qarang.**
+
+### Nima BAJARILDI (1-sessiya)
 
 1. **Model2_FET_Fig1.java** — mustaqil, to'liq yozilgan va COMPILE bo'ladigan fayl
    (baza `Model2_FET.java` daxlsiz zaxira sifatida qoladi). Quyidagi yangi fizika
@@ -221,6 +327,33 @@ quyidagicha yig'ilishi mumkin edi (vaqt/resurs yetmagani uchun bajarilmadi):
    OSHIRARDI. Shu sababli bu ish ATAYLAB eng past ustuvorlikka qo'yilgan va OOM inqirozi
    fonida MUTLAQO bajarilmadi - ALOHIDA .java fayllar (Model1_Vertical.java, Model2_FET_Fig1.java,
    Model3_Pressure.java) asosiy, ishlaydigan natija manbai bo'lib qoladi.
+
+## YAKUNIY XULOSA v2 (2-sessiya - haqiqiy yakuniy holat)
+
+Foydalanuvchi boshqa dasturlarni yopib, qo'shimcha xotira tejash choralari (mesh
+yanada bo'shashtirish, tlist siyraklashtirish, `-np 2`) bilan qayta so'raganidan
+keyin **to'liq 4-panel S4 hisobi 97 soniyada muvaffaqiyatli yakunlandi**.
+Yangilangan holat:
+
+### Endi BAJARILGAN (1-sessiyada "BAJARILMADI" deb yozilgan edi)
+
+- Panel (a-d) uchun to'liq I-V egri chiziqlari — `iv_fig1_continuous.csv` (404 qator).
+- `Fig1_analog.png` — chizildi, 2x2 panel, maqsad nuqtalari bilan ustma-ust.
+- V_SET/V_RESET/R_ON/I_OFF/V_h solishtirish jadvali — yuqorida, to'liq.
+- `Model2_FET_Fig1.mph` — 16.5MB, yechimlar bilan saqlangan (S1+S4 barcha panellar).
+
+### Hali BAJARILMAGAN (o'zgarishsiz qoldi, vaqt yetmagani uchun)
+
+- Ea_RESET/a_RESET, V0_off, tau_P_fall/rise, tau_v ANIQ kalibrlash (qiymatlar
+  boshlang'ich taxmin, natijalar shunga qaramay nisbatan yaxshi mos keldi).
+- **YANGI TOPILGAN KAMCHILIK**: OFF o'tkazuvchanlikning Ugate/P ga bog'liqligi
+  yo'q - panel (c)/(d) da yuqori |V| dagi OFF oqim maqsaddan 5-10x katta (yuqoridagi
+  "Umumiy xulosa" bo'limiga qarang). Bu ANIQ, KEYINGI qadam uchun tavsiya.
+- Panel (b) dagi kichik volatil sub-tarmoq modelda alohida chiqmaydi.
+- Model1 R_dev 1um->250nm (S1/S2 qayta kalibrlash) — BAJARILMADI.
+- Bitta birlashtirilgan `Troyan_Doronin_All.mph` — BAJARILMADI (yuqorida qanday
+  qilish mumkinligi yozilgan).
+- 2D plotlarda z-o'qini ko'rsatish (aspect ratio qulfini ochish) — TEKSHIRILMADI.
 
 **Muhim eslatma (fenomenologik model)**: barcha yuqoridagi o'zgarishlar (nochiziqli
 o'tkazuvchanlik, zatvor xotira ODE, qutbli barer asimmetriyasi) FAQAT fenomenologik
