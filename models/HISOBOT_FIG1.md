@@ -200,6 +200,28 @@ ijro muhitida (host RAM yetishmasligi). Tavsiya:
    dan chiqarib, `fig1_targets.csv` bilan solishtirib, ushbu hisobotga jadval
    sifatida qo'shish kerak.
 
+### Bitta birlashtirilgan fayl - qanday qilish mumkinligi (bajarilmadi, eng past ustuvorlik)
+
+`Troyan_Doronin_All.mph` (3 komponent: Model1_Vertical, Model2_FET_Fig1, Model3_Pressure)
+quyidagicha yig'ilishi mumkin edi (vaqt/resurs yetmagani uchun bajarilmadi):
+
+1. Yangi `.java` fayl yaratish, `ModelUtil.create("TroyanDoroninAll")` bilan.
+2. Har uch model uchun ALOHIDA `model.component().create("compN", true)` (N=1,2,3) chaqirish,
+   har bir mavjud modelning GEOMETRY/DEFINITIONS/MATERIALS/PHYSICS/MESH bo'limlarini o'sha
+   komponent nomiga (`comp1`->`compN`) moslab ko'chirish (parametr nomlarida to'qnashuv bo'lsa -
+   masalan barcha uchtasida `T_amb` bor - COMSOL PARAMETRLAR global bo'lgani uchun BIR MARTA
+   e'lon qilinadi, komponentga xos bo'lganlari esa `compN.param_nomi` bilan farqlanadi yoki
+   umumiy bo'lsa bitta qiymatda birlashtiriladi).
+3. Har bir komponent uchun ALOHIDA STUDY (`stdN1`, `stdN2`...) yaratish - komponentlar bir-biriga
+   bog'liq emas (mustaqil fizik tizimlar), shuning uchun `study().feature().setEntry("activate",
+   "compN", true/false)` orqali faqat tegishli komponent faollashtiriladi har bir study'da.
+4. Xotira nuqtai nazaridan BU ENG YOMON variant - barcha 3 model (jami DOF Model1+Model2+Model3)
+   BITTA .mph faylda, hatto FAQAT bittasi yechilayotganda ham COMSOL barcha komponentlar uchun
+   xotira ajratadi (mesh, geometriya) - ushbu 8GB RAM'li mashinada bu OOM xavfini YANADA
+   OSHIRARDI. Shu sababli bu ish ATAYLAB eng past ustuvorlikka qo'yilgan va OOM inqirozi
+   fonida MUTLAQO bajarilmadi - ALOHIDA .java fayllar (Model1_Vertical.java, Model2_FET_Fig1.java,
+   Model3_Pressure.java) asosiy, ishlaydigan natija manbai bo'lib qoladi.
+
 **Muhim eslatma (fenomenologik model)**: barcha yuqoridagi o'zgarishlar (nochiziqli
 o'tkazuvchanlik, zatvor xotira ODE, qutbli barer asimmetriyasi) FAQAT fenomenologik
 moslashtirishlar bo'lib, Weyl/Dirac topologik fazalar yoki ferroelektrik
