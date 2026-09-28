@@ -50,7 +50,7 @@ import java.util.Locale;
 public class Model2_FET {
 
   static final boolean CALIBRATE = true;
-  static final int CAL_MAX_IT = 8;
+  static final int CAL_MAX_IT = 14;   // sig_on_v kalibrovkasi 8 iteratsiyada yaqinlashmadi, oshirildi
   static final double CAL_TOL = 0.02;   // 2% (FET kalibrovkasi uchun biroz bo'shroq)
 
   public static Model run() {
@@ -64,7 +64,18 @@ public class Model2_FET {
     // =====================================================================================
     // --- Geometriya ---
     p(model, "W", "1000[nm]", "Kanal umumiy uzunligi (source-drain)");
-    p(model, "L_gap", "200[nm]", "Faol soha (interfeys) uzunligi, zatvor ostida - FARAZ");
+    // MUHIM TUZATISH (birinchi ishga tushirishdan keyin): boshlang'ich L_gap=200nm bilan hech
+    // qanday Ugate qiymatida SET/RESET sodir bo'lmadi - sabab, E_drive = V/L_gap ~ 100x kichikroq
+    // Model1 dagi t_int=1.5nm bilan solishtirganda, demak sinh(qaE/2kBT) argumenti ~75x kichikroq,
+    // sinh esa EKSPONENSIAL sezgir bo'lgani uchun dxdt_rhs amalda NOLGA teng bo'lib qoldi (haqiqiy
+    // vaqt shkalasida svitching sodir bo'lmadi). Model1 da ISHLAGAN t_int=1.5nm bilan bir xil
+    // tartibdagi uzunlik ishlatildi.
+    // IKKINCHI TUZATISH: L_gap=3nm bilan ham SET sodir bo'lmadi (diagnostika: x faqat ~0.013 ga
+    // yetdi, T_local esa umuman o'zgarmadi - demak issiqlik emas, balki SOF MAYDON yetarli emas).
+    // Sabab: L_gap=3nm Model1 dagi t_int=1.5nm dan 2x katta -> E_drive 2x kichik -> sinh argumenti
+    // YARMIGA (13.2 -> 6.6) -> sinh ~750x KICHIKROQ (eksponensial sezgirlik). L_gap ANIQ t_int
+    // qiymatiga (1.5nm) tenglashtirildi - Model1 bilan to'g'ridan-to'g'ri solishtirish uchun.
+    p(model, "L_gap", "1.5[nm]", "Faol soha (interfeys) uzunligi, zatvor ostida - FARAZ (Model1 t_int bilan AYNAN bir xil)");
     p(model, "t_ST", "20[nm]", "Sb2Te3 qalinligi");
     p(model, "t_GT", "20[nm]", "GeTe qalinligi");
     p(model, "t_ox", "10[nm]", "Al2O3 zatvor dielektrigi qalinligi");
@@ -138,7 +149,7 @@ public class Model2_FET {
     p(model, "I_volatile_t", "0.04[mA]", "Maqsad tok, Ugate=-1.1V, V=4V da");
 
     // --- To'r ---
-    p(model, "h_gap", "2[nm]", "Faol soha va uning atrofida maksimal element");
+    p(model, "h_gap", "0.15[nm]", "Faol soha va uning atrofida maksimal element (L_gap=1.5nm bilan mos)");
     p(model, "h_glob", "5[nm]", "Qolgan joyda maksimal element");
 
     // =====================================================================================
@@ -241,7 +252,10 @@ public class Model2_FET {
     model.component("comp1").physics("ht").feature("temp1").set("T0", "T_amb");
 
     model.component("comp1").multiphysics().create("emh1", "ElectromagneticHeating", 2);
-    model.component("comp1").multiphysics("emh1").selection().named("sel_ec");
+    // TUZATILDI: "sel_ec" ga cheklash T_local ni doim ANIQ 300.000K qilib qo'ydi (issiqlik
+    // manbai ishlamadi) - Model1 dagi TASDIQLANGAN ".all()" naqshiga qaytarildi (ec faol bo'lmagan
+    // domenlarda J=0, demak issiqlik manbai baribir 0 bo'ladi - xavfsiz va sodda).
+    model.component("comp1").multiphysics("emh1").selection().all();
 
     // =====================================================================================
     // PHYSICS: Global ODE (x kinetikasi)
@@ -363,7 +377,7 @@ public class Model2_FET {
     model.param().set("V_app", "3.5[V]");
     model.study("std3").run();
     model.result().numerical().create("gev_Tmax", "EvalGlobal");
-    model.result().numerical("gev_Tmax").set("data", "dset3");
+    model.result().numerical("gev_Tmax").set("data", "dset2");
     model.result().numerical("gev_Tmax").set("expr", new String[]{"maxop_T(T)"});
     double[] xsVals2 = {0, 1, 1};
     double[] vVals2 = {3.5, 3.5, 4.5};
@@ -407,7 +421,7 @@ public class Model2_FET {
     PrintWriter outIvU = null, outN6f = null;
     try {
       outIvU = new PrintWriter(new FileWriter(ivUgateCsv));
-      outIvU.println("Ugate_V,t_s,V_V,I_A,x");
+      outIvU.println("Ugate_V,t_s,V_V,I_A,x,E_drive,T_local");
       outN6f = new PrintWriter(new FileWriter(fetN6Csv));
       outN6f.println("Ugate_V,V_SET_V,V_RESET_V,I_at_4V_mA,rejim");
 
@@ -418,8 +432,8 @@ public class Model2_FET {
 
         if (k == 0) {
           model.result().numerical().create("gev_S4", "EvalGlobal");
-          model.result().numerical("gev_S4").set("data", "dset4");
-          model.result().numerical("gev_S4").set("expr", new String[]{"t", "V_wave", "ec.I0_1", "xode"});
+          model.result().numerical("gev_S4").set("data", "dset3");
+          model.result().numerical("gev_S4").set("expr", new String[]{"t", "V_wave", "ec.I0_1", "xode", "E_drive", "T_local"});
         }
         double[][] s4 = model.result().numerical("gev_S4").getReal();
         int n = (s4.length > 0) ? s4[0].length : 0;
@@ -441,7 +455,7 @@ public class Model2_FET {
           }
         }
         for (int i = 0; i < n; i++) {
-          outIvU.println(String.format(Locale.US, "%.4g,%.6e,%.6e,%.6e,%.6e", ug, s4[0][i], s4[1][i], s4[2][i], s4[3][i]));
+          outIvU.println(String.format(Locale.US, "%.4g,%.6e,%.6e,%.6e,%.6e,%.6e,%.6e", ug, s4[0][i], s4[1][i], s4[2][i], s4[3][i], s4[4][i], s4[5][i]));
         }
         String rejim = Double.isNaN(vReset) ? "VOLATIL (o'z-o'zidan qaytadi)" : "XOTIRA (gisterezis)";
         outN6f.println(String.format(Locale.US, "%.4g,%s,%s,%s,%s",
@@ -462,14 +476,14 @@ public class Model2_FET {
           String tag = "pg_N2_" + k;
           model.result().create(tag, "PlotGroup1D");
           model.result(tag).label(String.format(Locale.US, "N2: I-V, Ugate=%.2fV", ug));
-          model.result(tag).set("data", "dset4");
+          model.result(tag).set("data", "dset3");
           model.result(tag).create("g1", "Global");
           model.result(tag).feature("g1").set("expr", new String[]{"ec.I0_1*1e3"});
           model.result(tag).feature("g1").set("xdata", "expr");
           model.result(tag).feature("g1").set("xdataexpr", "V_wave");
           model.result().export().create("exp_" + tag, "Image");
           model.result().export("exp_" + tag).set("plotgroup", tag);
-          model.result().export("exp_" + tag).set("filename", String.format(Locale.US, "N2_iv_ugate_%d.png", k));
+          model.result().export("exp_" + tag).set("pngfilename", String.format(Locale.US, "C:/comsol_ish/models/N2_iv_ugate_%d.png", k));
           model.result().export("exp_" + tag).run();
         } catch (Exception ex) {
           System.out.println("XATO (N2 PNG, k=" + k + "): " + ex.getMessage());
@@ -576,7 +590,7 @@ public class Model2_FET {
     model.result().numerical("gev_I_tmp").set("data", "dset1");
     model.result().numerical("gev_I_tmp").set("expr", new String[]{"ec.I0_1"});
     double val = model.result().numerical("gev_I_tmp").getReal()[0][0];
-    model.result().numerical("gev_I_tmp").remove();
+    model.result().numerical().remove("gev_I_tmp");
     return val;
   }
 
