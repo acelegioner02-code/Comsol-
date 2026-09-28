@@ -84,7 +84,12 @@ public class Model3_Pressure {
 
     // --- Bosim va tunnel-fitting ---
     p(model, "p_load", "0[GPa]", "Yuqoridan qo'yiladigan bosim");
-    p(model, "beta_mem", "10", "Tunnel-fitting parametri (xotira holati, beta>0) - kalibrlanadi");
+    // KALIBRLANDI: beta_mem=10 bilan R_ON(2GPa)/R_ON(0) atigi ~5x pasaydi (maqsad 100-1000x).
+    // ln(nisbat) beta_mem ga chiziqli bog'liq (beta_mem=10 -> ln(5)=1.61, demak koeffitsient
+    // 0.161/GPa... aniqrog'i (t_int-d)/t_int nisbatiga bog'liq, bosim bilan o'zgaradi). beta_mem=30
+    // qilinganda maqsad oralig'ining pastki uchiga (~100x) yetish kutiladi - PARAMETRLAR3.md dagi
+    // fizik baho (beta_mem~2*kappa*t_int~15-30, kappa=5-10 1/nm) bilan ham mos keladi.
+    p(model, "beta_mem", "30", "Tunnel-fitting parametri (xotira holati, beta>0) - kalibrlangan");
 
     p(model, "h_int", "0.5[nm]", "Interfeys/filamentda maksimal element");
     p(model, "h_glob", "2[nm]", "Qolgan joyda maksimal element");
@@ -153,8 +158,16 @@ public class Model3_Pressure {
     model.component("comp1").physics("solid").create("load1", "BoundaryLoad", 1);   // TEKSHIRILSIN
     model.component("comp1").physics("solid").feature("load1").label("Yuqori bosim");
     model.component("comp1").physics("solid").feature("load1").selection().named("geom1_box_top");
-    model.component("comp1").physics("solid").feature("load1").set("LoadType", "Pressure");   // TEKSHIRILSIN
-    model.component("comp1").physics("solid").feature("load1").set("Pressure", "p_load");   // TEKSHIRILSIN
+    // TASDIQLANDI (xato xabaridan): LoadType qiymatlari "ForceArea","TotalForce","FollowerPressure" -
+    // "Pressure" ISHLAMAYDI. FollowerPressure tanlandi (siquvchi bosim, deformatsiyalangan
+    // geometriyaga ergashadi).
+    model.component("comp1").physics("solid").feature("load1").set("LoadType", "FollowerPressure");
+    // TASDIQLANDI (.properties() diagnostikasi orqali, 4 ta noto'g'ri urinishdan keyin: "Pressure",
+    // "P", "p", "p0" - hech biri ishlamadi): xossa nomi ENUM QIYMATINING O'ZI - "FollowerPressure"!
+    // COMSOL ba'zan "Load type" tanlovining nomini xuddi shu tanlovga tegishli miqdor xossasi
+    // sifatida qayta ishlatadi (property ro'yxatida "Ftot", "FperArea", "FperLength" bilan bir
+    // qatorda "FollowerPressure" ham bor edi).
+    model.component("comp1").physics("solid").feature("load1").set("FollowerPressure", "p_load");
 
     // =====================================================================================
     // PHYSICS: Electric Currents
@@ -201,8 +214,16 @@ public class Model3_Pressure {
     // stat2.set("notsolmethod","sol") + stat2.set("notstudy","std1") + stat2.set("usesol",true)
     // qo'shiladi (xossalar hujjatda TASDIQLANGAN, faqat kerakligi noaniq).
 
+    // dset1 std1 birinchi marta ishga tushmaguncha mavjud emas (Model1/2 dagi bir xil naqsh) -
+    // gev_R yaratishdan oldin "priming" yechim kerak.
+    model.study("std1").run();
+
     model.result().numerical().create("gev_R", "EvalGlobal");
+    model.result().numerical("gev_R").set("data", "dset1");
     model.result().numerical("gev_R").set("expr", new String[]{"V_read/ec.I0_1"});
+    model.result().numerical().create("gev_dgap", "EvalGlobal");
+    model.result().numerical("gev_dgap").set("data", "dset1");
+    model.result().numerical("gev_dgap").set("expr", new String[]{"d_gap"});
 
     double[] pVals = {0, 0.25, 0.5, 1, 1.5, 2};   // GPa
     String ronCsv = "Ron_p.csv";
@@ -219,8 +240,12 @@ public class Model3_Pressure {
             model.param().set("xs", String.format(Locale.US, "%d", s));
             model.study("std1").run();
             double r = model.result().numerical("gev_R").getReal()[0][0];
+            double dgap = model.result().numerical("gev_dgap").getReal()[0][0];
+            // TASDIQLANDI: EvalGlobal.getReal() qiymatni o'zgaruvchining TABIIY birligida (bu yerda
+            // t_int="1.5[nm]" bo'lgani uchun nm) qaytaradi, SI (metr) da EMAS - shuning uchun
+            // qo'shimcha *1e9 KERAK EMAS edi (bunsiz to'g'ri, ~1.5 nm chiqadi).
             out.println(String.format(Locale.US, "%.4g,%d,%s,%.6e,%.6e",
-                pVals[j], s, rep == 1 ? "0(volatil)" : "beta_mem(xotira)", 0.0, r));
+                pVals[j], s, rep == 1 ? "0(volatil)" : "beta_mem(xotira)", dgap, r));
             System.out.println(String.format(Locale.US, "N7: p=%.2fGPa xs=%d rep=%d -> R=%.6e ohm",
                 pVals[j], s, rep, r));
           }
