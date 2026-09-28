@@ -220,3 +220,33 @@ bo'limi). Natijada:
 - Tavsiya: ushbu .java faylni ko'proq erkin RAM mavjud bo'lgan mashinada (yoki boshqa dasturlar
   yopilgandan keyin shu mashinada) qayta ishga tushirish kifoya - kod o'zi TAYYOR, faqat
   ijro muhiti (host xotirasi) yetishmadi.
+
+### YANGILANISH (2026-09-28, kech): to'liq hisob muvaffaqiyatli yakunlandi, YANGI TOPILGAN KAMCHILIK
+
+Foydalanuvchi xotira tejash choralari (mesh 3941 elementgacha bo'shashtirish, tlist
+siyraklashtirish, `-np 2`) bilan to'liq S4 hisobi 97 soniyada yakunlandi (batafsil:
+`HISOBOT_FIG1.md`, "Fig.1 solishtirma jadvali" bo'limi). Ko'p ko'rsatkichlar (V_RESET,
+R_ON panel a ~1% farq, R_ON panel d ~12% farq, panel c ning faqat-musbat-qutb
+asimmetriyasi) A'LO mos keldi - V0_off/Ea/tau_P/tau_v HECH QANDAY qo'shimcha
+kalibrlashsiz, faqat boshlang'ich taxminlar bilan.
+
+**Aniqlangan fizik kamchilik**: `sig_off_eff = sig_off0*cosh(E_drive/E0_off)` FAQAT
+E_drive (kuchlanish)ga bog'liq, Ugate/P ga EMAS. Lekin natijalar shuni ko'rsatdiki,
+panel (c)/(d) (Ugate=-1.1V va undan keyin) da OFF tarmoq oqimi maqsaddan (maqolada
+<0.01mA) 5-10x KATTA chiqadi xuddi shu kuchlanish oralig'ida (masalan +4.5V da biz
+~0.068mA, maqsad ~0.007mA). Bu real qurilmada zatvor kuchlanishi NAFAQAT ON holatni
+(sig_on, tau_rel - modelda bor), balki OFF holat o'tkazuvchanligini HAM bostirishi
+kerakligini ko'rsatadi (masalan filament atrofidagi elektrostatik depletion effekti
+orqali - FENOMENOLOGIK farazlanadi, mexanizm o'zi bu ishda o'rganilmagan).
+
+**Tavsiya (keyingi qadam)**: `sig_off_eff` ga P (yoki f_gate) orqali kamayuvchi
+ko'paytiruvchi qo'shish, masalan `sig_off_eff = sig_off0*cosh(E_drive/E0_off)*
+(1-c_off*(1-P))`, bu yerda `c_off` (0..1) - Ugate qanchalik OFF holatni ham
+bostirishini boshqaruvchi YANGI kalibrlanadigan parametr (panel c/d dagi I_OFF
+maqsadlariga fit qilinishi kerak). Bu ishda VAQT YETMAGANI uchun amalga
+oshirilmadi.
+
+Ikkinchi kichik kamchilik: panel (b) maqolasidagi "kichik volatil sub-tarmoq"
+(2-3.7V oralig'ida, 0.09-0.22mA) bizning uzluksiz sinh-kinetikamizda alohida
+xususiyat sifatida chiqmaydi - buning uchun ikkinchi metastabil holat yoki
+qo'shimcha vaqt doimiysi kerak bo'lardi (bajarilmadi).
