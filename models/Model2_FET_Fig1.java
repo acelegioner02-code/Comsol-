@@ -32,6 +32,7 @@ public class Model2_FET_Fig1 {
   // (sig_off0=1.6182e-08, sig_on0=1.0712e-05, sig_on_v=6.0469e-07) - ~25-30 daqiqa tejash uchun
   // qayta kalibrlashni o'chirib, to'g'ridan-to'g'ri shu qiymatlardan boshlanadi.
   static final boolean CALIBRATE = false;
+  static final boolean RUN_TCHECK = false;
   static final int CAL_MAX_IT = 16;
   static final double CAL_TOL = 0.02;
 
@@ -328,18 +329,27 @@ public class Model2_FET_Fig1 {
     // =====================================================================================
     // S2: issiqlik tekshiruvi (T_max < 800K)
     // =====================================================================================
-    model.study().create("std3");
-    model.study("std3").create("stat", "Stationary");
-    model.study("std3").feature("stat").set("activate", new String[]{"ec", "on", "ht", "on", "ge", "off"});
-    model.param().set("xs", "1");
-    model.param().set("V_app", "4.5[V]");
-    model.study("std3").run();
-    model.result().numerical().create("gev_Tmax", "EvalGlobal");
-    model.result().numerical("gev_Tmax").set("data", "dset2");
-    model.result().numerical("gev_Tmax").set("expr", new String[]{"maxop_T(T)"});
-    double tmax = model.result().numerical("gev_Tmax").getReal()[0][0];
-    System.out.println(String.format(Locale.US, "S2 T_max (xs=1,V=4.5V) = %.4e K (maqsad <800K)", tmax));
-    model.param().set("xs", "0");
+    if (RUN_TCHECK) {
+      model.study().create("std3");
+      model.study("std3").create("stat", "Stationary");
+      model.study("std3").feature("stat").set("activate", new String[]{"ec", "on", "ht", "on", "ge", "off"});
+      model.param().set("xs", "1");
+      model.param().set("V_app", "4.5[V]");
+      model.study("std3").run();
+      model.result().numerical().create("gev_Tmax", "EvalGlobal");
+      model.result().numerical("gev_Tmax").set("data", "dset2");
+      model.result().numerical("gev_Tmax").set("expr", new String[]{"maxop_T(T)"});
+      double tmax = model.result().numerical("gev_Tmax").getReal()[0][0];
+      System.out.println(String.format(Locale.US, "S2 T_max (xs=1,V=4.5V) = %.4e K (maqsad <800K)", tmax));
+      model.param().set("xs", "0");
+    } else {
+      // Xotira tejash uchun o'tkazib yuborildi: bu tekshiruv ILGARI (shu qiymatlar
+      // bilan) BAJARILGAN va T_max=3.0000e+02 K (<<800K) natija bergan edi (log_runF1.txt,
+      // 2026-09-28 11:55). Parametrlar o'zgarmagani uchun qayta ishlatiladi - std3 (ec+ht,
+      // 51040+4578 DOF) OOMga sabab bo'lgan asosiy bosqichlardan biri edi.
+      System.out.println("S2 (issiqlik tekshiruvi) O'TKAZIB YUBORILDI - oldin T_max=3.0000e+02 K tasdiqlangan (xotira tejash uchun).");
+      model.param().set("xs", "0");
+    }
     model.param().set("V_app", "V_read");
 
     // =====================================================================================
@@ -388,7 +398,10 @@ public class Model2_FET_Fig1 {
         // shuning uchun gev_S4 FAQAT birinchi panel tugagandan keyin yaratiladi.
         if (pnl == 0) {
           model.result().numerical().create("gev_S4", "EvalGlobal");
-          model.result().numerical("gev_S4").set("data", "dset3");
+          // Dataset raqami HAQIQIY ishlagan study sonlariga bog'liq (tag nomiga emas!).
+          // RUN_TCHECK=false bo'lsa std3 ishlamaydi -> std4 2-chi ishlagan study
+          // bo'ladi -> dset2. RUN_TCHECK=true bo'lsa std3 ham ishlaydi -> std4 3-chi -> dset3.
+          model.result().numerical("gev_S4").set("data", RUN_TCHECK ? "dset3" : "dset2");
           model.result().numerical("gev_S4").set("expr", new String[]{"t", "V_wave", "ec.I0_1", "xode", "P", "maxop_T(T)"});
         }
         double[][] s4 = model.result().numerical("gev_S4").getReal();
