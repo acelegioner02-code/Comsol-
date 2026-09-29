@@ -283,3 +283,50 @@ tanlandi (batafsil jadval: `HISOBOT_FIG1.md`, "3-SESSIYA" bo'limi):
 
 Barcha 8 iteratsiyaning sonli natijalari va tanlash mantiqi `HISOBOT_FIG1.md`
 da to'liq jadval sifatida keltirilgan.
+
+### YANGILANISH 3 (2026-09-29, YAKUNIY sessiya): tau_rel keskin sigmoid, z_eff
+
+Foydalanuvchi panel (d) SIFAT jihatidan noto'g'ri (volatil halqa, xotira emas)
+va panel (a)/(b) RESET yetarli keskin emasligini aniqladi. Ikkita YANGI faraz
+kiritildi (batafsil sinov jarayoni: `YAKUNIY_HISOBOT.md`):
+
+**1. tau_rel(P) KESKIN sigmoid** (eski silliq darajali `tau_v*(tau_nv/tau_v)^P`
+o'rniga):
+```
+S_tau = 1/(1+exp(-(P-P_c)/w_P))
+tau_rel_eff = tau_v + (tau_nv-tau_v)*S_tau
+```
+`P_c=0.17`, `w_P=0.0015`. **Fizik asos**: zatvor-bosilgan barqarorlashtiruvchi
+holat P biror KRITIK qiymatdan o'tganda filament relaksatsiya mexanizmi
+SIFAT jihatidan almashadi (masalan, past P da tez ion-diffuziya orqali,
+yuqori P da esa barqaror struktura/faza orqali) - bu ikkita ALOHIDA fizik
+rejim, shuning uchun SILLIQ emas, KESKIN o'tish jismoniy jihatdan asosliroq
+fenomenologik faraz. **MUHIM SONLI SABOQ**: `tau_nv-tau_v` juda katta (~1000,
+chunki tau_nv=1000s, tau_v~1.5e-4s) bo'lgani uchun `w_P` JUDA tor bo'lishi
+SHART (0.0015, 0.008 EMAS) - aks holda HATTO kichik sigmoid "quyruq" qiymati
+(masalan 7.6%) `tau_rel` ni o'nlab soniyalarga oshirib, BUTUN panelni
+"muzlatib" qo'yadi. `P_c=0.17` panel (c)/(d) ning HAQIQIY simulyatsiya
+trayektoriyalaridan (x=0.5 kesishmasi qayerda P bilan mos kelishi) tanlangan,
+"P~0.14/0.25" boshlang'ich taxminlardan EMAS - haqiqiy qiymatlar ozgina farq
+qilar edi.
+
+**2. z_eff (samarali zaryad ko'paytiruvchisi)** RESET yo'nalishi uchun:
+```
+a_eff = dir_smooth*a_SET + (1-dir_smooth)*(z_eff*a_RESET)
+```
+`z_eff=2.42`, `a_RESET=0.3nm` (a_SET bilan bir xil bazaviy qiymat),
+`Ea_RESET=1.4eV`. **Fizik asos**: RESET (filament uzilishi) SET (filament
+hosil bo'lishi)dan farqli, KO'P ZARYADLI klaster yoki ion guruhi migratsiyasi
+orqali sodir bo'lishi mumkin (masalan bir nechta Te/Sb ionlari birgalikda
+harakatlanadi) - bu sinh argumentidagi effektiv zaryadni oshiradi, RESET ni
+maydonga (V) nisbatan SET dan ko'ra sezgirroq (keskinroq) qiladi. `z_eff`
+qiymati `d(ln rate)/dV = q*z_eff*a_RESET/(2*kB*T*L_gap) ~ 12.5 1/V` maqsadidan
+analitik hisoblangan, `Ea_RESET` esa shu katta `a_eff` bilan V_RESET ni
+-3.6...-3.8V oralig'ida SAQLASH uchun qayta kalibrlangan (analitik taxmin:
+`DeltaEa=kB*T*(r-1)*argument_eski`, so'ng bitta hisob bilan tasdiqlangan).
+
+**Natija**: RESET kengligi (x:0.9->0.1) panel (a)/(b) da ~0.7V dan ~0.3V ga
+qisqardi (maqsad <0.2-0.3V ga DEYARLI erishildi). V0_off qayta kalibrlash
+(0.8->0.95V) SINALDI, lekin RAD ETILDI - sig_off_eff SIMMETRIK cosh funksiya
+ekan, `fig1_targets.csv` dagi ASIMMETRIK OFF maqsadlarini (turli qutbda turli
+nisbat) bitta V0_off bilan qondira olmadi, umumiy ball pasaydi.
