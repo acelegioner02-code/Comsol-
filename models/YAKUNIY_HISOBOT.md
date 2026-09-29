@@ -12,7 +12,7 @@ Bu jurnal har bosqichdan keyin yangilanadi.
 | 1.2. Panel (a)/(b) RESET keskinligi (z_eff) | BAJARILDI |
 | 1.3. Panel (b) kichik volatil tarmoq | BAJARILMADI (quyida sabab) |
 | 1.4-1.5. Ballash, Fig1_analog.png, Fig1_side_by_side.png | BAJARILDI |
-| 2. Bosim natijasi (Fig_pressure.png) | KUTILMOQDA |
+| 2. Bosim natijasi (Fig_pressure.png) | BAJARILDI |
 | 3. MPH fayllar, YAKUNIY/ papka | KUTILMOQDA |
 | 4. NATIJALAR.md (dissertatsiya hisoboti) | KUTILMOQDA |
 
@@ -106,3 +106,36 @@ bo'lardi. Vaqt tanqisligi va "ixtiyoriy" deb belgilanganligi sababli bajarilmadi
   natija zaxirasi (A3 = joriy asosiy fayllar bilan bir xil).
 
 Davomi pastda.
+
+## 2-BOSQICH: Bosim natijasi
+
+`Ron_p.csv` (Model3_Pressure.java, oldingi sessiyada tayyor) asosida
+`Fig_pressure.png` chizildi (`plot_pressure.ps1`, yangi skript) - R_ON(p)/R_OFF(p)
+log shkalada, xotira (beta_mem=30) va volatil (beta=0) holatlar solishtirilgan.
+
+**Sonli natija** (0->2 GPa):
+- R_OFF: 99993 -> 99993 Ohm (O'ZGARMAYDI, ikkala holatda ham bir xil - kutilgan,
+  chunki beta faqat ON filament tunnel o'tkazuvchanligiga ta'sir qiladi).
+- R_ON (XOTIRA, beta_mem=30): 6989 -> 53.5 Ohm - **~130x pasayish (~2.1 tartib)**.
+  Maqola da'vosi "2-3 tartibga kamayadi" bilan MOS (pastki chegarada).
+- R_ON (VOLATIL, beta=0): 6989 -> 6989 Ohm - **AYNAN O'ZGARMAYDI** (beta=0 bo'lgani
+  uchun `sig_on_p=sig_on0*exp(0*(...))=sig_on0`, bosimga bog'liqlik formuladan
+  matematik jihatdan yo'qoladi). Maqola da'vosi "volatil deyarli o'zgarmaydi"
+  bilan A'LO MOS (bizda "deyarli" o'rniga "aynan" - modelning soddaligi tufayli,
+  lekin sifat jihatidan bir xil xulosa).
+
+### Parametr mosligi tekshiruvi (Model2 o'zgarishlari Model3 ga ta'sir qilmaydi)
+
+Model3_Pressure.java Model1 (VERTIKAL) geometriyasiga asoslangan, MUSTAQIL
+kalibrlangan (`sig_on0=1.594 S/m`, o'z geometriyasida, Model2_FET dan FARQLI
+birliklar/kontekst), maqsadlari `R_ON_t=7kOhm`, `R_OFF_t=100kOhm` (Model1/Model3
+o'z ichida). Bu YAKUNIY sessiyada Model2_FET_Fig1.java ga kiritilgan o'zgarishlar
+(tau_rel keskin sigmoid, z_eff, r_off) FAQAT Model2 fayliga tegishli o'zgaruvchilar
+va formulalar - Model3_Pressure.java bularning HECH BIRIGA murojaat qilmaydi
+(alohida .java fayl, alohida parametr fazosi). Shuning uchun **Model3 ni qayta
+hisoblash SHART EMAS** - vazifada aytilganidek. Yagona umumiy "aloqa nuqtasi":
+ikkala model ham TAXMINAN bir xil R_ON~7kOhm/R_OFF~100kOhm maqsad diapazoniga
+mo'ljallangan (fenomenologik jihatdan mos kelishi kerak bo'lgan, lekin matematik
+jihatdan bog'lanmagan ikkita mustaqil kalibrovka) - bu mosliksiz emas.
+
+Fayl: `Fig_pressure.png`, skript: `plot_pressure.ps1`.
