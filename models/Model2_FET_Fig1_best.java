@@ -536,6 +536,33 @@ public class Model2_FET_Fig1 {
       if (out2 != null) out2.close();
     }
 
+    // YAKUNIY sessiya, 3-bosqich: GUI da ochilganda darhol grafik ko'rinishi uchun
+    // plot group qo'shildi (dset2 - std4 ning OXIRGI yechimi, ya'ni panel "d").
+    // Alohida panellar (a,b,c) uchun alohida dataset saqlanmagani sabab (xotira
+    // tejash uchun ONLY oxirgi holat), faqat panel "d" ko'rinadi - CSV/PNG esa
+    // barcha 4 panelni o'z ichiga oladi.
+    model.result().create("pg_VI", "PlotGroup1D");
+    model.result("pg_VI").label("S4 (panel d): V(t) va I(t)*1000");
+    model.result("pg_VI").set("data", "dset2");
+    model.result("pg_VI").create("g1", "Global");
+    model.result("pg_VI").feature("g1").set("expr", new String[]{"V_wave", "ec.I0_1*1000"});
+    model.result("pg_VI").feature("g1").set("legend", true);
+    model.result("pg_VI").run();
+
+    model.result().create("pg_xP", "PlotGroup1D");
+    model.result("pg_xP").label("S4 (panel d): xode(t) va P(t)");
+    model.result("pg_xP").set("data", "dset2");
+    model.result("pg_xP").create("g1", "Global");
+    model.result("pg_xP").feature("g1").set("expr", new String[]{"xode", "P"});
+    model.result("pg_xP").feature("g1").set("legend", true);
+    model.result("pg_xP").run();
+
+    try {
+      model.save("Model2_FET_Fig1.mph");
+    } catch (IOException exSave) {
+      System.out.println("XATO (yakuniy saqlash, plot group bilan): " + exSave.getMessage());
+    }
+
     System.out.println("FIG1 TAYYOR.");
     return model;
   }

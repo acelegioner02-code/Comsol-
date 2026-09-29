@@ -13,7 +13,7 @@ Bu jurnal har bosqichdan keyin yangilanadi.
 | 1.3. Panel (b) kichik volatil tarmoq | BAJARILMADI (quyida sabab) |
 | 1.4-1.5. Ballash, Fig1_analog.png, Fig1_side_by_side.png | BAJARILDI |
 | 2. Bosim natijasi (Fig_pressure.png) | BAJARILDI |
-| 3. MPH fayllar, YAKUNIY/ papka | KUTILMOQDA |
+| 3. MPH fayllar, YAKUNIY/ papka | BAJARILDI (Troyan_Doronin_All.mph bundan mustasno, sababi bilan) |
 | 4. NATIJALAR.md (dissertatsiya hisoboti) | KUTILMOQDA |
 
 ## 1-BOSQICH: Fig.1 yaqinlashtirish - bajarilgan ishlar
@@ -139,3 +139,40 @@ mo'ljallangan (fenomenologik jihatdan mos kelishi kerak bo'lgan, lekin matematik
 jihatdan bog'lanmagan ikkita mustaqil kalibrovka) - bu mosliksiz emas.
 
 Fayl: `Fig_pressure.png`, skript: `plot_pressure.ps1`.
+
+## 3-BOSQICH: MPH fayllar va YAKUNIY/ papka
+
+- **Model2_FET_Fig1.mph** (16.6MB) - `pg_VI` (V(t),I(t)*1000 - panel d) va `pg_xP`
+  (xode(t),P(t) - panel d) plot grouplar qo'shildi, `.run()` qilindi, qayta
+  hisoblanib saqlandi (natijalar aynan bir xil, A3 bilan mos - tekshirildi).
+- **Model3_Pressure.mph** (17.4MB) - `pg_stress` (Von Mises kuchlanish xaritasi,
+  oxirgi holat) va `pg_dgap` (d_gap qiymati) plot grouplar qo'shildi, `.run()`
+  qilindi, 24 ta bosim/holat kombinatsiyasi qayta hisoblanib saqlandi (173s,
+  natijalar `Ron_p.csv` bilan AYNAN bir xil - reproduktivlik tasdiqlandi).
+- **Model1_Vertical.mph** (743MB) - allaqachon `pg_V`, `pg_J`, `pg_Vz`, `pg_N3_*`,
+  `pg_N4_*`, `pg_N5_*` kabi ko'p sonli plot grouplarga ega (oldingi sessiyalarda
+  yaratilgan), lekin ularga aniq `.run()` chaqiruvi QO'SHILMAGAN (faqat
+  `export().run()` PNG hosil qilish uchun chaqirilgan - bu alohida narsa).
+  **QAROR: Model1 TO'LIQ QAYTA HISOBLANMADI** - sababi: (1) fayl hajmi 743MB,
+  **YAKUNIY/ papkasiga 50MB chegarasi tufayli BARIBIR NUSXALANMAYDI**, shuning
+  uchun GUI-qulayligi bu FAYL UCHUN past ustuvorlik; (2) to'liq qayta hisoblash
+  (N1-N8 barcha bosqichlar) taxminan bir necha soat talab qilardi - bu YAKUNIY
+  9 soatlik sessiyaning qolgan barcha bosqichlariga (4-BOSQICH hisoboti va h.k.)
+  ajratilgan vaqtni yeb qo'yardi. Model1_Vertical.mph diskda saqlanib qoladi
+  (models/ papkasida, YAKUNIY/ da EMAS), barcha natijalar CSV/PNG fayllar orqali
+  allaqachon mavjud.
+- **Troyan_Doronin_All.mph (birlashtirilgan, 3 komponent)**: **BAJARILMADI**.
+  Sabab (oldingi sessiyada batafsil tahlil qilingan, o'zgarmagan): barcha 3
+  modelni bitta faylga birlashtirish xotira jihatidan ENG YOMON variant (8GB
+  RAM'li mashinada barcha komponentlar uchun mesh/xotira bir vaqtda band
+  bo'ladi, hatto faqat bittasi yechilayotganda ham) - OOM xavfi yuqori, vaqt esa
+  cheklangan. Qanday qilish mumkinligi `HISOBOT_FIG1.md` da avval yozilgan
+  (bosqichma-bosqich yo'riqnoma, hali ham amal qiladi).
+
+### YAKUNIY/ papka tarkibi
+
+`Fig1_analog.png`, `Fig1_side_by_side.png`, `Fig_pressure.png`,
+`iv_fig1_continuous.csv` (=iv_fig1_best.csv), `Ron_p.csv`,
+`Model2_FET_Fig1.java` (=Model2_FET_Fig1_best.java, ular bir xil - A3 yakuniy),
+`Model3_Pressure.java`, `Model1_Vertical.java`, `Model1_Sensitivity.java`,
+`Model2_FET_Fig1.mph`, `Model3_Pressure.mph`.
