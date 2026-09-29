@@ -14,7 +14,7 @@ Bu jurnal har bosqichdan keyin yangilanadi.
 | 1.4-1.5. Ballash, Fig1_analog.png, Fig1_side_by_side.png | BAJARILDI |
 | 2. Bosim natijasi (Fig_pressure.png) | BAJARILDI |
 | 3. MPH fayllar, YAKUNIY/ papka | BAJARILDI (Troyan_Doronin_All.mph bundan mustasno, sababi bilan) |
-| 4. NATIJALAR.md (dissertatsiya hisoboti) | KUTILMOQDA |
+| 4. NATIJALAR.md (dissertatsiya hisoboti) | BAJARILDI |
 
 ## 1-BOSQICH: Fig.1 yaqinlashtirish - bajarilgan ishlar
 
