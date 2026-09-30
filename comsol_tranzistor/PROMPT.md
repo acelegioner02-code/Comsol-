@@ -194,6 +194,67 @@ Hal qilinmagan muammolar: ...
 Ish tugagach (yoki vaqt tugab B7–B8 bajarilgach) birinchi qatorni `HOLAT: YAKUNLANDI` qil.
 Start skripti shu qatorni ko'rib to'xtaydi.
 
+## 6b. 3-kun: bulutdagi tekshiruvda topilgan ikki xato (AVVAL SHULARNI TUZAT)
+
+Bulutdagi Claude 2-kun natijalarini (`repo\comsol_tranzistor\natijalar\`) tekshirdi. D_it yaqinlashmasligi
+va juda kichik tok ikkita aniq sababdan kelgan. Ikkalasi ham `MoS2Fet.java` da.
+
+**Xato 1: Schottky bareri umuman berilmagan, shuning uchun ion mexanizmi (x) modelga ulanmagan.**
+`mc1/mc2` da `SpecifyBarrierHeight = "ideal"` qo'yilgan. Bu rejimda COMSOL barerni **metall chiqish ishi
+`Phi`** dan hisoblaydi (Φ_B = Phi − χ), `Phi_B` xossasini esa **e'tiborsiz qoldiradi**. Dalil:
+`api_namuna\dump_schottky_contact.txt` da `SpecifyBarrierHeight=[ideal]` bilan birga `Phi=[phim]` turibdi,
+`Phi_B=[0.67]` esa shunchaki sukut qiymati. `Phi` berilmagani uchun sukut qiymati (~4.5 V) ishlagan:
+barer ≈ 4.5 − 4.0 = 0.5 eV, `Phi_B0` va `x` esa hech narsaga ta'sir qilmagan. VG = 80 V dagi 1.2 nA tok ham
+shunga mos keladi. Tuzatish:
+```java
+mc1.set("SpecifyBarrierHeight", "ideal");
+mc1.set("Phi", "chi_mos + Phi_B0 - x");   // source
+mc2.set("Phi", "chi_mos + Phi_B0 + x");   // drain
+```
+*Tekshiruv:* tuzoqlarsiz, VG = 80 V, VD = 0.1 V da `Phi_B0` = 0.15 / 0.25 / 0.35 V bilan uch marta hisobla.
+I_D har 0.1 V da taxminan exp(0.1/0.0259) ≈ 50 marta o'zgarishi kerak (kanal cheklamaguncha). O'zgarmasa,
+`Phi` ifodasi ishlamayapti: `SpecifyBarrierHeight` ning boshqa qiymatlarini hujjatdan top va sina.
+
+**Xato 2: tuzoqlar modeli ham fizik jihatdan noto'g'ri, ham sonli jihatdan eng og'ir variant.**
+`ContinuousEnergyLevelsBoundary` moscap_1d_interface_traps namunasidan ko'chirilgan: faqat **donor**,
+midgap atrofida **0.3 eV kenglikdagi tor** to'rtburchak. Namunada Nss = 2e11, bizda 3e13, ya'ni 150 marta
+ko'p. Natijada 9e12 cm^-2 zaryad Fermi sathi 0.3 eV oynadan o'tganda to'satdan almashadi. Newton aynan shu
+yerda "muzlaydi". Buning ustiga bu xususiyat qo'shimcha energiya o'lchamini yaratadi (xdim, Edisc = 25),
+bu masalani yanada og'irlashtiradi. Tor oyna tashqarisida esa tuzoq yo'q, ya'ni SS ≈ 25 V/dek
+butun V_G oralig'ida chiqmaydi.
+Maqolaga kerak bo'lgan fizika: **tezkor interfeys holatlari, butun zona bo'yicha bir tekis D_it**. Ularning
+statik zaryadi Fermi sathiga **chiziqli** bog'liq:
+    Q_it = −q · D_it · (E_F − E_0)   (sirtda; E_0 — neytrallik sathi, midgap + dE0)
+Bu m = 1 + q·D_it/C_ox ni aynan beradi va yaqinlashishi oson. Tuzatish: `tasr1/ctb1` ni o'chir va
+MoS2/SiO2 chegarasiga (`sel_mos_sio2`) **SurfaceChargeDensity** qo'y:
+```java
+sfit.set("rhoqs", "-e_const*Dit*Dit_scale*(EFS - EMID - dE0)");
+```
+- `EFS`, `EMID` — sirtdagi elektron kvazi-Fermi sathi va midgap (Ec+Ev)/2. semi'dagi aniq nomlarini va
+  **birliklarini** (V yoki J) o'zing aniqla. Buning uchun ifodani bitta nuqtada baholab ko'r (`semi.Efn`,
+  `semi.Ec`, `semi.Ev` yoki 6.0 dagi nomlari). Birlik J bo'lsa, `e_const` ga bo'l. rhoqs birligi C/m^2 chiqishi kerak.
+- `dE0` — yangi kalibrlanadigan parametr (sukut 0 V). U V_on darajasini siljitadi, `Phi_Si` va `sigma_F4` bilan birga.
+- Ishorani tekshir: E_F yuqoriga (akkumulyatsiyaga) chiqsa, Q_it manfiy bo'lishi kerak (akseptorga o'xshash).
+- `Dit_scale` ni 0 → 0.1 → 0.3 → 1 qilib continuation bilan kirit (VG = 80 V da, keyin VG sweep).
+- Bu tuzoqlar dinamikasini tashlab yuboradi. Bu to'g'ri: gisterezisni modelda ionlar (x, Global ODE) beradi,
+  tuzoqlar emas. Buni hisobotda yoz.
+*Tekshiruv:* tuzoqlarsiz va D_it = 3e13 bilan SS ni o'lcha. SS ≈ 0.06·(1 + q·D_it/C_ox) V/dek bo'lishi kerak
+(3e13 da ≈ 24 V/dek).
+
+**3-tekshiruv: V_on barerga bog'liqmi? (eng muhim fizik test).**
+D_it bilan, VD = 0.5 V da x = 0 va x = 0.05 V uchun V_on ni hisobla. Kutilgan natija: ΔV_on ≈ −m·0.05 V
+(m ≈ 400 da ≈ −20 V). ΔV_on ≈ 0 chiqsa, 1 nA darajasida tokni kontakt emas, kanal cheklayapti:
+termoemissiyali kontaktda subporog tokni kanal bareri belgilaydi. U holda tartib bilan sina:
+(a) Metal Contact'da tunnellash: `extraElectronCurrent` xossasining 6.0 dagi variantlarini hujjatdan top
+    (WKB tunnellash bo'lsa, yoq);
+(b) `Nd_mos` ni oshir yoki `dE0`/`Phi_Si` ni o'zgartir, shunda kanal "normally on" bo'ladi (maqolada shunday)
+    va subporogda kontakt bareri cheklaydi.
+Natijani va ΔV_on/Δx nisbatini `STATUS.md` ga yoz. Bu nisbat β ni qayta hisoblash uchun kerak:
+beta_COMSOL = 92.5 / |ΔV_on/Δx|.
+
+Uchala tekshiruvdan keyin B3 → B8 ni PROMPT bo'yicha davom ettir. 2-kundagi sinov loglarini o'chirma.
+Yangi loglar `run_d3_*.log` deb nomlansin.
+
 ## 7. Boshlash va davom etish
 
 **Kechagi seans (1-kun) to'liq tugamagan.** U ruxsat so'rab to'xtab qolgan va o'chirilgan. COMSOL faylida
