@@ -25,6 +25,8 @@ sababini `STATUS.md` ga yoz va davom et. Ertalab foydalanuvchi faqat `HISOBOT.md
 
 - `C:\comsol_tranzistor\ish\` — ishchi papka. Unda:
   - `MoS2_F4TCNQ_COMSOL_qollanma.md` — maqola tahlili va COMSOL model tavsifi (4–7-qismlar). **Birinchi o'qi.**
+  - `GEOMETRIYA.md`, `geometry_preview.png`, `geometry_preview.py` — 1a-rasm bo'yicha aniq geometriya
+    (koordinatalar, domenlar, chegara shartlari, to'r). **Qo'llanmadagi soddalashtirilgan geometriya o'rniga shu ishlatiladi.**
   - `compact_model.py` — kalibrlash modeli. `DATA` lug'atida maqola rasmlaridan olingan raqamlar bor.
   - `extract_metrics.py` — COMSOL CSV'dan V_on, qiyalik, to'g'rilash va gisterezisni hisoblaydi.
 - `C:\comsol_tranzistor\comsol_paths.txt` — `comsolcompile.exe` va `comsolbatch.exe` yo'llari
@@ -58,16 +60,24 @@ Asosiy nishon: 4-rasm, F4TCNQ, yuqori va past namlik (bitta qurilma, W = 12.8 um
 Yuqori RH va past RH holatlari bir xil geometriya va bir xil kanal parametrlari bilan olinishi kerak. Faqat
 ionlar bilan bog'liq parametrlar (beta, sigma_F4, Phi_B0) farq qilishi mumkin. Buni hisobotda ko'rsat.
 
-## 3. Fizik model (qo'llanmaning 5-qismi, "A modeli")
+## 3. Fizik model
 
-- 2D, faqat MoS2 domeni (to'rtburchak: uzunligi `L_ch + 2*L_c`, qalinligi `t_mos`). Oksid chizilmaydi.
-- Semiconductor interfeysi (`semi`), Finite Volume, Maxwell–Boltzmann statistikasi.
-- Pastki chegara: **Thin Insulator Gate** (eps 3.9, 285 nm, V = VG) + **interfeys tuzoqlari** (D_it).
+**Geometriya: `GEOMETRIYA.md` bo'yicha, maqoladagi 1a-rasm bilan bir xil to'liq kesim.** Unda p++ Si gate,
+SiO2 285 nm, MoS2, Cr 1 nm, pog'onali Au kontaktlar, F4TCNQ gumbazlari, suv plyonkasi va havo bor.
+Koordinatalar, domen-fizika jadvali va to'r talablari o'sha faylda. Undan chetga chiqma. Birorta primitiv
+ishlamasa, xuddi shu shaklni boshqa primitiv bilan qur va buni `STATUS.md` ga yoz.
+**Taqiqlanadi:** oksidni Thin Insulator Gate bilan almashtirish, F4TCNQ yoki Cr/Au ni tashlab ketish.
+Yaqinlashish yoki tezlik uchun soddalashtirilgan "yordamchi" model qilish mumkin, lekin yakuniy natija
+to'liq geometriyada olinadi.
+
+- Semiconductor interfeysi (`semi`), Finite Volume, Maxwell–Boltzmann statistikasi. MoS2 yarimo'tkazgich,
+  SiO2/F4TCNQ/suv/havo izolyatorlar (Charge Conservation). Si, Cr va Au semi'ga kirmaydi.
+- Gate: SiO2/Si chegarasida Gate Contact, V = VG. MoS2/SiO2 chegarasida **interfeys tuzoqlari D_it**.
   **D_it majburiy.** Busiz SS kichik bo'ladi va V_on siljishi bir necha voltdan oshmaydi.
   Maqsad SS ≈ 0.06·(1 + q·D_it/C_ox): D_it ~ 1e13–5e13 cm^-2 eV^-1.
-- Yuqori chegara uch segmentga bo'linadi: source kontakt [−L_c, 0], ochiq sirt [0, L_ch], drain kontakt [L_ch, L_ch + L_c].
-  Kontaktlar: **Metal Contact, Schottky**, termoemissiya. Barer balandligi: source `Phi_B0 - x`, drain `Phi_B0 + x`.
-  Ochiq sirtda F4TCNQ uchun `sigma_F4` sirt zaryadi.
+- MoS2/Cr chegaralari (MoS2 ning ustki sirti va uchi): **Metal Contact, Schottky**, termoemissiya.
+  Barer: source `Phi_B0 - x`, drain `Phi_B0 + x`. Izolyator/metall chegaralari: shu metallning potensiali.
+  MoS2 ning suv/F4TCNQ bilan chegarasida F4TCNQ uchun `sigma_F4` sirt zaryadi.
 - Out-of-plane thickness = W (tok amperda chiqsin, 1 nA mezoni to'g'ri ishlasin).
 - Ionlar holati `x` [V]:
   - Stationary (transfer) da `x = beta*VD` (ionlar muvozanatda).
@@ -93,7 +103,8 @@ qil va batch'da ishga tushir. Python va numpy/scipy/matplotlib ni tekshir. `pyth
 2. To'g'ri Java API nomlarini COMSOL'ning o'zidan ol. COMSOL papkasidagi `applications\Semiconductor_Module\`
    ichidan fayl nomida mosfet, schottky, trap yoki insulator bo'lgan `.mph` modellarni top. Kichik Java dastur
    bilan ularni `ModelUtil.load(...)` qil va `model.save("...\\api_namuna\\nomi.java")` bilan **.java qilib saqla**.
-   Shu fayllardan quyidagilarning aniq tag, xossa va qiymat nomlarini ko'chir: Thin Insulator Gate, Metal Contact
+   Shu fayllardan quyidagilarning aniq tag, xossa va qiymat nomlarini ko'chir: Gate Contact (izolyatorga tegib
+   turgan metall), Charge Conservation (izolyator domenlari), Polygon/Ellipse/Mirror/Difference/Intersection, Metal Contact
    (Schottky, barer balandligini berish usuli), interfeys tuzoqlari, Analytic Doping, Semiconductor Equilibrium
    study step, out-of-plane thickness, Global Equations.
 3. Qo'shimcha manba: `doc\` papkasidagi Semiconductor Module User's Guide va Programming Reference PDF'lari.
@@ -104,8 +115,11 @@ qil va batch'da ishga tushir. Python va numpy/scipy/matplotlib ni tekshir. `pyth
 Parametrlarni **`params.txt` dan o'qisin** (`nomi = qiymat`). Shunda kalibrlashda qayta kompilyatsiya kerak bo'lmaydi.
 Rejim ham shu faylda beriladi: `mode = transfer | output`. Natija CSV'ga yoziladi
 (`transfer.csv`: VD,VG,ID; `output.csv`: t,VD,ID) va `.mph` saqlanadi.
+Geometriya `GEOMETRIYA.md` bo'yicha. Model geometriyani PNG qilib eksport qilsin (`natijalar\geom_full.png`,
+y o'qi cho'zilgan; `natijalar\geom_source_edge.png`, x ∈ [−1.65, 0.25] um). Ularni `geometry_preview.png` bilan
+solishtir. Farq bo'lsa, avval uni tuzat, keyin fizikaga o't.
 Avval tuzoqlarsiz, x = 0 bilan: Equilibrium → VG = 80 V, VD = 0.1 V.
-*Shart:* yaqinlashdi, I_D > 0, tok W ga proporsional.
+*Shart:* geometriya rasmlari `geometry_preview.png` ga mos, yaqinlashdi, I_D > 0, tok W ga proporsional.
 
 **B3. Transfer sweep (≤1 soat).**
 VG = 80 → −80 (continuation, 2 V qadam, yaqinlashmasa 1 V), VD = 0.2…1.0. `extract_metrics.py transfer` bilan V_on ni ol.
@@ -180,7 +194,22 @@ Hal qilinmagan muammolar: ...
 Ish tugagach (yoki vaqt tugab B7–B8 bajarilgach) birinchi qatorni `HOLAT: YAKUNLANDI` qil.
 Start skripti shu qatorni ko'rib to'xtaydi.
 
-## 7. Boshlash
+## 7. Boshlash va davom etish
 
-Agar `C:\comsol_tranzistor\ish\STATUS.md` mavjud bo'lsa, uni o'qi va o'sha joydan davom et.
-Bo'lmasa, B0 dan boshla. Qo'llanmani o'qi va ishga kirish.
+**Kechagi seans (1-kun) to'liq tugamagan.** U ruxsat so'rab to'xtab qolgan va o'chirilgan. COMSOL faylida
+geometriya "faqat to'g'ri chiziq" bo'lib ko'ringan. Buning ikki sababi bo'lishi mumkin: MoS2 20 nm × 7 um
+bo'lib, sukut bo'yicha teng masshtabda chiziq ko'rinadi, yoki geometriya oxiriga yetmagan (`GEOMETRIYA.md`, 1-bo'lim).
+Davom etishdan oldin:
+
+1. `ish\` ichidagi hamma narsani ko'rib chiq: `STATUS.md` (bo'lsa), `api_namuna\`, `model\`, `*.java`,
+   `*.mph`, `*.log`, `C:\comsol_tranzistor\logs\`. Hech narsani o'chirma.
+2. Kechagi `.mph` ni tekshir: kichik Java dastur bilan yuklab, geometriyadagi domenlar soni, har birining
+   bounding box'i, fizika featurelari ro'yxati va yechim bor-yo'qligini `natijalar\eski_model_diagnoz.txt` ga yoz.
+   Qisqa xulosani `STATUS.md` ga "1-kun diagnozi" bo'limi qilib yoz.
+3. Kechagi ishdan yaroqlisini qoldir (masalan, ishlagan API namunalari, `API_ESLATMA.md`).
+   Geometriyani `GEOMETRIYA.md` bo'yicha **qaytadan** qur: kechagi soddalashtirilgan (faqat MoS2) geometriya
+   endi yaroqsiz.
+4. Keyin bosqichlarni tartib bilan davom ettir. B0 va B1 bajarilgan bo'lsa, ularni qisqa tekshiruv bilan
+   o'tkazib yubor.
+
+`STATUS.md` bo'lmasa, B0 dan boshla. Qo'llanmani va `GEOMETRIYA.md` ni o'qi va ishga kirish.

@@ -10,7 +10,7 @@ Qabul chegaralari: `PROMPT.md`, 2-bo'lim (T1–T8).
 | 1 | `C:\comsol_tranzistor` va repo klon | siz / skript | 5 daq | `ish\PROMPT.md` mavjud |
 | B0 | Muhit: comsolcompile, Python | lokal Claude | 15 daq | test model ishladi |
 | B1 | COMSOL 6.0 Application Library'dan Java API nomlarini olish | lokal Claude | 45 daq | `API_ESLATMA.md` |
-| B2 | Minimal model (MoS2 + Thin Insulator Gate + Schottky kontaktlar) | lokal Claude | 1.5 soat | yaqinlashadi, I_D > 0 |
+| B2 | To'liq geometriya (`GEOMETRIYA.md`: Si/SiO2/MoS2/Cr/Au/F4TCNQ/suv/havo) + Schottky kontaktlar | lokal Claude | 1.5 soat | yaqinlashadi, I_D > 0 |
 | B3 | Transfer sweep, V_on | lokal Claude | 1 soat | V_on(V_D) chiqadi |
 | B4 | Kalibrlash: D_it → SS, Phi_B0 → V_on, beta → qiyalik | lokal Claude | 1.5 soat | T1, T2, T3, T8 |
 | B5 | Time Dependent chiqish xarakteristikasi (Global ODE ionlar) | lokal Claude | 1.5 soat | T4, T5, T6 |
