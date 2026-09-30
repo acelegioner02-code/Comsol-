@@ -1,6 +1,44 @@
 HOLAT: YAKUNLANDI
-Oxirgi yangilanish: 2026-10-01 03:45
+Oxirgi yangilanish: 2026-10-01 04:35
 Bosqichlar: B0 [x] B1 [x] B2 [x] B3 [~] B4 [ ] B5 [ ] B6 [ ] B6b [ ] B7 [x] B8 [x]
+
+## Qo'shimcha urinish (davomi): to'yinuvchi (tanh) D_it formulasi
+
+Oldingi yakuniy holatdan keyin, "davom et" ko'rsatmasi bilan yana bitta muhim, mustaqil
+gipoteza sinaldi: chiziqli `Q_it` formulasi CHEGARALANMAGAN bo'lgani sabab beqaror bo'lishi
+mumkin edi (yuqoriga qarang, 3.3-bo'lim). Tuzatish: `tanh()` bilan to'yinuvchi variant:
+```java
+sfit.set("rhoqs", "-e_const*Dit*Dit_scale*Ew0*tanh((semi.Efn-(semi.Ec+semi.Ev)/2-dE0)/Ew0)");
+```
+(kichik siljishda asl chiziqli formulaga mos, katta siljishda ±e_const*Dit*Ew0 ga to'yinadi).
+
+**QISMAN MUVAFFAQIYAT:** Dit_scale ramp (0→0.02→...→1.0, **to'liq D_it=3×10¹³ gacha**) endi
+BARCHA bosqichlarda retry orqali muvaffaqiyatli o'tdi - jami 224 soniyada (avvalgi chiziqli
+formula hatto Dit_scale=0.02'da ham muvaffaqiyatsiz bo'lgan edi, hech qachon 1.0'ga yetmagan).
+**Bu haqiqiy, sezilarli yaxshilanish.**
+
+**Ammo yangi to'siq topildi:** to'liq D_it=3×10¹³ ga yetgandan keyin, VG'ni O'ZGARTIRISH
+(hatto -1V kabi juda kichik qadam bilan, hatto VG=80'ni O'ZGARTIRMASDAN qayta yechish ham)
+HAR DOIM muvaffaqiyatsiz bo'ldi (birinchi urinish + retry, barchasi). Bu VG qadam kattaligi
+muammosi EMAS (VG=80→79 -1V qadam ham, VG=80→80 o'zgarishsiz qayta yechish ham bir xil
+tarzda muvaffaqiyatsiz bo'ldi) - balki `model.study("std1").run()`ni QAYTA chaqirish
+(hatto bootstrap muvaffaqiyatli tugagandan keyin) o'zi negadir barqaror emas. Ehtimoliy
+sabab: bootstrap'ning oxirgi (muvaffaqiyatli) bosqichi RETRY orqali (ya'ni
+`clearSolutionData()` + qayta boshlash orqali) erishilgan bo'lsa, bu holat "silliq
+davomiylik" emas, balki alohida topilgan yechim bo'lishi mumkin - undan yana oldinga
+(hatto bir xil parametr bilan) siljish qiyin bo'lib chiqmoqda.
+
+**Xulosa:** to'yinuvchi formula D_it RAMP muammosini (asosiy, birinchi navbatdagi to'siq)
+hal qildi, lekin YANGI qatlamdagi muammoni (VG sweep to'liq D_it kuchida) ochdi. To'liq
+transfer egri chizig'ini olish uchun BUNI HAM hal qilish kerak - vaqt tugagani uchun bu
+sessiyada bajarilmadi. Kelajak uchun tavsiya: har bir VG nuqtasida ham xuddi Dit_scale kabi
+"ichki" continuation (masalan Dit_scale'ni VAQTINCHA pasaytirib, VG o'zgartirib, keyin
+qayta ko'tarish) yoki `clearSolutionData()`dan saqlanadigan muqobil retry strategiyasi
+sinalishi kerak.
+
+`ish\model\MoS2Fet.java`dagi joriy holat: **tanh (to'yinuvchi) formula ishlatiladi**
+(chiziqli formula EMAS) - bu HISOBOT.md'dagi "chiziqli formula ishlatildi" tavsifidan
+YANGILANGAN holat. Kod, loglar (`run_d3_tanh*.log`) va bu topilma repo'ga push qilindi.
 
 ## B3 (3-kun): to'liq transfer sweep - qisman natija (halol)
 

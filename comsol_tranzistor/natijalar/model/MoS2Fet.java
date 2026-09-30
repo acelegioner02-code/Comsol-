@@ -374,21 +374,25 @@ public class MoS2Fet {
     // Interfeys tuzoqlari (D_it) - MoS2/SiO2 chegarasida.
     // MUHIM (3-kun, Xato 2 tuzatildi): avval ContinuousEnergyLevelsBoundary (faqat donor,
     // midgap atrofida 0.3eV tor oyna) ishlatilgan edi - bulutdagi tekshiruv buni ham fizik
-    // (maqolaga "tezkor, butun zona bo'ylab bir tekis D_it" kerak, tor diskret band emas),
-    // ham sonli (Fermi sathi tor oynadan o'tganda zaryad keskin sakraydi - Newton shu yerda
-    // "muzlagan") jihatdan noto'g'ri deb topdi. Tuzatish: tezkor interfeys holatlari, statik
-    // zaryadi Fermi sathiga CHIZIQLI bog'liq: Q_it = -q*D_it*(E_Fn - E_mid - dE0), oddiy
-    // SurfaceChargeDensity orqali (tasr1/ctb1 emas). Bu m = 1 + q*D_it/C_ox ni aynan beradi
-    // va tuzoq dinamikasi/energiya o'lchamini olib tashlaydi - yaqinlashishi ancha oson
-    // bo'lishi kutiladi. semi.Efn/semi.Ec/semi.Ev nomlari EfProbe.java bilan tasdiqlangan
-    // (test\EfProbe.java, natija: semi.Ec=Eg/2, semi.Ev=-Eg/2, V birligida, e_const'ga
-    // bo'lish shart emas). dE0 - yangi kalibrlanadigan parametr (neytrallik sathi siljishi).
-    // Gisterezis endi FAQAT ionlardan (x, Global ODE) keladi - tuzoqlardan emas.
+    // ham sonli jihatdan noto'g'ri deb topdi. Tuzatish: tezkor interfeys holatlari, statik
+    // zaryadi Fermi sathiga bog'liq, oddiy SurfaceChargeDensity orqali (tasr1/ctb1 emas).
+    // semi.Efn/semi.Ec/semi.Ev nomlari EfProbe.java bilan tasdiqlangan.
+    //
+    // MUHIM (3-kun, davomi - CHIZIQLI formula raqamli beqaror topildi): PROMPT.md'ning
+    // so'zma-so'z ifodasi Q_it = -q*D_it*(E_Fn-E_mid-dE0) CHEGARALANMAGAN - Efn qancha
+    // siljisa ham mutanosib zaryad beradi. Bu hatto Dit_scale=0.02 (maqsaddan 50x kichik)
+    // da ham yaqinlashmadi (STATUS.md, 6 ta mustaqil solver-darajasidagi tuzatish sinaldi,
+    // barchasi muvaffaqiyatsiz). Endi TO'YINUVCHI (saturating) variant sinaladi: haqiqiy
+    // tuzoqlar chekli sonli holatlarga ega, Ew0 kenglikdagi energiya oynasidan tashqarida
+    // deyarli barcha holatlar allaqachon to'la/bo'sh bo'lib qoladi. tanh() kichik siljishda
+    // (|Efn-Emid-dE0| << Ew0) ASL chiziqli formulaga mos keladi (tanh(x)≈x), lekin katta
+    // siljishda ±e_const*Dit*Ew0 ga to'yinadi - chegaralangan, silliq, Newton uchun
+    // ancha barqarorroq bo'lishi kutiladi.
     if (P.get("use_traps").equals("1")) {
       PhysicsFeature sfit = semi.create("sfit", "SurfaceChargeDensity", 1);
       sfit.selection().named("sel_mos_sio2");
-      sfit.set("rhoqs", "-e_const*Dit*Dit_scale*(semi.Efn - (semi.Ec+semi.Ev)/2 - dE0)");
-      System.out.println("CHECKPOINT: sfit (D_it, SurfaceChargeDensity) OK");
+      sfit.set("rhoqs", "-e_const*Dit*Dit_scale*Ew0*tanh((semi.Efn - (semi.Ec+semi.Ev)/2 - dE0)/Ew0)");
+      System.out.println("CHECKPOINT: sfit (D_it, SurfaceChargeDensity, to'yinuvchi) OK");
     }
 
     // F4TCNQ sirt zaryadi - MoS2/suv chegarasida (ochiq kanal)
@@ -693,6 +697,9 @@ public class MoS2Fet {
         for (int vgi = 0; vgi < thisVgList.size(); vgi++) {
           double vg = thisVgList.get(vgi);
           model.param().set("VG", fmt(vg));
+          // ESLATMA (3-kun): "birinchi nuqtani bootstrap'dan o'qish" (qayta yechmasdan)
+          // sinaldi, lekin dataset eski/uzilib qolgan holatga bog'lanib, ID=0 (noto'g'ri)
+          // qaytardi - bekor qilindi. Har bir nuqta, birinchisi ham, to'liq qayta yechiladi.
           boolean ok = solveRobust(String.format(Locale.US, "VD=%.2f VG=%7.2f", vd, vg));
           if (ok) {
             try {

@@ -1,5 +1,7 @@
-# B3: to'liq transfer sweep. D_it yaqinlashmagani uchun (STATUS.md) tuzoqlarsiz, F4TCNQ
-# yoqilgan konfiguratsiya ishlatiladi - yagona ishonchli to'liq-fizika holat.
+# Joriy holat (3-kun oxiri): D_it uchun to'yinuvchi (tanh) formula ishlatiladi. D_it ramp
+# (Dit_scale 0->1) muvaffaqiyatli, lekin VG sweep to'liq D_it kuchida hali ishlamaydi
+# (HISOBOT.md, 3.3b-bo'lim). Standart: tuzoqlarsiz, F4TCNQ yoqilgan (yagona to'liq
+# ishonchli konfiguratsiya - B3 shu bilan bajarilgan).
 mode = transfer
 use_traps = 0
 use_f4 = 1

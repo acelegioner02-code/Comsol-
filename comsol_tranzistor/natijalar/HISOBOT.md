@@ -131,6 +131,31 @@ zaryad orasida kuchli, o'z-o'ziga bog'liq musbat fikr-aloqa hosil qilib, standar
 Newton yechuvchisi uchun barqarorsiz bo'lishi mumkin. Bu PROMPT.md 6b bo'limida oldindan
 aytilmagan, yangi topilma.
 
+### 3.3b. Qo'shimcha urinish: to'yinuvchi (tanh) D_it formulasi — QISMAN MUVAFFAQIYAT
+
+Yuqoridagi xulosa (chegaralanmagan chiziqli formula beqaror) asosida, `rhoqs` `tanh()` bilan
+to'yinuvchi qilib qayta yozildi:
+```java
+sfit.set("rhoqs", "-e_const*Dit*Dit_scale*Ew0*tanh((semi.Efn-(semi.Ec+semi.Ev)/2-dE0)/Ew0)");
+```
+(kichik siljishda asl chiziqli formulaga aynan mos — `tanh(x)≈x` — katta siljishda
+±`e_const·Dit·Ew0` ga to'yinadi, real chekli-holatli tuzoqlarga o'xshab).
+
+**Natija ikki xil edi:**
+- ✅ **D_it_scale ramp (0→...→1.0, to'liq D_it=3×10¹³ gacha) endi BARCHA bosqichlarda
+  muvaffaqiyatli o'tdi** (retry orqali, jami 224 soniyada) — chiziqli formula hech qachon
+  Dit_scale=0.02'dan o'tolmagan edi. Bu haqiqiy, tasdiqlangan yaxshilanish.
+- ❌ **Lekin to'liq D_it=3×10¹³ ga yetgandan keyin, VG'ni o'zgartirish (hatto -1V mikro-qadam
+  bilan, hatto VG'ni umuman o'ZGARTIRMASDAN qayta yechish ham) HAR DOIM muvaffaqiyatsiz
+  bo'ldi.** Bu VG qadam kattaligi muammosi emasligi tasdiqlandi (bir xil natija -4V, -1V va
+  0V "qadamlar"da). Ehtimoliy sabab: bootstrap'ning oxirgi bosqichi RETRY (clearSolutionData
+  + qayta boshlash) orqali erishilgan bo'lib, bu "silliq davomiylik" bermagan — undan yana
+  oldinga (hatto o'zgarishsiz) siljish qiyin.
+
+**Xulosa:** to'yinuvchi formula MUHIM, tasdiqlangan qadam oldinga (D_it ramp muammosi hal
+qilindi), lekin YANGI qatlamdagi muammo (VG sweep to'liq D_it kuchida) topildi va bu
+sessiyada hal qilinmadi. To'liq loglar: `model\run_d3_tanh1.log`...`run_d3_tanh4.log`.
+
 ### 3.4. Tekshiruv 3: V_on barerga bog'liqmi? — ADAPTATSIYA QILINGAN (D_it'siz)
 
 So'zma-so'z talab (D_it bilan, VD=0.5, x=0 vs x=0.05) D_it yaqinlashmagani uchun bajarilmadi.
@@ -189,15 +214,20 @@ o'rnini bosmaydi, lekin modelning to'g'ri yo'nalishda ishlashini ko'rsatadi.
 
 ## 7. Keyingi qadamlar (tavsiya, ustuvorlik bo'yicha)
 
-1. **D_it uchun to'yinuvchi (saturating) formula sinash** — masalan `tanh`-asosida
-   chegaralangan `rhoqs`, real trap zichligi kabi to'yinadigan. Bu joriy chiziqli
-   (chegaralanmagan) formuladan ko'ra barqarorroq bo'lishi mumkin.
+1. **[BAJARILDI, QISMAN MUVAFFAQIYAT] D_it uchun to'yinuvchi (tanh) formula** — D_it ramp
+   muammosini hal qildi (to'liq D_it=3×10¹³ endi erishiladi), lekin YANGI muammo ochdi:
+   to'liq D_it kuchida VG'ni o'zgartirish (yoki hatto o'zgartirmasdan qayta yechish) doim
+   muvaffaqiyatsiz. **Eng ustuvor keyingi qadam** — buni hal qilish: nima uchun
+   `model.study("std1").run()`ni qayta chaqirish (parametr o'zgarishisiz ham) muvaffaqiyatsiz
+   bo'lyapti, buni tushunish (ehtimol bootstrap'ning oxirgi RETRY-orqali-erishilgan holati
+   "yaxshi" boshlang'ich taxmin emas - buni oldindan bilib, bootstrap oxirida QO'SHIMCHA
+   "barqarorlashtiruvchi" qadam yoki qayta-tekshiruv qo'shish kerak).
 2. **Segregated/damped-update yondashuvi:** `rhoqs`'ni implicit (to'g'ridan-to'g'ri `semi.Efn`
    ga bog'liq) emas, balki har iteratsiyada OLDINGI yechimdan hisoblab, alohida "lag"li
    qadam sifatida qo'yish (COMSOL'da qo'lda sozlanadigan murakkab variant).
 3. Diskret trap sathlari (`SpecifyDiscreteLevelsOnly`) — qollanma "battar mos kelmaydi"
-   deb yozgan, lekin endi ChiziqliEfn formulasi ham ishlamagani uchun qayta ko'rib
-   chiqarli.
+   deb yozgan, lekin endi ikkala (chiziqli va tanh) Efn-formulasi ham to'liq ishlamagani
+   uchun qayta ko'rib chiqarli.
 4. Chuqur subporog uchun alohida, maxsus mesh/solver sozlamalari (masalan carrier
    statistics formulasini "Fermi-Dirac" ga o'zgartirish yoki qo'shimcha stabilizatsiya).
 5. Agar D_it hal qilinsa: geometriya, fizika arxitekturasi va pipeline (CSV eksport,
