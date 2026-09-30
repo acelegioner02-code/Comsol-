@@ -106,6 +106,7 @@ public class MoS2Fet {
     P.put("d_ideal", "1[nm]");
     P.put("Dit", "3e13[1/(cm^2*eV)]");
     P.put("Ew0", "0.3[V]");
+    P.put("dE0", "0[V]");
     P.put("sigma_F4", "-1e12[1/cm^2]*e_const");
     P.put("beta", "0.22[V/V]");
     P.put("t_sw", "40[s]");
@@ -370,18 +371,24 @@ public class MoS2Fet {
     gc1.set("Phi", "Phi_Si");
     System.out.println("CHECKPOINT: gc1 OK");
 
-    // Interfeys tuzoqlari (D_it) - MoS2/SiO2 chegarasida
+    // Interfeys tuzoqlari (D_it) - MoS2/SiO2 chegarasida.
+    // MUHIM (3-kun, Xato 2 tuzatildi): avval ContinuousEnergyLevelsBoundary (faqat donor,
+    // midgap atrofida 0.3eV tor oyna) ishlatilgan edi - bulutdagi tekshiruv buni ham fizik
+    // (maqolaga "tezkor, butun zona bo'ylab bir tekis D_it" kerak, tor diskret band emas),
+    // ham sonli (Fermi sathi tor oynadan o'tganda zaryad keskin sakraydi - Newton shu yerda
+    // "muzlagan") jihatdan noto'g'ri deb topdi. Tuzatish: tezkor interfeys holatlari, statik
+    // zaryadi Fermi sathiga CHIZIQLI bog'liq: Q_it = -q*D_it*(E_Fn - E_mid - dE0), oddiy
+    // SurfaceChargeDensity orqali (tasr1/ctb1 emas). Bu m = 1 + q*D_it/C_ox ni aynan beradi
+    // va tuzoq dinamikasi/energiya o'lchamini olib tashlaydi - yaqinlashishi ancha oson
+    // bo'lishi kutiladi. semi.Efn/semi.Ec/semi.Ev nomlari EfProbe.java bilan tasdiqlangan
+    // (test\EfProbe.java, natija: semi.Ec=Eg/2, semi.Ev=-Eg/2, V birligida, e_const'ga
+    // bo'lish shart emas). dE0 - yangi kalibrlanadigan parametr (neytrallik sathi siljishi).
+    // Gisterezis endi FAQAT ionlardan (x, Global ODE) keladi - tuzoqlardan emas.
     if (P.get("use_traps").equals("1")) {
-      PhysicsFeature tasr1 = semi.create("tasr1", "TrapAssistedSurfaceRecombination", 1);
-      tasr1.selection().named("sel_mos_sio2");
-      tasr1.set("IncludeTraps", "ExplicitTraps");
-      tasr1.set("SpecifyDiscreteContinuous", "SpecifyContinuousAndOrDiscreteLevels");
-      PhysicsFeature ctb1 = tasr1.feature().create("ctb1", "ContinuousEnergyLevelsBoundary");
-      ctb1.set("TrapType", "Donor");
-      ctb1.set("TrapDensityDistribution", "Rectangle");
-      ctb1.set("Ewidth", "Ew0");
-      ctb1.set("Nt_b", "Dit*Dit_scale*Ew0*e_const");
-      System.out.println("CHECKPOINT: tasr1 OK");
+      PhysicsFeature sfit = semi.create("sfit", "SurfaceChargeDensity", 1);
+      sfit.selection().named("sel_mos_sio2");
+      sfit.set("rhoqs", "-e_const*Dit*Dit_scale*(semi.Efn - (semi.Ec+semi.Ev)/2 - dE0)");
+      System.out.println("CHECKPOINT: sfit (D_it, SurfaceChargeDensity) OK");
     }
 
     // F4TCNQ sirt zaryadi - MoS2/suv chegarasida (ochiq kanal)
@@ -393,11 +400,18 @@ public class MoS2Fet {
     }
 
     // Source kontakt (Schottky, barer = Phi_B0 - x)
+    // MUHIM (3-kun, Xato 1 tuzatildi): "ideal" rejimda COMSOL barerni Phi_B EMAS, balki
+    // metall chiqish ishi Phi dan hisoblaydi (Phi_B = Phi - chi_mos). Phi_B property'si shu
+    // rejimda E'TIBORSIZ QOLDIRILADI (api_namuna\dump_schottky_contact.txt: "ideal" bilan
+    // Phi=[phim] birga turibdi, Phi_B=[0.67] esa shunchaki sukut). Phi berilmagani uchun
+    // sukut (~4.5V) ishlatilgan edi - Phi_B0 va x (ion holati) modelga umuman ulanmagan edi.
+    // Tuzatish: Phi ni to'g'ridan-to'g'ri kerakli barer + chi_mos qilib beramiz, shunda
+    // COMSOL'ning o'z "Phi_B = Phi - chi_mos" formulasi aynan Phi_B0 -/+ x ni beradi.
     mc1 = semi.create("mc1", "MetalContact", 1);
     mc1.selection().named("sel_src_schottky");
     mc1.set("ContactType", "Schottky");
     mc1.set("SpecifyBarrierHeight", "ideal");
-    mc1.set("Phi_B", "Phi_B0 - x");
+    mc1.set("Phi", "chi_mos + Phi_B0 - x");
     mc1.set("TerminalName", "1");
     mc1.set("TerminalType", "Voltage");
     mc1.set("V0", "0");
@@ -407,7 +421,7 @@ public class MoS2Fet {
     mc2.selection().named("sel_drain_schottky");
     mc2.set("ContactType", "Schottky");
     mc2.set("SpecifyBarrierHeight", "ideal");
-    mc2.set("Phi_B", "Phi_B0 + x");
+    mc2.set("Phi", "chi_mos + Phi_B0 + x");
     mc2.set("TerminalName", "2");
     mc2.set("TerminalType", "Voltage");
     mc2.set("V0", "VD");
@@ -631,46 +645,32 @@ public class MoS2Fet {
     double vgFirst = (vgList != null) ? vgList.get(0) : vgStart;
     double vdFirst = parseD(P.get("VD_list").split(",")[0]);
     model.param().set("VG", fmt(vgFirst));
+    model.param().set("VD", fmt(vdFirst));
     boolean firstOk;
     if (P.get("use_traps").equals("1")) {
-      // MUHIM (2-kun): D_it ni VD=0 da ramp qilish (source/drain barerlari simmetrik,
-      // Phi_B0-x = Phi_B0+x chunki x=beta*VD=0) VD=0.2V da ramp qilishdan SEZILARLI
-      // barqarorroq chiqdi - D_it ning o'zi (Fermi pinning) va VD (barer asimmetriyasi)
-      // ikkalasi BIRGALIKDA kiritilganda tizim juda qattiq (stiff) bo'lib qoldi (1 soatdan
-      // ortiq sinov, yaqinlashmadi - STATUS.md'da batafsil). Endi ikki bosqich: (1) D_it'ni
-      // VD=0'da to'liq kiritish, (2) keyin VD'ni maqsad qiymatigacha D_it to'liq holda
-      // ko'tarish - ikkalasi ALOHIDA osonroq masala.
-      model.param().set("VD", "0");
-      // YANGI (oxirgi urinish): Java tomonidan qo'lda takrorlangan .run() chaqiruvlari o'rniga
-      // COMSOL'ning O'ZINING parametrik continuation solveri ishlatiladi (Stationary study
-      // step'ning useparam/pname/plist/pcontinuationmode xossalari - API_ESLATMA.md, 8-band).
-      // Bu Jacobian-asosidagi predictor-corrector davomiylikni to'g'ri qo'llaydi va oldingi
-      // yechimni navbatdagi qadam uchun boshlang'ich taxmin sifatida ishonchliroq ishlatadi -
-      // qo'lda qayta-qayta study.run() chaqirish (STATUS.md'da "1 soatdan ortiq, yaqinlashmadi"
-      // deb yozilgan usul) buni to'g'ri bajarmagan bo'lishi mumkin edi.
-      double[] ditStages = {0.002, 0.004, 0.006, 0.009, 0.013, 0.018, 0.025, 0.035, 0.05, 0.07, 0.1, 0.15, 0.22, 0.32, 0.46, 0.65, 0.85, 1.0};
-      StringBuilder ditListSb = new StringBuilder();
-      for (int i = 0; i < ditStages.length; i++) ditListSb.append(fmt(ditStages[i])).append(" ");
-      StudyFeature statStep = model.study("std1").feature("stat");
-      statStep.set("useparam", true);
-      statStep.set("pname", new String[]{"Dit_scale"});
-      statStep.set("plist", new String[]{ditListSb.toString().trim()});
-      statStep.set("pcontinuationmode", "last");
-      firstOk = solveRobust("Dit_scale native continuation (VD=0)");
-      statStep.set("useparam", false);
-      model.param().set("Dit_scale", "1");
-      // Endi D_it to'liq (Dit_scale=1), VD=0. VD'ni maqsad qiymatigacha bosqichma-bosqich
-      // ko'taramiz (D_it o'zgarmaydi).
-      double[] vdStages = {0.02, 0.05, 0.1, vdFirst};
-      for (int i = 0; i < vdStages.length; i++) {
-        double vd = Math.min(vdStages[i], vdFirst);
-        model.param().set("VD", fmt(vd));
-        boolean ok = solveRobust("VD=" + fmt(vd) + " (Dit_scale=1)");
+      // MUHIM (3-kun, Xato 2 tuzatilgandan keyin): D_it modeli endi SurfaceChargeDensity
+      // orqali Fermi sathiga CHIZIQLI bog'liq (tasr1/ctb1 tor-band diskret trap modeli emas).
+      // Amalda ANIQLANDI (SolverProbe.java/SolverProbe2.java): standart sozlamalar (maxiter=50,
+      // reserrfact=1000, initstep=0.1) har qanday nolmas Dit_scale uchun BIRINCHI urinishda
+      // deyarli doim muvaffaqiyatsiz bo'ladi - shuning uchun bu safar bumplarni RETRY'ga
+      // qoldirmasdan, ramp boshlanishidan OLDIN proaktiv tarzda qo'llaymiz (vaqt tejash uchun,
+      // har bosqichda keraksiz "birinchi urinish muvaffaqiyatsiz" siklini aylanib o'tish).
+      // Ramp ham yanada silliqlashtirildi (past uchida zichroq qadamlar).
+      double[] ditStages = {0, 0.02, 0.05, 0.1, 0.15, 0.22, 0.32, 0.46, 0.65, 0.85, 1.0};
+      firstOk = false;
+      for (int i = 0; i < ditStages.length; i++) {
+        model.param().set("Dit_scale", fmt(ditStages[i]));
+        boolean ok = solveRobust("Dit_scale=" + fmt(ditStages[i]));
         if (ok) firstOk = true;
-        if (vd >= vdFirst - 1e-9) break;
+        if (i == 0) {
+          // Dit_scale=0 (nol zaryad) doim oson yaqinlashadi va solver ketma-ketligini
+          // ("sol1" va h.k.) birinchi marta yaratadi. Shundan keyingina bump qilish mumkin -
+          // undan OLDIN model.sol() bo'sh bo'ladi (hali hech narsa yaratilmagan).
+          String[] solTags0 = model.sol().tags();
+          for (int j = 0; j < solTags0.length; j++) bumpMaxIter(model.sol(solTags0[j]));
+        }
       }
     } else {
-      model.param().set("VD", fmt(vdFirst));
       model.param().set("Dit_scale", "1");
       firstOk = solveRobust("Boshlang'ich nuqta");
     }
@@ -744,7 +744,7 @@ public class MoS2Fet {
     model.study("std1").feature("time").set("tlist", "range(0,t_sw/200,t_hold+t_sw)");
 
     if (P.get("use_traps").equals("1")) {
-      double[] ditStages = {0.002, 0.004, 0.006, 0.009, 0.013, 0.018, 0.025, 0.035, 0.05, 0.07, 0.1, 0.15, 0.22, 0.32, 0.46, 0.65, 0.85, 1.0};
+      double[] ditStages = {0, 0.1, 0.3, 0.5, 0.7, 0.85, 1.0};
       for (int i = 0; i < ditStages.length; i++) {
         model.param().set("Dit_scale", fmt(ditStages[i]));
         solveRobust("Bootstrap Dit_scale=" + fmt(ditStages[i]));
@@ -814,12 +814,34 @@ public class MoS2Fet {
   }
 
   static void bumpMaxIterFeature(SolverFeature sf) {
+    // MUHIM (3-kun): oldin FAQAT maxiter oshirilgan edi, lekin loglar tekshirilganda (
+    // SolverProbe.java/SolverProbe2.java) "FullyCoupled" tuguni ("fc1") muvaffaqiyatsizlikda
+    // atigi 6 iteratsiyada to'xtaganini ko'rsatdi - maxiter=50 (standart) hali yetib
+    // bormagan, sabab boshqa: "reserrfact" (standart 1000) - agar navbatdagi qoldiq oldingi
+    // eng yaxshisidan reserrfact marta yomonroq bo'lsa, solver "divergensiya" deb qaror qilib
+    // TO'XTAYDI, garchi maxiter hali uzoq bo'lsa ham. Bizning rhoqs ifodasi (Efn ga chiziqli,
+    // TO'YINMAYDIGAN zaryad) katta oraliq qadamlarida ResEst'ni vaqtincha 1000x dan ko'proq
+    // oshirib yuborishi mumkin - shuning uchun reserrfact ham ancha kattalashtiriladi.
     String[] candidates = {"maxiter", "MaxIter", "maxIter"};
     for (int i = 0; i < candidates.length; i++) {
       try {
         sf.set(candidates[i], "400");
       } catch (Exception e) {
       }
+    }
+    try {
+      sf.set("reserrfact", "1e8");
+    } catch (Exception e) {
+    }
+    // reserrfact yolg'iz yetarli emas edi: ba'zi bosqichlarda SolEst bitta iteratsiyada
+    // 1e26 gacha portlab ketdi (Newton qadami haddan tashqari katta bo'lib, o'zgaruvchining
+    // o'z miqyosidan katta tuzatish taklif qildi) - bu holatda reserrfact (ResEst nisbati)
+    // emas, balki qadam o'zi (SolEst) haddan tashqari kattaligi sabab. Boshlang'ich damping'ni
+    // ancha kichraytiramiz (standart initstep=0.1 -> 0.01), shunda birinchi qadamlar
+    // ehtiyotkorroq bo'ladi.
+    try {
+      sf.set("initstep", "0.01");
+    } catch (Exception e) {
     }
     try {
       String[] sub = sf.feature().tags();

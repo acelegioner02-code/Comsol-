@@ -1,6 +1,6 @@
 metric,maqola,model,farq,holat,izoh
-T1_Von_VD0.2_highRH,-4,NaN,NaN,yetilmadi,D_it yaqinlashmadi - pastga qarang
-T1_Von_VD0.4_highRH,-22,NaN,NaN,yetilmadi,D_it yaqinlashmadi
+T1_Von_VD0.2_highRH,-4,NaN,NaN,yetilmadi,D_it yaqinlashmadi (1nA chegarasiga yetilmadi - VG=0 da 1.82e-7 A)
+T1_Von_VD0.4_highRH,-22,NaN,NaN,yetilmadi,D_it yaqinlashmadi - sweep VD=0.2 danoshgan
 T1_Von_VD0.6_highRH,-36,NaN,NaN,yetilmadi,D_it yaqinlashmadi
 T1_Von_VD0.8_highRH,-61,NaN,NaN,yetilmadi,D_it yaqinlashmadi
 T1_Von_VD1.0_highRH,-78,NaN,NaN,yetilmadi,D_it yaqinlashmadi
@@ -13,4 +13,4 @@ T7_Fig2_dVon_dVD,46.3,NaN,NaN,yetilmadi,B6 boshlanmadi (B3-B5 tugallanmagani sab
 T7_Fig2_rectification,0.37,NaN,NaN,yetilmadi,B6 boshlanmadi
 T7_Fig2_hysteresis_pct,32,NaN,NaN,yetilmadi,B6 boshlanmadi
 T8_SS_highRH_V_per_dec,25,NaN,NaN,yetilmadi,D_it yaqinlashmadi - SS ni D_it belgilaydi
-T8_SS_Fig2_V_per_dec,12,NaN,NaN,yetilmadi,D_it yaqinlashmadi
+T8_SS_Fig2_V_per_dec,12,14.5,+2.5 (D_it'siz),qisman/yetilmadi,"D_it'siz VD=0.2 VG=12..0 mahalliy qiyalik - D_it bilan qayta hisoblanishi kerak, to'g'ridan-to'g'ri solishtirib bo'lmaydi"

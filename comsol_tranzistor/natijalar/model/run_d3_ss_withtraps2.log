@@ -1,0 +1,1661 @@
+*******************************************
+***COMSOL 6.0.0.318 progress output file***
+*******************************************
+Thu Oct 01 02:37:37 UZT 2026
+COMSOL Multiphysics 6.0 (Build: 318) starting in batch mode
+Running: C:\comsol_tranzistor\ish\model\MoS2Fet.class
+params.txt o'qildi: C:\comsol_tranzistor\ish\model\params.txt
+---------- Current Progress: 100 % - Updating selections
+Memory: 403/409 431/437
+           Current Progress:   0 % - Rectangle
+Memory: 415/423 440/448
+           Current Progress:   1 % - Rectangle 2
+Memory: 416/423 440/448
+           Current Progress:   3 % - Rectangle 2a
+           Current Progress:   4 % - Polygon
+           Current Progress:   5 % - Polygon 2
+Memory: 417/423 440/448
+           Current Progress:   6 % - Mirror
+-          Current Progress:  19 % - Mirror 2
+---        Current Progress:  31 % - Rectangle 3
+---        Current Progress:  33 % - Ellipse 1
+---        Current Progress:  34 % - Ellipse 2
+---        Current Progress:  35 % - Union
+----       Current Progress:  43 % - Resolving domains
+Memory: 418/423 440/448
+----       Current Progress:  48 % - Rectangle 4
+----       Current Progress:  49 % - Intersection
+-----      Current Progress:  57 % - Resolving domains
+------     Current Progress:  61 % - Difference 4
+Memory: 418/423 441/448
+-------    Current Progress:  73 % - Resolving domains
+-------    Current Progress:  74 % - Rectangle 5
+-------    Current Progress:  75 % - Difference
+--------   Current Progress:  86 % - Resolving domains
+--------   Current Progress:  88 % - Form Union
+---------  Current Progress:  99 % - Resolving domains
+---------- Current Progress: 100 % - Updating selections
+Geometriya quruldi. Domenlar soni: 10 (kutilgan: 10)
+CHECKPOINT: sel_insulators OK
+CHECKPOINT: sel_semi_domains OK
+---------- Current Progress: 100 % - Creating visualization mesh
+Memory: 421/423 442/448
+CHECKPOINT: chegara selectionlari OK
+CHECKPOINT: semi yaratildi
+CHECKPOINT: semi.selection() -> faqat MoS2
+CHECKPOINT: adm1 OK
+CHECKPOINT: gc1 OK
+CHECKPOINT: sfit (D_it, SurfaceChargeDensity) OK
+CHECKPOINT: mc1/mc2 OK
+CHECKPOINT: ion holati OK
+CHECKPOINT: mesh size features OK
+Number of vertex elements: 37
+           Current Progress:   6 % - Adjusting boundary mesh
+Memory: 537/562 559/580
+Number of boundary elements: 15129
+-          Current Progress:  14 % - Inserting interior points
+Memory: 542/562 566/580
+--         Current Progress:  21 % - Inserting interior points
+--         Current Progress:  28 % - Inserting interior points
+Memory: 543/562 567/580
+---        Current Progress:  36 % - Improving element quality
+Memory: 546/562 571/580
+------     Current Progress:  67 % - Preparing for advancing front meshing
+Memory: 547/562 571/580
+-------    Current Progress:  71 % - Inserting interior points
+Memory: 548/562 572/580
+-------    Current Progress:  74 % - Inserting interior points
+---------  Current Progress:  95 % - Preparing for advancing front meshing
+Memory: 552/562 575/580
+---------  Current Progress:  95 % - Inserting interior points
+Memory: 562/562 583/583
+---------  Current Progress:  95 % - Improving element quality
+Memory: 508/563 532/584
+Number of elements: 152778
+---------  Current Progress:  99 % - Finalizing mesh
+Memory: 536/563 561/584
+---------- Current Progress: 100 % - Finalizing mesh
+Memory: 497/563 521/584
+Minimum element quality: 0.2344
+MESH_DOMAINS_TOTAL=10
+Model qurildi (mode=transfer).
+CHECKPOINT: natijalar papka OK
+CHECKPOINT: view1 (full) sozlandi
+-----      Current Progress:  50 % - Generating image
+Memory: 574/574 586/586
+---------- Current Progress: 100 % - Creating visualization mesh
+Memory: 578/578 589/589
+Eksport: natijalar\geom_full.png
+CHECKPOINT: view1 (src edge) sozlandi
+-----      Current Progress:  50 % - Generating image
+Memory: 755/762 662/663
+Eksport: natijalar\geom_source_edge.png
+<---- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) -
+Started at Oct 1, 2026, 2:38:05 AM.
+Geometry shape function: Linear Lagrange
+Running on 11th Gen Intel(R) Core(TM) i7-1165G7 at 2.80 GHz.
+Using 1 socket with 4 cores in total on WIN-FNSSP1NOF49.
+Available memory: 7.97 GB.
+           Current Progress:   2 % - Compile Equations: Semiconductor Equilibrium
+Memory: 646/785 641/749
+           Current Progress:   3 % - Compile Equations: Semiconductor Equilibrium
+Memory: 656/785 648/749
+           Current Progress:   3 % - Creating visualization mesh
+Memory: 660/785 653/749
+Time: 2 s.
+Physical memory: 721 MB
+Virtual memory: 714 MB
+Ended at Oct 1, 2026, 2:38:07 AM.
+----- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) >
+<---- Dependent Variables 1 in Study 1/Solution 1 (sol1) -----------------------
+Started at Oct 1, 2026, 2:38:07 AM.
+           Current Progress:   3 % - Dependent Variables 1
+Memory: 689/785 712/749
+Solution time: 0 s.
+Physical memory: 689 MB
+Virtual memory: 712 MB
+Ended at Oct 1, 2026, 2:38:07 AM.
+----- Dependent Variables 1 in Study 1/Solution 1 (sol1) ---------------------->
+<---- Stationary Solver 1 in Study 1/Solution 1 (sol1) -------------------------
+Started at Oct 1, 2026, 2:38:07 AM.
+Nonlinear solver
+Number of degrees of freedom solved for: 138873.
+           Current Progress:   5 % - Assembling sparsity pattern
+Memory: 739/785 729/749
+           Current Progress:   5 % - Assembling matrices
+Memory: 699/785 693/749
+Nonsymmetric matrix found.
+Scales for dependent variables:
+Electron solution variable (comp1.Ne): 1e+23
+Hole solution variable (comp1.Ph): 2.7e+26
+Electric potential (comp1.V): 1.7e+21
+Orthonormal null-space function used.
+           Current Progress:   5 % - Matrix factorization
+Memory: 740/785 745/750
+Iter      SolEst      ResEst     Damping    Stepsize #Res #Jac #Sol
+           Current Progress:   5 % - Solving linear system
+Memory: 762/785 772/775
+   1          31     2.3e+16   0.0100000          31    3    1    3
+           Current Progress:   9 % - Assembling sparsity pattern
+Memory: 759/785 769/785
+           Current Progress:   9 % - Assembling matrices
+Memory: 781/787 792/797
+           Current Progress:   9 % - Matrix factorization
+Memory: 771/787 797/797
+           Current Progress:   9 % - Solving linear system
+Memory: 780/787 792/798
+   2          32       3e+04   0.0341210          34    4    2    5
+-          Current Progress:  14 % - Assembling sparsity pattern
+Memory: 769/787 780/799
+-          Current Progress:  14 % - Assembling matrices
+Memory: 784/790 795/800
+-          Current Progress:  14 % - Matrix factorization
+Memory: 776/790 800/800
+-          Current Progress:  14 % - Assembling matrices
+Memory: 787/790 797/801
+   3         1.7     1.1e+06   0.1697360         4.3    5    3    7
+---        Current Progress:  33 % - Assembling matrices
+Memory: 785/790 795/802
+---        Current Progress:  33 % - Matrix factorization
+Memory: 773/790 800/802
+---        Current Progress:  33 % - Solving linear system
+Memory: 787/790 798/802
+   4        0.55     5.3e+05   0.6311462         1.4    6    4    9
+---        Current Progress:  33 % - Assembling matrices
+Memory: 785/790 795/802
+---        Current Progress:  33 % - Matrix factorization
+Memory: 766/790 800/802
+---        Current Progress:  33 % - Solving linear system
+Memory: 787/790 798/802
+   5        0.14     9.2e+04   0.8564781        0.49    7    5   11
+---        Current Progress:  35 % - Matrix factorization
+Memory: 762/790 800/802
+---        Current Progress:  35 % - Solving linear system
+Memory: 788/790 798/802
+   6      0.0046     2.4e+03   1.0000000        0.12    8    6   13
+----       Current Progress:  43 % - Matrix factorization
+Memory: 759/790 801/803
+----       Current Progress:  43 % - Solving linear system
+Memory: 789/790 800/803
+   7     1.4e-06        0.52   1.0000000      0.0046    9    7   15
+-----      Current Progress:  50 % - Assembling matrices
+Memory: 786/790 796/803
+-----      Current Progress:  50 % - Matrix factorization
+Memory: 778/790 801/803
+-----      Current Progress:  50 % - Assembling matrices
+Memory: 788/790 799/803
+-----      Current Progress:  50 % - Constraint handling
+Memory: 783/790 793/803
+   8     5.5e-13     1.1e-08   1.0000000     1.2e-06   11    8   17
+Solution time: 9 s.
+Physical memory: 790 MB
+Virtual memory: 801 MB
+Ended at Oct 1, 2026, 2:38:16 AM.
+----- Stationary Solver 1 in Study 1/Solution 1 (sol1) ------------------------>
+<---- Compile Equations: Stationary in Study 1/Solution 1 (sol1) ---------------
+Started at Oct 1, 2026, 2:38:16 AM.
+Geometry shape function: Linear Lagrange
+-----      Current Progress:  52 % - Compile Equations: Stationary
+Memory: 778/790 769/803
+-----      Current Progress:  52 % - Creating visualization mesh
+Memory: 766/793 757/803
+Time: 2 s.
+Physical memory: 778 MB
+Virtual memory: 769 MB
+Ended at Oct 1, 2026, 2:38:18 AM.
+----- Compile Equations: Stationary in Study 1/Solution 1 (sol1) -------------->
+<---- Dependent Variables 2 in Study 1/Solution 1 (sol1) -----------------------
+Started at Oct 1, 2026, 2:38:18 AM.
+Initial values of variables solved for: Solution 1 (sol1), Solution Store 1 (sol2).
+Values of variables not solved for: Solution 1 (sol1).
+-----      Current Progress:  52 % - Dependent Variables 2
+Memory: 760/794 750/803
+Solution time: 0 s.
+Physical memory: 778 MB
+Virtual memory: 769 MB
+Ended at Oct 1, 2026, 2:38:18 AM.
+----- Dependent Variables 2 in Study 1/Solution 1 (sol1) ---------------------->
+<---- Stationary Solver 2 in Study 1/Solution 1 (sol1) -------------------------
+Started at Oct 1, 2026, 2:38:18 AM.
+Nonlinear solver
+Number of degrees of freedom solved for: 138873.
+-----      Current Progress:  55 % - Assembling matrices
+Memory: 799/799 791/803
+-----      Current Progress:  55 % - Assembling sparsity pattern
+Memory: 794/802 786/803
+-----      Current Progress:  55 % - Assembling matrices
+Memory: 849/866 845/864
+Nonsymmetric matrix found.
+Scales for dependent variables:
+Electron solution variable (comp1.Ne): 3.7e+25
+Hole solution variable (comp1.Ph): 2.3e+29
+Electric potential (comp1.V): 3.1e+19
+Orthonormal null-space function used.
+-----      Current Progress:  55 % - Matrix factorization
+Memory: 878/884 893/893
+Iter      SolEst      ResEst     Damping    Stepsize #Res #Jac #Sol
+-----      Current Progress:  55 % - Assembling matrices
+Memory: 961/961 1015/1017
+   1         2.6       1e+05   0.1000000           3    2    1    2
+-----      Current Progress:  59 % - Assembling sparsity pattern
+Memory: 944/963 999/1020
+-----      Current Progress:  59 % - Assembling matrices
+Memory: 971/988 1026/1046
+-----      Current Progress:  59 % - Matrix factorization
+Memory: 921/988 1024/1046
+-----      Current Progress:  59 % - Solving linear system
+Memory: 965/988 1019/1046
+   2        0.55     1.2e+06   0.5352114        0.58    3    2    4
+------     Current Progress:  64 % - Solving linear system
+Memory: 959/988 1013/1046
+------     Current Progress:  64 % - Assembling sparsity pattern
+Memory: 902/988 957/1046
+------     Current Progress:  64 % - Assembling matrices
+Memory: 939/988 997/1046
+------     Current Progress:  64 % - Matrix factorization
+Memory: 904/988 993/1046
+------     Current Progress:  64 % - Assembling matrices
+Memory: 941/988 1001/1046
+   3         1.8     6.3e+05   0.5595219         7.9    4    3    6
+------     Current Progress:  64 % - Matrix factorization
+Memory: 882/988 1005/1046
+------     Current Progress:  64 % - Solving linear system
+Memory: 942/988 1001/1046
+   4        0.28     7.6e+04   0.9836829        0.51    5    4    8
+--------   Current Progress:  84 % - Assembling matrices
+Memory: 941/988 1001/1046
+--------   Current Progress:  84 % - Matrix factorization
+Memory: 907/988 1006/1046
+--------   Current Progress:  84 % - Assembling matrices
+Memory: 943/988 1003/1046
+   5      0.0052     6.7e+02   1.0000000        0.19    6    5   10
+---------  Current Progress:  92 % - Assembling matrices
+Memory: 942/988 1003/1046
+---------  Current Progress:  92 % - Matrix factorization
+Memory: 879/988 1006/1046
+---------  Current Progress:  92 % - Solving linear system
+Memory: 943/988 1002/1046
+   6     1.4e-07       0.012   1.0000000      0.0052    7    6   12
+---------- Current Progress: 100 % - Assembling matrices
+---------- Current Progress: 100 % - Matrix factorization
+Memory: 915/988 1005/1046
+---------- Current Progress: 100 % - Assembling matrices
+Memory: 944/988 1003/1046
+   7     4.2e-15     3.7e-05   1.0000000     1.3e-07    9    7   14
+---------- Current Progress: 100 % - Constraint handling
+Memory: 761/988 792/1046
+Solution time: 12 s.
+Physical memory: 971 MB
+Virtual memory: 1026 MB
+Ended at Oct 1, 2026, 2:38:30 AM.
+----- Stationary Solver 2 in Study 1/Solution 1 (sol1) ------------------------>
+<---- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) -
+Started at Oct 1, 2026, 2:38:32 AM.
+Geometry shape function: Linear Lagrange
+Running on 11th Gen Intel(R) Core(TM) i7-1165G7 at 2.80 GHz.
+Using 1 socket with 4 cores in total on WIN-FNSSP1NOF49.
+Available memory: 7.97 GB.
+           Current Progress:   2 % - Compile Equations: Semiconductor Equilibrium
+Memory: 852/988 891/1046
+           Current Progress:   3 % - Compile Equations: Semiconductor Equilibrium
+Memory: 833/988 866/1046
+           Current Progress:   3 % - Creating visualization mesh
+Time: 1 s.
+Physical memory: 852 MB
+Virtual memory: 891 MB
+Ended at Oct 1, 2026, 2:38:34 AM.
+----- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) >
+<---- Dependent Variables 1 in Study 1/Solution 1 (sol1) -----------------------
+Started at Oct 1, 2026, 2:38:34 AM.
+           Current Progress:   3 % - Dependent Variables 1
+Memory: 840/988 873/1046
+Solution time: 0 s.
+Physical memory: 840 MB
+Virtual memory: 873 MB
+Ended at Oct 1, 2026, 2:38:34 AM.
+----- Dependent Variables 1 in Study 1/Solution 1 (sol1) ---------------------->
+<---- Stationary Solver 1 in Study 1/Solution 1 (sol1) -------------------------
+Started at Oct 1, 2026, 2:38:34 AM.
+Nonlinear solver
+Number of degrees of freedom solved for: 138873.
+           Current Progress:   5 % - Assembling sparsity pattern
+Memory: 854/988 886/1046
+Nonsymmetric matrix found.
+Scales for dependent variables:
+Electron solution variable (comp1.Ne): 1e+23
+Hole solution variable (comp1.Ph): 1.6e+24
+Electric potential (comp1.V): 8.1e+20
+Orthonormal null-space function used.
+           Current Progress:   5 % - Matrix factorization
+Memory: 884/988 932/1046
+Iter      SolEst      ResEst     Damping    Stepsize #Res #Jac #Sol
+           Current Progress:   5 % - Assembling matrices
+Memory: 934/988 984/1046
+           Current Progress:   9 % - Solving linear system
+Memory: 938/988 987/1046
+   1     2.5e+02     1.1e+17   0.0005000     2.5e+02    5    1    4
+           Current Progress:   9 % - Assembling matrices
+Memory: 874/988 925/1046
+           Current Progress:   9 % - Matrix factorization
+Memory: 854/988 929/1046
+           Current Progress:   9 % - Solving linear system
+Memory: 878/988 929/1046
+   2     1.8e+02     2.3e+04   0.0002834     1.8e+02    6    2    6
+-          Current Progress:  14 % - Assembling matrices
+Memory: 878/988 928/1046
+-          Current Progress:  14 % - Matrix factorization
+Memory: 860/988 933/1046
+-          Current Progress:  14 % - Solving linear system
+Memory: 881/988 931/1046
+-          Current Progress:  14 % - Assembling matrices
+   3     2.2e+02     2.5e+04   0.0010000       2e+02    9    3   10
+-          Current Progress:  14 % - Matrix factorization
+Memory: 840/988 921/1046
+-          Current Progress:  14 % - Solving linear system
+Memory: 860/988 918/1046
+-          Current Progress:  14 % - Assembling matrices
+   4     2.6e+56     5.9e+11   0.0010000     1.1e+06   11    4   13
+-          Current Progress:  14 % - Matrix factorization
+Memory: 840/988 920/1046
+-          Current Progress:  14 % - Solving linear system
+Memory: 860/988 918/1046
+-----      Current Progress:  50 % - 
+Memory: 749/988 780/1046
+Solution time: 7 s.
+Physical memory: 938 MB
+Virtual memory: 987 MB
+Ended at Oct 1, 2026, 2:38:40 AM.
+----- Stationary Solver 1 in Study 1/Solution 1 (sol1) ------------------------>
+Dit_scale=0.100000: birinchi urinish muvaffaqiyatsiz (The_following_feature_has_encountered_a_problem), tozalab qayta urinamiz.
+<---- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) -
+Started at Oct 1, 2026, 2:38:41 AM.
+Geometry shape function: Linear Lagrange
+Running on 11th Gen Intel(R) Core(TM) i7-1165G7 at 2.80 GHz.
+Using 1 socket with 4 cores in total on WIN-FNSSP1NOF49.
+Available memory: 7.97 GB.
+           Current Progress:   2 % - Compile Equations: Semiconductor Equilibrium
+Memory: 795/988 826/1046
+           Current Progress:   3 % - Compile Equations: Semiconductor Equilibrium
+Memory: 772/988 803/1046
+           Current Progress:   3 % - Creating visualization mesh
+Memory: 773/988 803/1046
+Time: 2 s.
+Physical memory: 795 MB
+Virtual memory: 826 MB
+Ended at Oct 1, 2026, 2:38:42 AM.
+----- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) >
+<---- Dependent Variables 1 in Study 1/Solution 1 (sol1) -----------------------
+Started at Oct 1, 2026, 2:38:42 AM.
+           Current Progress:   3 % - Dependent Variables 1
+Memory: 779/988 808/1046
+Solution time: 0 s.
+Physical memory: 779 MB
+Virtual memory: 808 MB
+Ended at Oct 1, 2026, 2:38:42 AM.
+----- Dependent Variables 1 in Study 1/Solution 1 (sol1) ---------------------->
+<---- Stationary Solver 1 in Study 1/Solution 1 (sol1) -------------------------
+Started at Oct 1, 2026, 2:38:42 AM.
+Nonlinear solver
+Number of degrees of freedom solved for: 138873.
+           Current Progress:   5 % - Assembling sparsity pattern
+Memory: 800/988 828/1046
+           Current Progress:   5 % - Assembling matrices
+Memory: 807/988 835/1046
+Nonsymmetric matrix found.
+Scales for dependent variables:
+Electron solution variable (comp1.Ne): 1e+23
+Hole solution variable (comp1.Ph): 1.6e+24
+Electric potential (comp1.V): 8.1e+20
+Orthonormal null-space function used.
+           Current Progress:   5 % - Matrix factorization
+Memory: 831/988 870/1046
+Iter      SolEst      ResEst     Damping    Stepsize #Res #Jac #Sol
+           Current Progress:   5 % - Solving linear system
+Memory: 878/988 923/1046
+           Current Progress:   9 % - Assembling matrices
+           Current Progress:   9 % - Solving linear system
+Memory: 881/988 926/1046
+   1     2.5e+02     1.1e+17   0.0005000     2.5e+02    5    1    4
+           Current Progress:   9 % - Assembling sparsity pattern
+           Current Progress:   9 % - Matrix factorization
+Memory: 857/988 928/1046
+           Current Progress:   9 % - Solving linear system
+Memory: 873/988 919/1046
+   2       2e+02     1.7e+04   0.0001000     1.9e+02    7    2    7
+-          Current Progress:  14 % - Assembling matrices
+Memory: 870/988 915/1046
+-          Current Progress:  14 % - Matrix factorization
+Memory: 857/988 920/1046
+-          Current Progress:  14 % - Assembling matrices
+Memory: 872/988 917/1046
+   3     2.4e+02       2e+04   0.0001000     1.7e+02    8    3    9
+-          Current Progress:  14 % - Matrix factorization
+Memory: 855/988 920/1046
+-          Current Progress:  14 % - Solving linear system
+Memory: 873/988 918/1046
+   4     1.1e+02     2.2e+04   0.0001000     1.1e+02    9    4   11
+--         Current Progress:  29 % - Matrix factorization
+Memory: 847/988 920/1046
+--         Current Progress:  29 % - Solving linear system
+Memory: 873/988 918/1046
+   5     1.3e+02     2.6e+04   0.0010000     1.2e+02   11    5   14
+--         Current Progress:  29 % - Matrix factorization
+Memory: 847/988 920/1046
+--         Current Progress:  29 % - Solving linear system
+Memory: 873/988 918/1046
+--         Current Progress:  29 % - Assembling matrices
+Memory: 872/988 917/1046
+   6     1.3e+02       2e+08   0.0001000     1.4e+02   12    6   16
+--         Current Progress:  29 % - Matrix factorization
+Memory: 860/988 920/1046
+--         Current Progress:  29 % - Assembling matrices
+Memory: 873/988 917/1046
+-----      Current Progress:  50 % - 
+Memory: 697/988 723/1046
+Solution time: 8 s.
+Physical memory: 881 MB
+Virtual memory: 928 MB
+Ended at Oct 1, 2026, 2:38:51 AM.
+----- Stationary Solver 1 in Study 1/Solution 1 (sol1) ------------------------>
+Dit_scale=0.100000: OGOHLANTIRISH - hali ham yaqinlashmadi: The_following_feature_has_encountered_a_problem
+<---- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) -
+Started at Oct 1, 2026, 2:38:51 AM.
+Geometry shape function: Linear Lagrange
+Running on 11th Gen Intel(R) Core(TM) i7-1165G7 at 2.80 GHz.
+Using 1 socket with 4 cores in total on WIN-FNSSP1NOF49.
+Available memory: 7.97 GB.
+           Current Progress:   2 % - Compile Equations: Semiconductor Equilibrium
+Memory: 818/988 848/1046
+           Current Progress:   3 % - Compile Equations: Semiconductor Equilibrium
+Memory: 797/988 827/1046
+           Current Progress:   3 % - Creating visualization mesh
+Time: 1 s.
+Physical memory: 818 MB
+Virtual memory: 848 MB
+Ended at Oct 1, 2026, 2:38:52 AM.
+----- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) >
+<---- Dependent Variables 1 in Study 1/Solution 1 (sol1) -----------------------
+Started at Oct 1, 2026, 2:38:52 AM.
+           Current Progress:   3 % - Dependent Variables 1
+Memory: 802/988 832/1046
+Solution time: 0 s.
+Physical memory: 802 MB
+Virtual memory: 832 MB
+Ended at Oct 1, 2026, 2:38:52 AM.
+----- Dependent Variables 1 in Study 1/Solution 1 (sol1) ---------------------->
+<---- Stationary Solver 1 in Study 1/Solution 1 (sol1) -------------------------
+Started at Oct 1, 2026, 2:38:52 AM.
+Nonlinear solver
+Number of degrees of freedom solved for: 138873.
+           Current Progress:   5 % - Assembling sparsity pattern
+Memory: 807/988 836/1046
+           Current Progress:   5 % - Assembling matrices
+Memory: 815/988 844/1046
+Nonsymmetric matrix found.
+Scales for dependent variables:
+Electron solution variable (comp1.Ne): 1e+23
+Hole solution variable (comp1.Ph): 1.8e+24
+Electric potential (comp1.V): 8.3e+20
+Orthonormal null-space function used.
+           Current Progress:   5 % - Matrix factorization
+Memory: 839/988 880/1046
+Iter      SolEst      ResEst     Damping    Stepsize #Res #Jac #Sol
+           Current Progress:   5 % - Solving linear system
+Memory: 884/988 931/1046
+           Current Progress:   9 % - Assembling matrices
+Memory: 884/988 930/1046
+           Current Progress:   9 % - Solving linear system
+Memory: 887/988 934/1046
+           Current Progress:   9 % - Assembling matrices
+Memory: 886/988 933/1046
+   1       3e+02     9.1e+17   0.0002500       3e+02    6    1    4
+           Current Progress:   9 % - Assembling sparsity pattern
+Memory: 876/988 923/1046
+           Current Progress:   9 % - 
+Memory: 880/988 926/1046
+           Current Progress:   9 % - Matrix factorization
+Memory: 879/988 936/1046
+           Current Progress:   9 % - Assembling matrices
+Memory: 886/988 933/1046
+           Current Progress:   9 % - Solving linear system
+Memory: 887/988 934/1046
+   2     7.4e+08     9.5e+04   0.0010000     2.6e+03    8    2    7
+-          Current Progress:  14 % - Assembling sparsity pattern
+Memory: 881/988 927/1046
+-          Current Progress:  14 % - Matrix factorization
+Memory: 859/988 935/1046
+-          Current Progress:  14 % - Solving linear system
+Memory: 886/988 933/1046
+-----      Current Progress:  50 % - 
+Memory: 800/988 829/1046
+Solution time: 5 s.
+Physical memory: 887 MB
+Virtual memory: 936 MB
+Ended at Oct 1, 2026, 2:38:57 AM.
+----- Stationary Solver 1 in Study 1/Solution 1 (sol1) ------------------------>
+Dit_scale=0.300000: birinchi urinish muvaffaqiyatsiz (The_following_feature_has_encountered_a_problem), tozalab qayta urinamiz.
+<---- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) -
+Started at Oct 1, 2026, 2:38:57 AM.
+Geometry shape function: Linear Lagrange
+Running on 11th Gen Intel(R) Core(TM) i7-1165G7 at 2.80 GHz.
+Using 1 socket with 4 cores in total on WIN-FNSSP1NOF49.
+Available memory: 7.97 GB.
+           Current Progress:   2 % - Compile Equations: Semiconductor Equilibrium
+Memory: 764/988 795/1046
+           Current Progress:   3 % - Compile Equations: Semiconductor Equilibrium
+Memory: 757/988 787/1046
+           Current Progress:   3 % - Creating visualization mesh
+Memory: 758/988 788/1046
+Time: 1 s.
+Physical memory: 764 MB
+Virtual memory: 795 MB
+Ended at Oct 1, 2026, 2:38:59 AM.
+----- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) >
+<---- Dependent Variables 1 in Study 1/Solution 1 (sol1) -----------------------
+Started at Oct 1, 2026, 2:38:59 AM.
+           Current Progress:   3 % - Dependent Variables 1
+Memory: 764/988 793/1046
+Solution time: 0 s.
+Physical memory: 764 MB
+Virtual memory: 793 MB
+Ended at Oct 1, 2026, 2:38:59 AM.
+----- Dependent Variables 1 in Study 1/Solution 1 (sol1) ---------------------->
+<---- Stationary Solver 1 in Study 1/Solution 1 (sol1) -------------------------
+Started at Oct 1, 2026, 2:38:59 AM.
+Nonlinear solver
+Number of degrees of freedom solved for: 138873.
+           Current Progress:   5 % - Assembling sparsity pattern
+Memory: 781/988 809/1046
+Nonsymmetric matrix found.
+Scales for dependent variables:
+Electron solution variable (comp1.Ne): 1e+23
+Hole solution variable (comp1.Ph): 1.8e+24
+Electric potential (comp1.V): 8.3e+20
+Orthonormal null-space function used.
+           Current Progress:   5 % - Matrix factorization
+Memory: 817/988 857/1046
+Iter      SolEst      ResEst     Damping    Stepsize #Res #Jac #Sol
+           Current Progress:   5 % - Assembling matrices
+Memory: 859/988 904/1046
+           Current Progress:   9 % - Assembling matrices
+           Current Progress:   9 % - Solving linear system
+Memory: 862/988 908/1046
+   1     3.1e+02     6.3e+17   0.0002500     3.1e+02    6    1    4
+           Current Progress:   9 % - Assembling sparsity pattern
+Memory: 852/988 897/1046
+           Current Progress:   9 % - Constraint handling
+Memory: 856/988 902/1046
+           Current Progress:   9 % - Matrix factorization
+Memory: 850/988 910/1046
+           Current Progress:   9 % - Assembling matrices
+Memory: 861/988 906/1046
+   2     3.4e+02     9.2e+04   0.0001000     2.4e+02    7    2    6
+-          Current Progress:  14 % - Assembling sparsity pattern
+Memory: 848/988 893/1046
+-          Current Progress:  14 % - Assembling matrices
+Memory: 859/988 904/1046
+-          Current Progress:  14 % - Matrix factorization
+Memory: 853/988 909/1046
+-          Current Progress:  14 % - Assembling matrices
+Memory: 861/988 906/1046
+-          Current Progress:  14 % - Solving linear system
+Memory: 862/988 908/1046
+   3     1.5e+08     2.9e+05   0.0010000     6.3e+02    9    3    9
+-          Current Progress:  14 % - Assembling matrices
+Memory: 859/988 904/1046
+-          Current Progress:  14 % - Matrix factorization
+Memory: 850/988 909/1046
+-          Current Progress:  14 % - Assembling matrices
+Memory: 861/988 906/1046
+-----      Current Progress:  50 % - 
+Memory: 693/988 719/1046
+Solution time: 6 s.
+Physical memory: 862 MB
+Virtual memory: 910 MB
+Ended at Oct 1, 2026, 2:39:04 AM.
+----- Stationary Solver 1 in Study 1/Solution 1 (sol1) ------------------------>
+Dit_scale=0.300000: OGOHLANTIRISH - hali ham yaqinlashmadi: The_following_feature_has_encountered_a_problem
+<---- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) -
+Started at Oct 1, 2026, 2:39:04 AM.
+Geometry shape function: Linear Lagrange
+Running on 11th Gen Intel(R) Core(TM) i7-1165G7 at 2.80 GHz.
+Using 1 socket with 4 cores in total on WIN-FNSSP1NOF49.
+Available memory: 7.97 GB.
+           Current Progress:   3 % - Compile Equations: Semiconductor Equilibrium
+Memory: 774/988 806/1046
+           Current Progress:   3 % - Creating visualization mesh
+Memory: 776/988 807/1046
+Time: 1 s.
+Physical memory: 779 MB
+Virtual memory: 810 MB
+Ended at Oct 1, 2026, 2:39:06 AM.
+----- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) >
+<---- Dependent Variables 1 in Study 1/Solution 1 (sol1) -----------------------
+Started at Oct 1, 2026, 2:39:06 AM.
+           Current Progress:   3 % - Dependent Variables 1
+Memory: 781/988 812/1046
+Solution time: 0 s.
+Physical memory: 781 MB
+Virtual memory: 812 MB
+Ended at Oct 1, 2026, 2:39:06 AM.
+----- Dependent Variables 1 in Study 1/Solution 1 (sol1) ---------------------->
+<---- Stationary Solver 1 in Study 1/Solution 1 (sol1) -------------------------
+Started at Oct 1, 2026, 2:39:06 AM.
+Nonlinear solver
+Number of degrees of freedom solved for: 138873.
+           Current Progress:   5 % - Assembling sparsity pattern
+Memory: 801/988 829/1046
+Nonsymmetric matrix found.
+Scales for dependent variables:
+Electron solution variable (comp1.Ne): 1e+23
+Hole solution variable (comp1.Ph): 2e+24
+Electric potential (comp1.V): 8.4e+20
+Orthonormal null-space function used.
+           Current Progress:   5 % - Matrix factorization
+Memory: 813/988 841/1046
+Iter      SolEst      ResEst     Damping    Stepsize #Res #Jac #Sol
+           Current Progress:   5 % - Solving linear system
+Memory: 880/988 927/1046
+           Current Progress:   9 % - 
+Memory: 879/988 928/1046
+           Current Progress:   9 % - Assembling matrices
+Memory: 879/988 927/1046
+           Current Progress:   9 % - Solving linear system
+Memory: 883/988 930/1046
+   1     1.6e+17     1.6e+17   0.0010000     1.3e+03    9    1    6
+           Current Progress:   9 % - Assembling sparsity pattern
+Memory: 867/988 915/1046
+           Current Progress:   9 % - Assembling matrices
+Memory: 880/988 928/1046
+           Current Progress:   9 % - Matrix factorization
+Memory: 875/988 933/1046
+           Current Progress:   9 % - Assembling matrices
+Memory: 882/988 929/1046
+-----      Current Progress:  50 % - 
+Memory: 796/988 826/1046
+Solution time: 4 s.
+Physical memory: 883 MB
+Virtual memory: 933 MB
+Ended at Oct 1, 2026, 2:39:10 AM.
+----- Stationary Solver 1 in Study 1/Solution 1 (sol1) ------------------------>
+Dit_scale=0.500000: birinchi urinish muvaffaqiyatsiz (The_following_feature_has_encountered_a_problem), tozalab qayta urinamiz.
+<---- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) -
+Started at Oct 1, 2026, 2:39:10 AM.
+Geometry shape function: Linear Lagrange
+Running on 11th Gen Intel(R) Core(TM) i7-1165G7 at 2.80 GHz.
+Using 1 socket with 4 cores in total on WIN-FNSSP1NOF49.
+Available memory: 7.97 GB.
+           Current Progress:   3 % - Compile Equations: Semiconductor Equilibrium
+Memory: 745/988 776/1046
+           Current Progress:   3 % - Creating visualization mesh
+Memory: 747/988 777/1046
+Time: 1 s.
+Physical memory: 757 MB
+Virtual memory: 787 MB
+Ended at Oct 1, 2026, 2:39:11 AM.
+----- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) >
+<---- Dependent Variables 1 in Study 1/Solution 1 (sol1) -----------------------
+Started at Oct 1, 2026, 2:39:11 AM.
+           Current Progress:   3 % - Dependent Variables 1
+Memory: 761/988 790/1046
+Solution time: 0 s.
+Physical memory: 761 MB
+Virtual memory: 790 MB
+Ended at Oct 1, 2026, 2:39:11 AM.
+----- Dependent Variables 1 in Study 1/Solution 1 (sol1) ---------------------->
+<---- Stationary Solver 1 in Study 1/Solution 1 (sol1) -------------------------
+Started at Oct 1, 2026, 2:39:11 AM.
+Nonlinear solver
+Number of degrees of freedom solved for: 138873.
+           Current Progress:   5 % - Assembling sparsity pattern
+Memory: 779/988 807/1046
+Nonsymmetric matrix found.
+Scales for dependent variables:
+Electron solution variable (comp1.Ne): 1e+23
+Hole solution variable (comp1.Ph): 2e+24
+Electric potential (comp1.V): 8.4e+20
+Orthonormal null-space function used.
+           Current Progress:   5 % - Matrix factorization
+Memory: 814/988 854/1046
+Iter      SolEst      ResEst     Damping    Stepsize #Res #Jac #Sol
+           Current Progress:   5 % - Assembling matrices
+Memory: 861/988 910/1046
+           Current Progress:   9 % - 
+Memory: 864/988 912/1046
+           Current Progress:   9 % - Solving linear system
+Memory: 865/988 913/1046
+           Current Progress:   9 % - Assembling matrices
+Memory: 795/988 839/1046
+           Current Progress:   9 % - Solving linear system
+Memory: 797/988 840/1046
+   1     1.6e+17     1.7e+17   0.0010000     1.3e+03    9    1    6
+           Current Progress:   9 % - Assembling matrices
+Memory: 805/988 850/1046
+           Current Progress:   9 % - Matrix factorization
+Memory: 773/988 852/1046
+           Current Progress:   9 % - 
+Memory: 811/988 859/1046
+-----      Current Progress:  50 % - 
+Memory: 695/988 722/1046
+Solution time: 4 s.
+Physical memory: 865 MB
+Virtual memory: 913 MB
+Ended at Oct 1, 2026, 2:39:16 AM.
+----- Stationary Solver 1 in Study 1/Solution 1 (sol1) ------------------------>
+Dit_scale=0.500000: OGOHLANTIRISH - hali ham yaqinlashmadi: The_following_feature_has_encountered_a_problem
+<---- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) -
+Started at Oct 1, 2026, 2:39:16 AM.
+Geometry shape function: Linear Lagrange
+Running on 11th Gen Intel(R) Core(TM) i7-1165G7 at 2.80 GHz.
+Using 1 socket with 4 cores in total on WIN-FNSSP1NOF49.
+Available memory: 7.97 GB.
+           Current Progress:   2 % - Compile Equations: Semiconductor Equilibrium
+Memory: 772/988 804/1046
+           Current Progress:   3 % - Compile Equations: Semiconductor Equilibrium
+Memory: 780/988 813/1046
+           Current Progress:   3 % - Creating visualization mesh
+Time: 1 s.
+Physical memory: 782 MB
+Virtual memory: 815 MB
+Ended at Oct 1, 2026, 2:39:17 AM.
+----- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) >
+<---- Dependent Variables 1 in Study 1/Solution 1 (sol1) -----------------------
+Started at Oct 1, 2026, 2:39:17 AM.
+           Current Progress:   3 % - Dependent Variables 1
+Memory: 786/988 818/1046
+Solution time: 0 s.
+Physical memory: 788 MB
+Virtual memory: 821 MB
+Ended at Oct 1, 2026, 2:39:17 AM.
+----- Dependent Variables 1 in Study 1/Solution 1 (sol1) ---------------------->
+<---- Stationary Solver 1 in Study 1/Solution 1 (sol1) -------------------------
+Started at Oct 1, 2026, 2:39:17 AM.
+Nonlinear solver
+Number of degrees of freedom solved for: 138873.
+           Current Progress:   5 % - Assembling sparsity pattern
+Memory: 804/988 834/1046
+Nonsymmetric matrix found.
+Scales for dependent variables:
+Electron solution variable (comp1.Ne): 1e+23
+Hole solution variable (comp1.Ph): 2.1e+24
+Electric potential (comp1.V): 8.5e+20
+Orthonormal null-space function used.
+           Current Progress:   5 % - Matrix factorization
+Memory: 838/988 880/1046
+Iter      SolEst      ResEst     Damping    Stepsize #Res #Jac #Sol
+           Current Progress:   5 % - Assembling matrices
+Memory: 884/988 933/1046
+           Current Progress:   9 % - Assembling matrices
+   1     3.1e+02     4.6e+18   0.0001000     3.2e+02    8    1    4
+           Current Progress:   9 % - Assembling sparsity pattern
+Memory: 877/988 926/1046
+           Current Progress:   9 % - Matrix factorization
+Memory: 852/988 895/1046
+           Current Progress:   9 % - Solving linear system
+Memory: 888/988 936/1046
+   2     2.4e+18     1.3e+05   0.0010000     1.5e+03   10    2    7
+-          Current Progress:  14 % - Assembling sparsity pattern
+Memory: 882/988 930/1046
+-          Current Progress:  14 % - Matrix factorization
+Memory: 864/988 938/1046
+-          Current Progress:  14 % - Solving linear system
+Memory: 887/988 935/1046
+-----      Current Progress:  50 % - 
+Memory: 801/988 832/1046
+Solution time: 5 s.
+Physical memory: 888 MB
+Virtual memory: 939 MB
+Ended at Oct 1, 2026, 2:39:22 AM.
+----- Stationary Solver 1 in Study 1/Solution 1 (sol1) ------------------------>
+Dit_scale=0.700000: birinchi urinish muvaffaqiyatsiz (The_following_feature_has_encountered_a_problem), tozalab qayta urinamiz.
+<---- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) -
+Started at Oct 1, 2026, 2:39:22 AM.
+Geometry shape function: Linear Lagrange
+Running on 11th Gen Intel(R) Core(TM) i7-1165G7 at 2.80 GHz.
+Using 1 socket with 4 cores in total on WIN-FNSSP1NOF49.
+Available memory: 7.97 GB.
+           Current Progress:   2 % - Compile Equations: Semiconductor Equilibrium
+Memory: 742/988 772/1046
+           Current Progress:   3 % - Compile Equations: Semiconductor Equilibrium
+Memory: 755/988 785/1046
+           Current Progress:   3 % - Creating visualization mesh
+Time: 1 s.
+Physical memory: 758 MB
+Virtual memory: 788 MB
+Ended at Oct 1, 2026, 2:39:23 AM.
+----- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) >
+<---- Dependent Variables 1 in Study 1/Solution 1 (sol1) -----------------------
+Started at Oct 1, 2026, 2:39:23 AM.
+           Current Progress:   3 % - Dependent Variables 1
+Memory: 761/988 790/1046
+Solution time: 0 s.
+Physical memory: 761 MB
+Virtual memory: 790 MB
+Ended at Oct 1, 2026, 2:39:23 AM.
+----- Dependent Variables 1 in Study 1/Solution 1 (sol1) ---------------------->
+<---- Stationary Solver 1 in Study 1/Solution 1 (sol1) -------------------------
+Started at Oct 1, 2026, 2:39:23 AM.
+Nonlinear solver
+Number of degrees of freedom solved for: 138873.
+           Current Progress:   5 % - Assembling sparsity pattern
+Memory: 779/988 807/1046
+Nonsymmetric matrix found.
+Scales for dependent variables:
+Electron solution variable (comp1.Ne): 1e+23
+Hole solution variable (comp1.Ph): 2.1e+24
+Electric potential (comp1.V): 8.5e+20
+Orthonormal null-space function used.
+           Current Progress:   5 % - Matrix factorization
+Memory: 818/988 858/1046
+Iter      SolEst      ResEst     Damping    Stepsize #Res #Jac #Sol
+           Current Progress:   5 % - Assembling matrices
+Memory: 858/988 904/1046
+           Current Progress:   9 % - Assembling matrices
+           Current Progress:   9 % - 
+Memory: 862/988 908/1046
+           Current Progress:   9 % - Solving linear system
+Memory: 861/988 907/1046
+   1     3.1e+02     4.6e+18   0.0001000     3.2e+02    8    1    4
+           Current Progress:   9 % - Assembling sparsity pattern
+Memory: 845/988 891/1046
+           Current Progress:   9 % - Assembling matrices
+Memory: 858/988 904/1046
+           Current Progress:   9 % - Matrix factorization
+Memory: 850/988 909/1046
+           Current Progress:   9 % - Solving linear system
+Memory: 860/988 906/1046
+           Current Progress:   9 % - Assembling matrices
+Memory: 860/988 905/1046
+   2     3.4e+20     2.4e+05   0.0010000     1.1e+03   10    2    7
+-          Current Progress:  14 % - Assembling sparsity pattern
+Memory: 851/988 898/1046
+-          Current Progress:  14 % - Constraint handling
+Memory: 859/988 907/1046
+-          Current Progress:  14 % - Matrix factorization
+Memory: 857/988 908/1046
+-          Current Progress:  14 % - Assembling matrices
+Memory: 861/988 905/1046
+-----      Current Progress:  50 % - 
+Memory: 775/988 802/1046
+Solution time: 5 s.
+Physical memory: 862 MB
+Virtual memory: 909 MB
+Ended at Oct 1, 2026, 2:39:28 AM.
+----- Stationary Solver 1 in Study 1/Solution 1 (sol1) ------------------------>
+Dit_scale=0.700000: OGOHLANTIRISH - hali ham yaqinlashmadi: The_following_feature_has_encountered_a_problem
+<---- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) -
+Started at Oct 1, 2026, 2:39:28 AM.
+Geometry shape function: Linear Lagrange
+Running on 11th Gen Intel(R) Core(TM) i7-1165G7 at 2.80 GHz.
+Using 1 socket with 4 cores in total on WIN-FNSSP1NOF49.
+Available memory: 7.97 GB.
+           Current Progress:   3 % - Compile Equations: Semiconductor Equilibrium
+Memory: 794/988 823/1046
+           Current Progress:   3 % - Creating visualization mesh
+Time: 1 s.
+Physical memory: 794 MB
+Virtual memory: 823 MB
+Ended at Oct 1, 2026, 2:39:29 AM.
+----- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) >
+<---- Dependent Variables 1 in Study 1/Solution 1 (sol1) -----------------------
+Started at Oct 1, 2026, 2:39:29 AM.
+           Current Progress:   3 % - Dependent Variables 1
+Memory: 798/988 827/1046
+Solution time: 0 s.
+Physical memory: 798 MB
+Virtual memory: 827 MB
+Ended at Oct 1, 2026, 2:39:29 AM.
+----- Dependent Variables 1 in Study 1/Solution 1 (sol1) ---------------------->
+<---- Stationary Solver 1 in Study 1/Solution 1 (sol1) -------------------------
+Started at Oct 1, 2026, 2:39:29 AM.
+Nonlinear solver
+Number of degrees of freedom solved for: 138873.
+           Current Progress:   5 % - Assembling sparsity pattern
+Memory: 814/988 842/1046
+Nonsymmetric matrix found.
+Scales for dependent variables:
+Electron solution variable (comp1.Ne): 1e+23
+Hole solution variable (comp1.Ph): 2.2e+24
+Electric potential (comp1.V): 8.5e+20
+Orthonormal null-space function used.
+           Current Progress:   5 % - Matrix factorization
+Memory: 850/988 894/1046
+Iter      SolEst      ResEst     Damping    Stepsize #Res #Jac #Sol
+           Current Progress:   5 % - Assembling matrices
+Memory: 885/988 932/1046
+           Current Progress:   9 % - Assembling matrices
+Memory: 884/988 931/1046
+           Current Progress:   9 % - 
+Memory: 886/988 933/1046
+           Current Progress:   9 % - Assembling matrices
+Memory: 887/988 934/1046
+           Current Progress:   9 % - Solving linear system
+Memory: 888/988 935/1046
+   1       3e+02     2.2e+18   0.0001000     3.1e+02    8    1    4
+           Current Progress:   9 % - Assembling sparsity pattern
+Memory: 884/988 930/1046
+           Current Progress:   9 % - Matrix factorization
+Memory: 863/988 937/1046
+           Current Progress:   9 % - Solving linear system
+Memory: 889/988 934/1046
+   2       2e+25     7.9e+05   0.0010000     6.3e+03   10    2    7
+-          Current Progress:  14 % - Assembling matrices
+Memory: 886/988 932/1046
+-          Current Progress:  14 % - Matrix factorization
+Memory: 871/988 936/1046
+-          Current Progress:  14 % - Solving linear system
+Memory: 889/988 934/1046
+-----      Current Progress:  50 % - 
+Memory: 803/988 831/1046
+Solution time: 5 s.
+Physical memory: 890 MB
+Virtual memory: 937 MB
+Ended at Oct 1, 2026, 2:39:34 AM.
+----- Stationary Solver 1 in Study 1/Solution 1 (sol1) ------------------------>
+Dit_scale=0.850000: birinchi urinish muvaffaqiyatsiz (The_following_feature_has_encountered_a_problem), tozalab qayta urinamiz.
+<---- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) -
+Started at Oct 1, 2026, 2:39:35 AM.
+Geometry shape function: Linear Lagrange
+Running on 11th Gen Intel(R) Core(TM) i7-1165G7 at 2.80 GHz.
+Using 1 socket with 4 cores in total on WIN-FNSSP1NOF49.
+Available memory: 7.97 GB.
+           Current Progress:   3 % - Compile Equations: Semiconductor Equilibrium
+Memory: 738/988 767/1046
+           Current Progress:   3 % - Creating visualization mesh
+Memory: 741/988 770/1046
+Time: 1 s.
+Physical memory: 743 MB
+Virtual memory: 772 MB
+Ended at Oct 1, 2026, 2:39:36 AM.
+----- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) >
+<---- Dependent Variables 1 in Study 1/Solution 1 (sol1) -----------------------
+Started at Oct 1, 2026, 2:39:36 AM.
+           Current Progress:   3 % - Dependent Variables 1
+Memory: 748/988 776/1046
+Solution time: 0 s.
+Physical memory: 748 MB
+Virtual memory: 776 MB
+Ended at Oct 1, 2026, 2:39:36 AM.
+----- Dependent Variables 1 in Study 1/Solution 1 (sol1) ---------------------->
+<---- Stationary Solver 1 in Study 1/Solution 1 (sol1) -------------------------
+Started at Oct 1, 2026, 2:39:36 AM.
+Nonlinear solver
+Number of degrees of freedom solved for: 138873.
+           Current Progress:   5 % - Assembling sparsity pattern
+Memory: 761/988 788/1046
+           Current Progress:   5 % - Assembling matrices
+Memory: 777/988 805/1046
+Nonsymmetric matrix found.
+Scales for dependent variables:
+Electron solution variable (comp1.Ne): 1e+23
+Hole solution variable (comp1.Ph): 2.2e+24
+Electric potential (comp1.V): 8.5e+20
+Orthonormal null-space function used.
+           Current Progress:   5 % - Matrix factorization
+Memory: 804/988 844/1046
+Iter      SolEst      ResEst     Damping    Stepsize #Res #Jac #Sol
+           Current Progress:   5 % - Solving linear system
+Memory: 854/988 901/1046
+           Current Progress:   5 % - 
+Memory: 856/988 904/1046
+           Current Progress:   9 % - 
+Memory: 858/988 905/1046
+           Current Progress:   9 % - Solving linear system
+Memory: 857/988 905/1046
+   1     2.9e+02     2.2e+18   0.0001000     3.1e+02    8    1    4
+           Current Progress:   9 % - Assembling matrices
+Memory: 799/988 843/1046
+           Current Progress:   9 % - Matrix factorization
+Memory: 781/988 848/1046
+           Current Progress:   9 % - Solving linear system
+Memory: 805/988 849/1046
+   2     3.4e+02     4.4e+06   0.0001000     2.5e+02    9    2    6
+-          Current Progress:  14 % - Assembling sparsity pattern
+Memory: 789/988 833/1046
+-          Current Progress:  14 % - Assembling matrices
+Memory: 805/988 849/1046
+-          Current Progress:  14 % - Matrix factorization
+Memory: 798/988 853/1046
+-          Current Progress:  14 % - Assembling matrices
+Memory: 807/988 851/1046
+-          Current Progress:  14 % - 
+Memory: 816/988 861/1046
+-          Current Progress:  14 % - Assembling matrices
+Memory: 813/988 857/1046
+   3    1.6e+149     6.4e+66   0.0002500       1e+05   13    3    9
+-          Current Progress:  14 % - Matrix factorization
+Memory: 802/988 860/1046
+-          Current Progress:  14 % - Assembling matrices
+Memory: 813/988 857/1046
+-----      Current Progress:  50 % - 
+Memory: 697/988 722/1046
+Solution time: 6 s.
+Physical memory: 858 MB
+Virtual memory: 905 MB
+Ended at Oct 1, 2026, 2:39:42 AM.
+----- Stationary Solver 1 in Study 1/Solution 1 (sol1) ------------------------>
+Dit_scale=0.850000: OGOHLANTIRISH - hali ham yaqinlashmadi: The_following_feature_has_encountered_a_problem
+<---- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) -
+Started at Oct 1, 2026, 2:39:42 AM.
+Geometry shape function: Linear Lagrange
+Running on 11th Gen Intel(R) Core(TM) i7-1165G7 at 2.80 GHz.
+Using 1 socket with 4 cores in total on WIN-FNSSP1NOF49.
+Available memory: 7.97 GB.
+           Current Progress:   3 % - Compile Equations: Semiconductor Equilibrium
+Memory: 769/988 801/1046
+           Current Progress:   3 % - Creating visualization mesh
+Memory: 771/988 802/1046
+Time: 1 s.
+Physical memory: 772 MB
+Virtual memory: 803 MB
+Ended at Oct 1, 2026, 2:39:43 AM.
+----- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) >
+<---- Dependent Variables 1 in Study 1/Solution 1 (sol1) -----------------------
+Started at Oct 1, 2026, 2:39:43 AM.
+           Current Progress:   3 % - Dependent Variables 1
+Memory: 778/988 809/1046
+Solution time: 0 s.
+Physical memory: 778 MB
+Virtual memory: 809 MB
+Ended at Oct 1, 2026, 2:39:43 AM.
+----- Dependent Variables 1 in Study 1/Solution 1 (sol1) ---------------------->
+<---- Stationary Solver 1 in Study 1/Solution 1 (sol1) -------------------------
+Started at Oct 1, 2026, 2:39:43 AM.
+Nonlinear solver
+Number of degrees of freedom solved for: 138873.
+           Current Progress:   5 % - Assembling sparsity pattern
+Memory: 799/988 828/1046
+Nonsymmetric matrix found.
+Scales for dependent variables:
+Electron solution variable (comp1.Ne): 1e+23
+Hole solution variable (comp1.Ph): 2.2e+24
+Electric potential (comp1.V): 8.5e+20
+Orthonormal null-space function used.
+           Current Progress:   5 % - Matrix factorization
+Memory: 816/988 865/1046
+Iter      SolEst      ResEst     Damping    Stepsize #Res #Jac #Sol
+           Current Progress:   5 % - Assembling matrices
+Memory: 881/988 929/1046
+           Current Progress:   9 % - Assembling matrices
+           Current Progress:   9 % - 
+Memory: 883/988 931/1046
+           Current Progress:   9 % - Assembling matrices
+   1     3.1e+02     4.6e+18   0.0001000     3.2e+02    8    1    4
+           Current Progress:   9 % - Assembling sparsity pattern
+Memory: 871/988 919/1046
+           Current Progress:   9 % - Constraint handling
+Memory: 881/988 934/1046
+           Current Progress:   9 % - Matrix factorization
+Memory: 880/988 934/1046
+           Current Progress:   9 % - Assembling matrices
+Memory: 883/988 931/1046
+   2     2.1e+03     1.1e+06   0.0001000     2.4e+02    9    2    6
+-          Current Progress:  14 % - Assembling sparsity pattern
+Memory: 868/988 915/1046
+-          Current Progress:  14 % - Assembling matrices
+Memory: 881/988 929/1046
+-          Current Progress:  14 % - Matrix factorization
+Memory: 868/988 933/1046
+-          Current Progress:  14 % - Solving linear system
+Memory: 883/988 931/1046
+-          Current Progress:  14 % - Assembling matrices
+-          Current Progress:  14 % - Solving linear system
+Memory: 861/988 907/1046
+   3         inf     3.7e+37   0.0005000     3.9e+05   12    3    9
+-          Current Progress:  14 % - Assembling matrices
+Memory: 857/988 903/1046
+-          Current Progress:  14 % - Matrix factorization
+Memory: 845/988 908/1046
+-          Current Progress:  14 % - Assembling matrices
+Memory: 859/988 906/1046
+-          Current Progress:  14 % - 
+Memory: 861/988 907/1046
+-          Current Progress:  14 % - Assembling matrices
+Memory: 859/988 906/1046
+-----      Current Progress:  50 % - 
+Memory: 774/988 803/1046
+Solution time: 7 s.
+Physical memory: 883 MB
+Virtual memory: 934 MB
+Ended at Oct 1, 2026, 2:39:50 AM.
+----- Stationary Solver 1 in Study 1/Solution 1 (sol1) ------------------------>
+Dit_scale=1.00000: birinchi urinish muvaffaqiyatsiz (The_following_feature_has_encountered_a_problem), tozalab qayta urinamiz.
+<---- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) -
+Started at Oct 1, 2026, 2:39:50 AM.
+Geometry shape function: Linear Lagrange
+Running on 11th Gen Intel(R) Core(TM) i7-1165G7 at 2.80 GHz.
+Using 1 socket with 4 cores in total on WIN-FNSSP1NOF49.
+Available memory: 7.97 GB.
+           Current Progress:   2 % - Compile Equations: Semiconductor Equilibrium
+Memory: 759/988 790/1046
+           Current Progress:   3 % - Compile Equations: Semiconductor Equilibrium
+Memory: 753/988 785/1046
+           Current Progress:   3 % - Creating visualization mesh
+Memory: 754/988 785/1046
+Time: 1 s.
+Physical memory: 759 MB
+Virtual memory: 790 MB
+Ended at Oct 1, 2026, 2:39:51 AM.
+----- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) >
+<---- Dependent Variables 1 in Study 1/Solution 1 (sol1) -----------------------
+Started at Oct 1, 2026, 2:39:51 AM.
+           Current Progress:   3 % - Dependent Variables 1
+Memory: 759/988 790/1046
+Solution time: 0 s.
+Physical memory: 759 MB
+Virtual memory: 790 MB
+Ended at Oct 1, 2026, 2:39:51 AM.
+----- Dependent Variables 1 in Study 1/Solution 1 (sol1) ---------------------->
+<---- Stationary Solver 1 in Study 1/Solution 1 (sol1) -------------------------
+Started at Oct 1, 2026, 2:39:51 AM.
+Nonlinear solver
+Number of degrees of freedom solved for: 138873.
+           Current Progress:   5 % - Assembling sparsity pattern
+Memory: 777/988 806/1046
+Nonsymmetric matrix found.
+Scales for dependent variables:
+Electron solution variable (comp1.Ne): 1e+23
+Hole solution variable (comp1.Ph): 2.2e+24
+Electric potential (comp1.V): 8.5e+20
+Orthonormal null-space function used.
+           Current Progress:   5 % - Matrix factorization
+Memory: 808/988 850/1046
+Iter      SolEst      ResEst     Damping    Stepsize #Res #Jac #Sol
+           Current Progress:   5 % - Assembling matrices
+Memory: 861/988 909/1046
+           Current Progress:   9 % - Assembling matrices
+           Current Progress:   9 % - 
+Memory: 864/988 911/1046
+           Current Progress:   9 % - Assembling matrices
+           Current Progress:   9 % - Solving linear system
+Memory: 801/988 845/1046
+   1     1.5e+30     4.2e+18   0.0010000     2.6e+03    9    1    5
+           Current Progress:   9 % - Assembling sparsity pattern
+Memory: 808/988 851/1046
+           Current Progress:   9 % - Matrix factorization
+Memory: 786/988 859/1046
+           Current Progress:   9 % - Solving linear system
+Memory: 815/988 859/1046
+           Current Progress:   9 % - 
+Memory: 814/988 861/1046
+-----      Current Progress:  50 % - 
+Memory: 699/988 725/1046
+Solution time: 4 s.
+Physical memory: 864 MB
+Virtual memory: 911 MB
+Ended at Oct 1, 2026, 2:39:55 AM.
+----- Stationary Solver 1 in Study 1/Solution 1 (sol1) ------------------------>
+Dit_scale=1.00000: OGOHLANTIRISH - hali ham yaqinlashmadi: The_following_feature_has_encountered_a_problem
+<---- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) -
+Started at Oct 1, 2026, 2:39:55 AM.
+Geometry shape function: Linear Lagrange
+Running on 11th Gen Intel(R) Core(TM) i7-1165G7 at 2.80 GHz.
+Using 1 socket with 4 cores in total on WIN-FNSSP1NOF49.
+Available memory: 7.97 GB.
+           Current Progress:   3 % - Compile Equations: Semiconductor Equilibrium
+Memory: 772/988 802/1046
+           Current Progress:   3 % - Creating visualization mesh
+Time: 1 s.
+Physical memory: 774 MB
+Virtual memory: 804 MB
+Ended at Oct 1, 2026, 2:39:56 AM.
+----- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) >
+<---- Dependent Variables 1 in Study 1/Solution 1 (sol1) -----------------------
+Started at Oct 1, 2026, 2:39:56 AM.
+           Current Progress:   3 % - Dependent Variables 1
+Memory: 779/988 809/1046
+Solution time: 0 s.
+Physical memory: 779 MB
+Virtual memory: 809 MB
+Ended at Oct 1, 2026, 2:39:56 AM.
+----- Dependent Variables 1 in Study 1/Solution 1 (sol1) ---------------------->
+<---- Stationary Solver 1 in Study 1/Solution 1 (sol1) -------------------------
+Started at Oct 1, 2026, 2:39:56 AM.
+Nonlinear solver
+Number of degrees of freedom solved for: 138873.
+           Current Progress:   5 % - Assembling sparsity pattern
+Memory: 799/988 828/1046
+Nonsymmetric matrix found.
+Scales for dependent variables:
+Electron solution variable (comp1.Ne): 1e+23
+Hole solution variable (comp1.Ph): 2.2e+24
+Electric potential (comp1.V): 8.5e+20
+Orthonormal null-space function used.
+           Current Progress:   5 % - Matrix factorization
+Memory: 826/988 867/1046
+Iter      SolEst      ResEst     Damping    Stepsize #Res #Jac #Sol
+           Current Progress:   5 % - Solving linear system
+Memory: 884/988 931/1046
+           Current Progress:   9 % - Assembling matrices
+           Current Progress:   9 % - Solving linear system
+Memory: 887/988 935/1046
+           Current Progress:   9 % - Assembling matrices
+Memory: 886/988 933/1046
+   1     1.5e+30     4.1e+18   0.0010000     2.6e+03    9    1    5
+           Current Progress:   9 % - Assembling sparsity pattern
+Memory: 876/988 924/1046
+           Current Progress:   9 % - Constraint handling
+Memory: 884/988 932/1046
+           Current Progress:   9 % - Matrix factorization
+Memory: 882/988 937/1046
+           Current Progress:   9 % - Assembling matrices
+Memory: 886/988 933/1046
+-----      Current Progress:  50 % - 
+Memory: 800/988 830/1046
+Solution time: 4 s.
+Physical memory: 887 MB
+Virtual memory: 937 MB
+Ended at Oct 1, 2026, 2:40:01 AM.
+----- Stationary Solver 1 in Study 1/Solution 1 (sol1) ------------------------>
+VD=0.10 VG=  80.00: birinchi urinish muvaffaqiyatsiz (The_following_feature_has_encountered_a_problem), tozalab qayta urinamiz.
+<---- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) -
+Started at Oct 1, 2026, 2:40:01 AM.
+Geometry shape function: Linear Lagrange
+Running on 11th Gen Intel(R) Core(TM) i7-1165G7 at 2.80 GHz.
+Using 1 socket with 4 cores in total on WIN-FNSSP1NOF49.
+Available memory: 7.97 GB.
+           Current Progress:   3 % - Compile Equations: Semiconductor Equilibrium
+Memory: 733/988 763/1046
+           Current Progress:   3 % - Creating visualization mesh
+Memory: 734/988 764/1046
+Time: 1 s.
+Physical memory: 737 MB
+Virtual memory: 766 MB
+Ended at Oct 1, 2026, 2:40:02 AM.
+----- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) >
+<---- Dependent Variables 1 in Study 1/Solution 1 (sol1) -----------------------
+Started at Oct 1, 2026, 2:40:02 AM.
+           Current Progress:   3 % - Dependent Variables 1
+Memory: 741/988 770/1046
+Solution time: 0 s.
+Physical memory: 741 MB
+Virtual memory: 770 MB
+Ended at Oct 1, 2026, 2:40:02 AM.
+----- Dependent Variables 1 in Study 1/Solution 1 (sol1) ---------------------->
+<---- Stationary Solver 1 in Study 1/Solution 1 (sol1) -------------------------
+Started at Oct 1, 2026, 2:40:02 AM.
+Nonlinear solver
+Number of degrees of freedom solved for: 138873.
+           Current Progress:   5 % - Assembling sparsity pattern
+Memory: 760/988 788/1046
+Nonsymmetric matrix found.
+Scales for dependent variables:
+Electron solution variable (comp1.Ne): 1e+23
+Hole solution variable (comp1.Ph): 2.2e+24
+Electric potential (comp1.V): 8.5e+20
+Orthonormal null-space function used.
+           Current Progress:   5 % - Matrix factorization
+Memory: 794/988 839/1046
+Iter      SolEst      ResEst     Damping    Stepsize #Res #Jac #Sol
+           Current Progress:   5 % - 
+Memory: 847/988 899/1046
+           Current Progress:   9 % - Assembling matrices
+Memory: 849/988 898/1046
+           Current Progress:   9 % - Solving linear system
+Memory: 853/988 902/1046
+   1     3.2e+02     4.6e+18   0.0001000     3.2e+02    8    1    4
+           Current Progress:   9 % - Assembling sparsity pattern
+Memory: 847/988 895/1046
+           Current Progress:   9 % - Matrix factorization
+Memory: 766/988 840/1046
+           Current Progress:   9 % - Solving linear system
+Memory: 793/988 839/1046
+   2     1.1e+38     1.6e+06   0.0010000     1.7e+04   10    2    7
+-          Current Progress:  14 % - Assembling matrices
+Memory: 804/988 847/1046
+-          Current Progress:  14 % - Matrix factorization
+Memory: 790/988 852/1046
+-          Current Progress:  14 % - Solving linear system
+Memory: 806/988 850/1046
+-----      Current Progress:  50 % - 
+Memory: 729/988 757/1046
+Solution time: 5 s.
+Physical memory: 853 MB
+Virtual memory: 902 MB
+Ended at Oct 1, 2026, 2:40:07 AM.
+----- Stationary Solver 1 in Study 1/Solution 1 (sol1) ------------------------>
+VD=0.10 VG=  80.00: OGOHLANTIRISH - hali ham yaqinlashmadi: The_following_feature_has_encountered_a_problem
+<---- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) -
+Started at Oct 1, 2026, 2:40:07 AM.
+Geometry shape function: Linear Lagrange
+Running on 11th Gen Intel(R) Core(TM) i7-1165G7 at 2.80 GHz.
+Using 1 socket with 4 cores in total on WIN-FNSSP1NOF49.
+Available memory: 7.97 GB.
+           Current Progress:   3 % - Compile Equations: Semiconductor Equilibrium
+Memory: 782/988 812/1046
+           Current Progress:   3 % - Creating visualization mesh
+Memory: 783/988 812/1046
+Time: 1 s.
+Physical memory: 783 MB
+Virtual memory: 812 MB
+Ended at Oct 1, 2026, 2:40:08 AM.
+----- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) >
+<---- Dependent Variables 1 in Study 1/Solution 1 (sol1) -----------------------
+Started at Oct 1, 2026, 2:40:08 AM.
+           Current Progress:   3 % - Dependent Variables 1
+Memory: 787/988 816/1046
+Solution time: 0 s.
+Physical memory: 787 MB
+Virtual memory: 816 MB
+Ended at Oct 1, 2026, 2:40:08 AM.
+----- Dependent Variables 1 in Study 1/Solution 1 (sol1) ---------------------->
+<---- Stationary Solver 1 in Study 1/Solution 1 (sol1) -------------------------
+Started at Oct 1, 2026, 2:40:08 AM.
+Nonlinear solver
+Number of degrees of freedom solved for: 138873.
+           Current Progress:   5 % - Assembling sparsity pattern
+Memory: 803/988 832/1046
+Nonsymmetric matrix found.
+Scales for dependent variables:
+Electron solution variable (comp1.Ne): 1e+23
+Hole solution variable (comp1.Ph): 2.2e+24
+Electric potential (comp1.V): 8.5e+20
+Orthonormal null-space function used.
+           Current Progress:   5 % - Matrix factorization
+Memory: 841/988 881/1046
+Iter      SolEst      ResEst     Damping    Stepsize #Res #Jac #Sol
+           Current Progress:   5 % - Assembling matrices
+Memory: 878/988 926/1046
+           Current Progress:   9 % - 
+Memory: 881/988 929/1046
+           Current Progress:   9 % - Solving linear system
+Memory: 882/988 930/1046
+   1     3.2e+02     4.6e+18   0.0001000     3.2e+02    8    1    4
+           Current Progress:   9 % - Assembling matrices
+Memory: 879/988 927/1046
+           Current Progress:   9 % - Matrix factorization
+Memory: 865/988 932/1046
+           Current Progress:   9 % - Solving linear system
+Memory: 881/988 929/1046
+           Current Progress:   9 % - Assembling matrices
+Memory: 881/988 928/1046
+   2     3.2e+52     1.2e+07   0.0010000     2.5e+04   10    2    7
+-          Current Progress:  14 % - Assembling sparsity pattern
+Memory: 870/988 918/1046
+-          Current Progress:  14 % - Matrix factorization
+Memory: 850/988 931/1046
+-          Current Progress:  14 % - 
+Memory: 885/988 932/1046
+-----      Current Progress:  50 % - 
+Memory: 795/988 825/1046
+Solution time: 5 s.
+Physical memory: 885 MB
+Virtual memory: 932 MB
+Ended at Oct 1, 2026, 2:40:13 AM.
+----- Stationary Solver 1 in Study 1/Solution 1 (sol1) ------------------------>
+VD=0.10 VG=  76.00: birinchi urinish muvaffaqiyatsiz (The_following_feature_has_encountered_a_problem), tozalab qayta urinamiz.
+<---- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) -
+Started at Oct 1, 2026, 2:40:13 AM.
+Geometry shape function: Linear Lagrange
+Running on 11th Gen Intel(R) Core(TM) i7-1165G7 at 2.80 GHz.
+Using 1 socket with 4 cores in total on WIN-FNSSP1NOF49.
+Available memory: 7.97 GB.
+           Current Progress:   3 % - Compile Equations: Semiconductor Equilibrium
+Memory: 743/988 773/1046
+           Current Progress:   3 % - Creating visualization mesh
+Time: 1 s.
+Physical memory: 744 MB
+Virtual memory: 774 MB
+Ended at Oct 1, 2026, 2:40:14 AM.
+----- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) >
+<---- Dependent Variables 1 in Study 1/Solution 1 (sol1) -----------------------
+Started at Oct 1, 2026, 2:40:14 AM.
+           Current Progress:   3 % - Dependent Variables 1
+Memory: 748/988 779/1046
+Solution time: 0 s.
+Physical memory: 748 MB
+Virtual memory: 779 MB
+Ended at Oct 1, 2026, 2:40:14 AM.
+----- Dependent Variables 1 in Study 1/Solution 1 (sol1) ---------------------->
+<---- Stationary Solver 1 in Study 1/Solution 1 (sol1) -------------------------
+Started at Oct 1, 2026, 2:40:14 AM.
+Nonlinear solver
+Number of degrees of freedom solved for: 138873.
+           Current Progress:   5 % - Assembling sparsity pattern
+Memory: 769/988 798/1046
+Nonsymmetric matrix found.
+Scales for dependent variables:
+Electron solution variable (comp1.Ne): 1e+23
+Hole solution variable (comp1.Ph): 2.2e+24
+Electric potential (comp1.V): 8.5e+20
+Orthonormal null-space function used.
+           Current Progress:   5 % - Matrix factorization
+Memory: 803/988 844/1046
+Iter      SolEst      ResEst     Damping    Stepsize #Res #Jac #Sol
+           Current Progress:   5 % - Assembling matrices
+Memory: 855/988 904/1046
+           Current Progress:   9 % - Assembling matrices
+           Current Progress:   9 % - Solving linear system
+Memory: 859/988 907/1046
+   1     1.5e+30     4.3e+18   0.0010000     2.7e+03    9    1    5
+           Current Progress:   9 % - Assembling matrices
+Memory: 856/988 904/1046
+           Current Progress:   9 % - Matrix factorization
+Memory: 838/988 909/1046
+           Current Progress:   9 % - Solving linear system
+Memory: 858/988 906/1046
+           Current Progress:   9 % - 
+Memory: 856/988 907/1046
+-----      Current Progress:  50 % - 
+Memory: 772/988 803/1046
+Solution time: 4 s.
+Physical memory: 859 MB
+Virtual memory: 909 MB
+Ended at Oct 1, 2026, 2:40:18 AM.
+----- Stationary Solver 1 in Study 1/Solution 1 (sol1) ------------------------>
+VD=0.10 VG=  76.00: OGOHLANTIRISH - hali ham yaqinlashmadi: The_following_feature_has_encountered_a_problem
+<---- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) -
+Started at Oct 1, 2026, 2:40:18 AM.
+Geometry shape function: Linear Lagrange
+Running on 11th Gen Intel(R) Core(TM) i7-1165G7 at 2.80 GHz.
+Using 1 socket with 4 cores in total on WIN-FNSSP1NOF49.
+Available memory: 7.97 GB.
+           Current Progress:   3 % - Compile Equations: Semiconductor Equilibrium
+Memory: 791/988 823/1046
+           Current Progress:   3 % - Creating visualization mesh
+Time: 1 s.
+Physical memory: 791 MB
+Virtual memory: 823 MB
+Ended at Oct 1, 2026, 2:40:19 AM.
+----- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) >
+<---- Dependent Variables 1 in Study 1/Solution 1 (sol1) -----------------------
+Started at Oct 1, 2026, 2:40:19 AM.
+           Current Progress:   3 % - Dependent Variables 1
+Memory: 796/988 827/1046
+Solution time: 0 s.
+Physical memory: 796 MB
+Virtual memory: 827 MB
+Ended at Oct 1, 2026, 2:40:19 AM.
+----- Dependent Variables 1 in Study 1/Solution 1 (sol1) ---------------------->
+<---- Stationary Solver 1 in Study 1/Solution 1 (sol1) -------------------------
+Started at Oct 1, 2026, 2:40:19 AM.
+Nonlinear solver
+Number of degrees of freedom solved for: 138873.
+           Current Progress:   5 % - Assembling sparsity pattern
+Memory: 761/988 790/1046
+Nonsymmetric matrix found.
+Scales for dependent variables:
+Electron solution variable (comp1.Ne): 1e+23
+Hole solution variable (comp1.Ph): 2.2e+24
+Electric potential (comp1.V): 8.5e+20
+Orthonormal null-space function used.
+           Current Progress:   5 % - Matrix factorization
+Memory: 781/988 810/1046
+Iter      SolEst      ResEst     Damping    Stepsize #Res #Jac #Sol
+           Current Progress:   5 % - Assembling matrices
+Memory: 865/988 915/1046
+           Current Progress:   9 % - 
+Memory: 871/988 920/1046
+           Current Progress:   9 % - Assembling matrices
+Memory: 871/988 921/1046
+           Current Progress:   9 % - Solving linear system
+Memory: 873/988 922/1046
+   1     1.4e+30       4e+18   0.0010000     2.6e+03    9    1    5
+           Current Progress:   9 % - Assembling sparsity pattern
+Memory: 868/988 917/1046
+           Current Progress:   9 % - Matrix factorization
+Memory: 849/988 925/1046
+           Current Progress:   9 % - Solving linear system
+Memory: 873/988 921/1046
+-----      Current Progress:  50 % - 
+Memory: 787/988 818/1046
+Solution time: 4 s.
+Physical memory: 873 MB
+Virtual memory: 925 MB
+Ended at Oct 1, 2026, 2:40:23 AM.
+----- Stationary Solver 1 in Study 1/Solution 1 (sol1) ------------------------>
+VD=0.10 VG=  72.00: birinchi urinish muvaffaqiyatsiz (The_following_feature_has_encountered_a_problem), tozalab qayta urinamiz.
+<---- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) -
+Started at Oct 1, 2026, 2:40:23 AM.
+Geometry shape function: Linear Lagrange
+Running on 11th Gen Intel(R) Core(TM) i7-1165G7 at 2.80 GHz.
+Using 1 socket with 4 cores in total on WIN-FNSSP1NOF49.
+Available memory: 7.97 GB.
+           Current Progress:   3 % - Compile Equations: Semiconductor Equilibrium
+Memory: 743/988 773/1046
+           Current Progress:   3 % - Creating visualization mesh
+Memory: 744/988 774/1046
+Time: 1 s.
+Physical memory: 747 MB
+Virtual memory: 776 MB
+Ended at Oct 1, 2026, 2:40:24 AM.
+----- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) >
+<---- Dependent Variables 1 in Study 1/Solution 1 (sol1) -----------------------
+Started at Oct 1, 2026, 2:40:24 AM.
+           Current Progress:   3 % - Dependent Variables 1
+Memory: 751/988 780/1046
+Solution time: 0 s.
+Physical memory: 751 MB
+Virtual memory: 780 MB
+Ended at Oct 1, 2026, 2:40:24 AM.
+----- Dependent Variables 1 in Study 1/Solution 1 (sol1) ---------------------->
+<---- Stationary Solver 1 in Study 1/Solution 1 (sol1) -------------------------
+Started at Oct 1, 2026, 2:40:24 AM.
+Nonlinear solver
+Number of degrees of freedom solved for: 138873.
+           Current Progress:   5 % - Assembling sparsity pattern
+Memory: 771/988 799/1046
+Nonsymmetric matrix found.
+Scales for dependent variables:
+Electron solution variable (comp1.Ne): 1e+23
+Hole solution variable (comp1.Ph): 2.2e+24
+Electric potential (comp1.V): 8.5e+20
+Orthonormal null-space function used.
+           Current Progress:   5 % - Matrix factorization
+Memory: 812/988 852/1046
+Iter      SolEst      ResEst     Damping    Stepsize #Res #Jac #Sol
+           Current Progress:   5 % - 
+Memory: 856/988 907/1046
+           Current Progress:   9 % - Assembling matrices
+Memory: 859/988 906/1046
+           Current Progress:   9 % - Solving linear system
+Memory: 863/988 909/1046
+   1     1.4e+30     4.3e+18   0.0010000     2.7e+03    9    1    5
+           Current Progress:   9 % - Assembling matrices
+Memory: 860/988 906/1046
+           Current Progress:   9 % - Matrix factorization
+Memory: 850/988 911/1046
+           Current Progress:   9 % - Assembling matrices
+Memory: 862/988 908/1046
+-----      Current Progress:  50 % - 
+Memory: 776/988 805/1046
+Solution time: 4 s.
+Physical memory: 863 MB
+Virtual memory: 911 MB
+Ended at Oct 1, 2026, 2:40:28 AM.
+----- Stationary Solver 1 in Study 1/Solution 1 (sol1) ------------------------>
+VD=0.10 VG=  72.00: OGOHLANTIRISH - hali ham yaqinlashmadi: The_following_feature_has_encountered_a_problem
+<---- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) -
+Started at Oct 1, 2026, 2:40:28 AM.
+Geometry shape function: Linear Lagrange
+Running on 11th Gen Intel(R) Core(TM) i7-1165G7 at 2.80 GHz.
+Using 1 socket with 4 cores in total on WIN-FNSSP1NOF49.
+Available memory: 7.97 GB.
+           Current Progress:   3 % - Compile Equations: Semiconductor Equilibrium
+Memory: 790/988 821/1046
+           Current Progress:   3 % - Creating visualization mesh
+Memory: 791/988 821/1046
+Time: 1 s.
+Physical memory: 791 MB
+Virtual memory: 821 MB
+Ended at Oct 1, 2026, 2:40:29 AM.
+----- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) >
+<---- Dependent Variables 1 in Study 1/Solution 1 (sol1) -----------------------
+Started at Oct 1, 2026, 2:40:29 AM.
+           Current Progress:   3 % - Dependent Variables 1
+Memory: 795/988 826/1046
+Solution time: 0 s.
+Physical memory: 795 MB
+Virtual memory: 826 MB
+Ended at Oct 1, 2026, 2:40:29 AM.
+----- Dependent Variables 1 in Study 1/Solution 1 (sol1) ---------------------->
+<---- Stationary Solver 1 in Study 1/Solution 1 (sol1) -------------------------
+Started at Oct 1, 2026, 2:40:29 AM.
+Nonlinear solver
+Number of degrees of freedom solved for: 138873.
+           Current Progress:   5 % - Assembling sparsity pattern
+Memory: 810/988 840/1046
+Nonsymmetric matrix found.
+Scales for dependent variables:
+Electron solution variable (comp1.Ne): 1e+23
+Hole solution variable (comp1.Ph): 2.2e+24
+Electric potential (comp1.V): 8.5e+20
+Orthonormal null-space function used.
+           Current Progress:   5 % - Matrix factorization
+Memory: 840/988 883/1046
+Iter      SolEst      ResEst     Damping    Stepsize #Res #Jac #Sol
+           Current Progress:   5 % - Assembling matrices
+Memory: 879/988 926/1046
+           Current Progress:   9 % - 
+Memory: 884/988 930/1046
+           Current Progress:   9 % - Assembling matrices
+Memory: 885/988 931/1046
+           Current Progress:   9 % - Solving linear system
+Memory: 880/988 927/1046
+   1     3.1e+02     4.5e+18   0.0001000     3.1e+02    8    1    4
+           Current Progress:   9 % - Assembling sparsity pattern
+Memory: 875/988 922/1046
+           Current Progress:   9 % - Matrix factorization
+Memory: 855/988 935/1046
+           Current Progress:   9 % - Solving linear system
+Memory: 886/988 932/1046
+   2     9.2e+28     1.6e+07   0.0010000     2.5e+04   10    2    7
+-          Current Progress:  14 % - Assembling matrices
+Memory: 882/988 929/1046
+-          Current Progress:  14 % - Matrix factorization
+Memory: 864/988 933/1046
+-          Current Progress:  14 % - Solving linear system
+Memory: 885/988 931/1046
+-----      Current Progress:  50 % - 
+Memory: 799/988 828/1046
+Solution time: 5 s.
+Physical memory: 886 MB
+Virtual memory: 935 MB
+Ended at Oct 1, 2026, 2:40:34 AM.
+----- Stationary Solver 1 in Study 1/Solution 1 (sol1) ------------------------>
+VD=0.10 VG=  68.00: birinchi urinish muvaffaqiyatsiz (The_following_feature_has_encountered_a_problem), tozalab qayta urinamiz.
+<---- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) -
+Started at Oct 1, 2026, 2:40:34 AM.
+Geometry shape function: Linear Lagrange
+Running on 11th Gen Intel(R) Core(TM) i7-1165G7 at 2.80 GHz.
+Using 1 socket with 4 cores in total on WIN-FNSSP1NOF49.
+Available memory: 7.97 GB.
+           Current Progress:   3 % - Compile Equations: Semiconductor Equilibrium
+Memory: 752/988 782/1046
+           Current Progress:   3 % - Creating visualization mesh
+Time: 1 s.
+Physical memory: 752 MB
+Virtual memory: 782 MB
+Ended at Oct 1, 2026, 2:40:35 AM.
+----- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) >
+<---- Dependent Variables 1 in Study 1/Solution 1 (sol1) -----------------------
+Started at Oct 1, 2026, 2:40:35 AM.
+           Current Progress:   3 % - Dependent Variables 1
+Memory: 757/988 787/1046
+Solution time: 0 s.
+Physical memory: 757 MB
+Virtual memory: 787 MB
+Ended at Oct 1, 2026, 2:40:35 AM.
+----- Dependent Variables 1 in Study 1/Solution 1 (sol1) ---------------------->
+<---- Stationary Solver 1 in Study 1/Solution 1 (sol1) -------------------------
+Started at Oct 1, 2026, 2:40:35 AM.
