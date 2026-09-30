@@ -1,0 +1,13 @@
+# B2 smoke-test: tuzoqlarsiz, x=0, bitta nuqta (VG=80, VD=0.1) - geometriya + asosiy
+# yaqinlashishni tekshirish uchun. To'liq parametrlar B3/B4 da qo'yiladi.
+mode = transfer
+use_traps = 0
+use_f4 = 0
+Dit = 3e13[1/(cm^2*eV)]
+Phi_B0 = 0.25[V]
+sigma_F4 = -1e12[1/cm^2]*e_const
+beta = 0
+Nd_mos = 1e17[1/cm^3]
+VD_list = 0.1
+VG_list = 80
+stop_after_mesh = 0

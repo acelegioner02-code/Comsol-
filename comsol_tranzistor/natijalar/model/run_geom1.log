@@ -1,0 +1,51 @@
+*******************************************
+***COMSOL 6.0.0.318 progress output file***
+*******************************************
+Wed Sep 30 21:57:06 UZT 2026
+COMSOL Multiphysics 6.0 (Build: 318) starting in batch mode
+Running: C:\comsol_tranzistor\ish\model\MoS2Fet.class
+params.txt o'qildi: C:\comsol_tranzistor\ish\model\params.txt
+---------- Current Progress: 100 % - Updating selections
+Memory: 435/435 472/472
+           Current Progress:   0 % - Rectangle
+Memory: 460/460 484/484
+           Current Progress:   1 % - Rectangle 2
+Memory: 461/461 484/484
+           Current Progress:   3 % - Rectangle 2a
+           Current Progress:   4 % - Polygon
+           Current Progress:   5 % - Polygon 2
+Memory: 462/462 484/484
+           Current Progress:   6 % - Mirror
+-          Current Progress:  19 % - Mirror 2
+---        Current Progress:  31 % - Rectangle 3
+Memory: 463/463 484/484
+---        Current Progress:  33 % - Ellipse 1
+---        Current Progress:  34 % - Ellipse 2
+---        Current Progress:  35 % - Union
+----       Current Progress:  43 % - Resolving domains
+Memory: 464/464 485/485
+----       Current Progress:  48 % - Rectangle 4
+----       Current Progress:  49 % - Intersection
+Memory: 463/464 484/486
+-----      Current Progress:  57 % - Resolving domains
+------     Current Progress:  61 % - Difference 4
+Memory: 464/464 486/486
+-------    Current Progress:  73 % - Resolving domains
+-------    Current Progress:  74 % - Rectangle 5
+-------    Current Progress:  75 % - Difference
+--------   Current Progress:  86 % - Resolving domains
+Memory: 464/465 486/487
+--------   Current Progress:  88 % - Form Union
+---------  Current Progress:  99 % - Resolving domains
+---------- Current Progress: 100 % - Updating selections
+Memory: 465/466 486/487
+Geometriya quruldi. Domenlar soni: 10 (kutilgan: 10)
+---------- Current Progress: 100 % - Creating visualization mesh
+Memory: 467/470 486/490
+FATAL: Selection_is_not_editable
+Class run time: 6 s.
+Saving model: C:\comsol_tranzistor\ish\model\MoS2Fet_Model.mph
+Save time: 0 s.
+Total time: 7 s.
+---------- Current Progress: 100 % - Done
+Memory: 584/596 601/615

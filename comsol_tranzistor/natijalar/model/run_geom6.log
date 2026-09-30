@@ -1,0 +1,134 @@
+*******************************************
+***COMSOL 6.0.0.318 progress output file***
+*******************************************
+Wed Sep 30 22:11:49 UZT 2026
+COMSOL Multiphysics 6.0 (Build: 318) starting in batch mode
+Running: C:\comsol_tranzistor\ish\model\MoS2Fet.class
+params.txt o'qildi: C:\comsol_tranzistor\ish\model\params.txt
+---------- Current Progress: 100 % - Updating selections
+Memory: 400/407 431/440
+           Current Progress:   0 % - Rectangle
+Memory: 412/420 443/451
+           Current Progress:   1 % - Rectangle 2
+Memory: 414/420 444/451
+           Current Progress:   3 % - Rectangle 2a
+           Current Progress:   4 % - Polygon
+           Current Progress:   5 % - Polygon 2
+Memory: 416/420 444/451
+           Current Progress:   6 % - Mirror
+-          Current Progress:  19 % - Mirror 2
+---        Current Progress:  31 % - Rectangle 3
+---        Current Progress:  33 % - Ellipse 1
+---        Current Progress:  34 % - Ellipse 2
+---        Current Progress:  35 % - Union
+Memory: 417/420 444/451
+----       Current Progress:  43 % - Resolving domains
+----       Current Progress:  48 % - Rectangle 4
+Memory: 418/420 446/451
+----       Current Progress:  49 % - Intersection
+Memory: 417/420 445/451
+-----      Current Progress:  57 % - Resolving domains
+------     Current Progress:  61 % - Difference 4
+-------    Current Progress:  73 % - Resolving domains
+-------    Current Progress:  74 % - Rectangle 5
+-------    Current Progress:  75 % - Difference
+--------   Current Progress:  86 % - Resolving domains
+--------   Current Progress:  88 % - Form Union
+---------  Current Progress:  99 % - Resolving domains
+---------- Current Progress: 100 % - Updating selections
+Memory: 421/421 449/451
+Geometriya quruldi. Domenlar soni: 10 (kutilgan: 10)
+CHECKPOINT: sel_insulators OK
+CHECKPOINT: sel_semi_domains OK
+---------- Current Progress: 100 % - Creating visualization mesh
+Memory: 423/423 449/451
+CHECKPOINT: chegara selectionlari OK
+CHECKPOINT: semi yaratildi
+CHECKPOINT: semi.selection().named OK
+CHECKPOINT: smm_sio2 OK
+CHECKPOINT: smm_f4 OK
+CHECKPOINT: smm_water OK
+CHECKPOINT: smm_air OK
+CHECKPOINT: adm1 OK
+CHECKPOINT: gc1 OK
+CHECKPOINT: gcSrc OK
+CHECKPOINT: gcDrain OK
+---------- Current Progress: 100 % - Updating selections
+Memory: 609/618 628/636
+           Current Progress:   0 % - Interval 1
+Memory: 618/618 639/639
+           Current Progress:   9 % - Form Union
+---------- Current Progress: 100 % - Updating selections
+CHECKPOINT: tasr1 OK
+CHECKPOINT: sfcd1 OK
+CHECKPOINT: mc1/mc2 OK
+CHECKPOINT: ion holati OK
+CHECKPOINT: mesh size features OK
+Number of vertex elements: 37
+           Current Progress:   4 % - Adjusting boundary mesh
+Memory: 615/628 638/646
+           Current Progress:   6 % - Adjusting boundary mesh
+Memory: 600/628 622/646
+           Current Progress:   8 % - Adjusting boundary mesh
+Memory: 602/628 623/646
+           Current Progress:   9 % - Adjusting boundary mesh
+Memory: 603/628 625/646
+Number of boundary elements: 38929
+-          Current Progress:  10 % - Preparing for advancing front meshing
+Memory: 614/628 636/646
+-          Current Progress:  13 % - Inserting interior points
+Memory: 659/659 688/688
+-          Current Progress:  14 % - Inserting interior points
+Memory: 665/665 692/692
+-          Current Progress:  15 % - Inserting interior points
+Memory: 667/667 693/693
+-          Current Progress:  16 % - Inserting interior points
+Memory: 634/667 663/694
+-          Current Progress:  17 % - Inserting interior points
+Memory: 635/667 664/694
+-          Current Progress:  18 % - Inserting interior points
+--         Current Progress:  20 % - Inserting interior points
+Memory: 636/667 664/694
+--         Current Progress:  21 % - Inserting interior points
+Memory: 631/667 659/694
+--         Current Progress:  23 % - Inserting interior points
+Memory: 632/667 661/694
+--         Current Progress:  24 % - Inserting interior points
+Memory: 671/671 704/704
+--         Current Progress:  25 % - Inserting interior points
+Memory: 653/672 685/704
+--         Current Progress:  26 % - Inserting interior points
+Memory: 655/672 687/704
+--         Current Progress:  27 % - Inserting interior points
+--         Current Progress:  28 % - Inserting interior points
+Memory: 659/672 691/704
+--         Current Progress:  29 % - Inserting interior points
+---        Current Progress:  30 % - Inserting interior points
+---        Current Progress:  31 % - Inserting interior points
+Memory: 660/672 694/704
+---        Current Progress:  34 % - Inserting interior points
+Memory: 660/672 698/704
+---        Current Progress:  35 % - Improving element quality
+Memory: 621/672 649/704
+---        Current Progress:  36 % - Improving element quality
+Memory: 631/672 665/704
+---        Current Progress:  37 % - Improving element quality
+Memory: 661/672 697/704
+---        Current Progress:  38 % - Improving element quality
+Memory: 677/683 709/718
+---------  Current Progress:  95 % - Improving element quality
+Memory: 666/683 698/718
+Number of elements: 632425
+---------  Current Progress:  99 % - Finalizing mesh
+Memory: 643/683 694/725
+---------- Current Progress: 100 % - Finalizing mesh
+Memory: 585/700 629/752
+Minimum element quality: 0.4217
+Model qurildi (mode=transfer).
+FATAL: null
+Class run time: 85 s.
+Saving model: C:\comsol_tranzistor\ish\model\MoS2Fet_Model.mph
+Save time: 1 s.
+Total time: 86 s.
+---------- Current Progress: 100 % - Done
+Memory: 595/700 636/752

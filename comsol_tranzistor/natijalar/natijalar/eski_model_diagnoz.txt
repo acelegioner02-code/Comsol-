@@ -1,0 +1,164 @@
+=== QISQA XULOSA (2-kun boshida yozilgan) ===
+Ikkala .mph fayl (MoS2Fet_Model.mph, MoS2Fet_transfer.mph) bir xil geometriyaga ega:
+GEOM geom1 da atigi 1 ta feature - "pol1" (Polygon), boshqa hech narsa yo'q (SiO2, Si, Cr, Au,
+F4TCNQ, suv, havo - hech biri chizilmagan). Bu "MoS2_F4TCNQ_COMSOL_qollanma.md" 5-qismidagi
+soddalashtirilgan "A model" geometriyasi (oksid Thin Insulator Gate/GateContact orqali
+yashiringan, faqat MoS2 to'rtburchagi chizilgan). GEOMETRIYA.md, 1-bo'limida aytilgan ikkita
+sababdan BIRINCHISI tasdiqlandi: "MoS2 20nm x 7um bo'lib, sukut bo'yicha teng masshtabda chiziq
+ko'rinadi" EMAS - aslida geometriya haqiqatda ham faqat shu bitta MoS2 domenidan iborat edi,
+fayl oxiriga yetmagani ham emas (ikkala fayl ham to'liq saqlangan, STUDY/SOLUTIONS/DATASETS bor).
+Xato: kechagi ish PROMPT.md B1-fallback yoki 5-qism "A model"ni GEOMETRIYA.md o'rniga ishlatgan -
+bu 2-kun uchun taqiqlangan ("Kechagi soddalashtirilgan (faqat MoS2) geometriya endi yaroqsiz").
+
+Fizika: Semiconductor (semi) + GateContact (Thin Insulator Gate, t_ox=285nm, epsilon=3.9) +
+TrapAssistedSurfaceRecombination/ContinuousEnergyLevelsBoundary (D_it) + SurfaceChargeDensity
+(F4TCNQ) + 2x MetalContact (Schottky) + AnalyticDopingModel. Bularning barchasi to'g'ri
+FIZIKaviy yondashuv edi (B1 API tadqiqotlari yaroqli), faqat GEOMETRIYA yetarli emas edi.
+
+transfer.csv holati: faqat 1 qator (VD=0.2, VG=80, ID=NaN) - ya'ni B3 sweep hatto BIRINCHI
+nuqtada ham (to'liq Dit_scale=1 bilan) yaqinlashmagan va jarayon (ruxsat so'rab) to'xtagan.
+run_b3.log oxirigacha o'qilganda: D_it continuation bosqichlari davom etayotgan edi, oxirgi
+saqlangan .mph (02:04) transfer.csv dan (02:35) OLDINROQ - ya'ni oxirgi muvaffaqiyatli .mph
+aslida calibrate.py'ning bir urinishidan (VG_list=10 nuqta) qolgan, to'liq B3 sweep davomida
+.mph qayta saqlanmagan (jarayon MPH saqlashga yetib bormagan).
+
+Qaror (2-kun): Kechagi foydali narsalar (api_namuna/API_ESLATMA.md, barcha dump_*.txt, B1
+introspeksiya usuli) SAQLAB QOLINDI. Geometriya GEOMETRIYA.md bo'yicha NOLDAN, to'liq
+qurildi (Si+SiO2+MoS2+Cr+Au+suv+F4TCNQ+havo, 10 domen) - pastga qarang, ish\model\MoS2Fet.java.
+
+=== TO'LIQ TEXNIK DUMP (introspeksiya, DiagOld.java orqali) ===
+
+=== C:\comsol_tranzistor\ish\model\MoS2Fet_Model.mph ===
+--- Parameters ---
+  L_ch = 5[um]
+  L_c = 1[um]
+  t_mos = 10[nm]
+  t_ox = 285[nm]
+  W_dev = 12.8[um]
+  T0 = 300[K]
+  Eg_mos = 1.23[V]
+  chi_mos = 4.0[V]
+  eps_mos = 7
+  Nc_mos = 1e19[1/cm^3]
+  Nv_mos = 1e19[1/cm^3]
+  Nd_mos = 1e17[1/cm^3]
+  mu_n = 30[cm^2/(V*s)]
+  mu_p = 10[cm^2/(V*s)]
+  Phi_B0 = 0.25[V]
+  Dit = 3e13[1/(cm^2*eV)]
+  Ew0 = 0.3[V]
+  sigma_F4 = -1e12[1/cm^2]*e_const
+  beta = 0.223[V/V]
+  t_sw = 40[s]
+  tau_ion = 0.35*t_sw
+  t_hold = 0.5*t_sw
+  VG = -80.0000
+  VD = 0.200000
+  VG_start = 80
+  VG_stop = -80
+  VG_step = -2
+  use_traps = 1
+  use_f4 = 1
+  Dit_scale = 0.02
+  VG_list = 80,76,60,40,20,0,-20,-40,-60,-80
+--- Component comp1 ---
+  GEOM geom1 sdim=2
+  geometry features (2): 
+    pol1 type=Polygon
+    fin type=Finalize
+  MESH mesh1 features: [size, size_contacts, size_drain, tri1]
+  PHYSICS semi type=Semiconductor
+    FEATURE smm1 type=SemiconductorMaterialModel
+    FEATURE ins1 type=Insulation
+    FEATURE zc1 type=ZeroCharge
+    FEATURE ii1 type=InsulatorInterface
+    FEATURE cont1 type=Continuity
+    FEATURE init1 type=init
+    FEATURE adm1 type=AnalyticDopingModel
+    FEATURE gc1 type=GateContact
+    FEATURE tasr1 type=TrapAssistedSurfaceRecombination
+    FEATURE sfcd1 type=SurfaceChargeDensity
+    FEATURE mc1 type=MetalContact
+    FEATURE mc2 type=MetalContact
+  SELECTIONS (6): [sel_bottom, sel_source, sel_channel, sel_drain, sel_left, sel_right]
+--- Component semi_tasr1_ctb1_xdim ---
+  GEOM semi_tasr1_ctb1_xdim sdim=1
+  geometry features (2): 
+    int1 type=Interval
+    fin type=Finalize
+  MESH semi_tasr1_ctb1_xdim features: [size, dis1, edg1]
+  SELECTIONS (0): []
+--- STUDY std1 label=Study 1 ---
+  STEP eq type=SemiconductorEquilibrium
+  STEP stat type=Stationary
+--- SOLUTIONS (2): [sol1, sol2] ---
+--- DATASETS (2): [dset1, dset2] ---
+OK
+
+=== C:\comsol_tranzistor\ish\model\MoS2Fet_transfer.mph ===
+--- Parameters ---
+  L_ch = 5[um]
+  L_c = 1[um]
+  t_mos = 10[nm]
+  t_ox = 285[nm]
+  W_dev = 12.8[um]
+  T0 = 300[K]
+  Eg_mos = 1.23[V]
+  chi_mos = 4.0[V]
+  eps_mos = 7
+  Nc_mos = 1e19[1/cm^3]
+  Nv_mos = 1e19[1/cm^3]
+  Nd_mos = 1e17[1/cm^3]
+  mu_n = 30[cm^2/(V*s)]
+  mu_p = 10[cm^2/(V*s)]
+  Phi_B0 = 0.25[V]
+  Dit = 3e13[1/(cm^2*eV)]
+  Ew0 = 0.3[V]
+  sigma_F4 = -1e12[1/cm^2]*e_const
+  beta = 0.223[V/V]
+  t_sw = 40[s]
+  tau_ion = 0.35*t_sw
+  t_hold = 0.5*t_sw
+  VG = -80.0000
+  VD = 0.200000
+  VG_start = 80
+  VG_stop = -80
+  VG_step = -2
+  use_traps = 1
+  use_f4 = 1
+  Dit_scale = 0.02
+  VG_list = 80,76,60,40,20,0,-20,-40,-60,-80
+--- Component comp1 ---
+  GEOM geom1 sdim=2
+  geometry features (2): 
+    pol1 type=Polygon
+    fin type=Finalize
+  MESH mesh1 features: [size, size_contacts, size_drain, tri1]
+  PHYSICS semi type=Semiconductor
+    FEATURE smm1 type=SemiconductorMaterialModel
+    FEATURE ins1 type=Insulation
+    FEATURE zc1 type=ZeroCharge
+    FEATURE ii1 type=InsulatorInterface
+    FEATURE cont1 type=Continuity
+    FEATURE init1 type=init
+    FEATURE adm1 type=AnalyticDopingModel
+    FEATURE gc1 type=GateContact
+    FEATURE tasr1 type=TrapAssistedSurfaceRecombination
+    FEATURE sfcd1 type=SurfaceChargeDensity
+    FEATURE mc1 type=MetalContact
+    FEATURE mc2 type=MetalContact
+  SELECTIONS (6): [sel_bottom, sel_source, sel_channel, sel_drain, sel_left, sel_right]
+--- Component semi_tasr1_ctb1_xdim ---
+  GEOM semi_tasr1_ctb1_xdim sdim=1
+  geometry features (2): 
+    int1 type=Interval
+    fin type=Finalize
+  MESH semi_tasr1_ctb1_xdim features: [size, dis1, edg1]
+  SELECTIONS (0): []
+--- STUDY std1 label=Study 1 ---
+  STEP eq type=SemiconductorEquilibrium
+  STEP stat type=Stationary
+--- SOLUTIONS (2): [sol1, sol2] ---
+--- DATASETS (2): [dset1, dset2] ---
+OK
+

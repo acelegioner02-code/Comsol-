@@ -1,0 +1,16 @@
+metric,maqola,model,farq,holat,izoh
+T1_Von_VD0.2_highRH,-4,NaN,NaN,yetilmadi,D_it yaqinlashmadi - pastga qarang
+T1_Von_VD0.4_highRH,-22,NaN,NaN,yetilmadi,D_it yaqinlashmadi
+T1_Von_VD0.6_highRH,-36,NaN,NaN,yetilmadi,D_it yaqinlashmadi
+T1_Von_VD0.8_highRH,-61,NaN,NaN,yetilmadi,D_it yaqinlashmadi
+T1_Von_VD1.0_highRH,-78,NaN,NaN,yetilmadi,D_it yaqinlashmadi
+T2_dVon_dVD_highRH,92.5,NaN,NaN,yetilmadi,D_it yaqinlashmadi - T1 ustunidan hisoblanadi
+T3_dVon_dVD_lowRH,5.3,NaN,NaN,yetilmadi,D_it yaqinlashmadi
+T4_rectification_highRH,0.03,NaN,NaN,yetilmadi,Time Dependent (B5) boshlanmadi - D_it blokladi
+T5_hysteresis_highRH_pct,87,NaN,NaN,yetilmadi,Time Dependent (B5) boshlanmadi
+T6_Im1_highRH_uA,1.6,NaN,NaN,yetilmadi,Time Dependent (B5) boshlanmadi
+T7_Fig2_dVon_dVD,46.3,NaN,NaN,yetilmadi,B6 boshlanmadi (B3-B5 tugallanmagani sababli)
+T7_Fig2_rectification,0.37,NaN,NaN,yetilmadi,B6 boshlanmadi
+T7_Fig2_hysteresis_pct,32,NaN,NaN,yetilmadi,B6 boshlanmadi
+T8_SS_highRH_V_per_dec,25,NaN,NaN,yetilmadi,D_it yaqinlashmadi - SS ni D_it belgilaydi
+T8_SS_Fig2_V_per_dec,12,NaN,NaN,yetilmadi,D_it yaqinlashmadi

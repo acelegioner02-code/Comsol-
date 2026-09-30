@@ -1,0 +1,153 @@
+*******************************************
+***COMSOL 6.0.0.318 progress output file***
+*******************************************
+Wed Sep 30 22:15:07 UZT 2026
+COMSOL Multiphysics 6.0 (Build: 318) starting in batch mode
+Running: C:\comsol_tranzistor\ish\model\MoS2Fet.class
+params.txt o'qildi: C:\comsol_tranzistor\ish\model\params.txt
+---------- Current Progress: 100 % - Updating selections
+Memory: 431/431 472/472
+           Current Progress:   0 % - Rectangle
+Memory: 442/444 482/485
+           Current Progress:   1 % - Rectangle 2
+Memory: 443/444 482/485
+           Current Progress:   3 % - Rectangle 2a
+           Current Progress:   4 % - Polygon
+           Current Progress:   5 % - Polygon 2
+Memory: 444/444 482/485
+           Current Progress:   6 % - Mirror
+-          Current Progress:  19 % - Mirror 2
+---        Current Progress:  31 % - Rectangle 3
+---        Current Progress:  33 % - Ellipse 1
+Memory: 444/444 483/485
+---        Current Progress:  34 % - Ellipse 2
+---        Current Progress:  35 % - Union
+----       Current Progress:  43 % - Resolving domains
+Memory: 446/446 483/485
+----       Current Progress:  48 % - Rectangle 4
+----       Current Progress:  49 % - Intersection
+Memory: 445/446 483/485
+-----      Current Progress:  57 % - Resolving domains
+------     Current Progress:  61 % - Difference 4
+-------    Current Progress:  73 % - Resolving domains
+-------    Current Progress:  74 % - Rectangle 5
+-------    Current Progress:  75 % - Difference
+--------   Current Progress:  86 % - Resolving domains
+--------   Current Progress:  88 % - Form Union
+---------  Current Progress:  99 % - Resolving domains
+---------- Current Progress: 100 % - Updating selections
+Memory: 446/446 484/485
+Geometriya quruldi. Domenlar soni: 10 (kutilgan: 10)
+CHECKPOINT: sel_insulators OK
+CHECKPOINT: sel_semi_domains OK
+---------- Current Progress: 100 % - Creating visualization mesh
+Memory: 456/456 493/493
+CHECKPOINT: chegara selectionlari OK
+CHECKPOINT: semi yaratildi
+CHECKPOINT: semi.selection().named OK
+CHECKPOINT: smm_sio2 OK
+CHECKPOINT: smm_f4 OK
+CHECKPOINT: smm_water OK
+CHECKPOINT: smm_air OK
+CHECKPOINT: adm1 OK
+CHECKPOINT: gc1 OK
+CHECKPOINT: gcSrc OK
+CHECKPOINT: gcDrain OK
+---------- Current Progress: 100 % - Updating selections
+Memory: 575/582 594/601
+           Current Progress:   0 % - Interval 1
+Memory: 578/586 596/603
+           Current Progress:   9 % - Form Union
+Memory: 579/586 598/603
+---------- Current Progress: 100 % - Updating selections
+Memory: 581/586 598/603
+CHECKPOINT: tasr1 OK
+CHECKPOINT: sfcd1 OK
+CHECKPOINT: mc1/mc2 OK
+CHECKPOINT: ion holati OK
+CHECKPOINT: mesh size features OK
+Number of vertex elements: 37
+           Current Progress:   4 % - Adjusting boundary mesh
+Memory: 593/593 611/611
+           Current Progress:   6 % - Adjusting boundary mesh
+Memory: 575/593 594/611
+           Current Progress:   8 % - Adjusting boundary mesh
+Memory: 539/593 560/611
+           Current Progress:   9 % - Adjusting boundary mesh
+Memory: 541/593 562/611
+Number of boundary elements: 38929
+-          Current Progress:  10 % - Preparing for advancing front meshing
+Memory: 549/593 574/611
+-          Current Progress:  13 % - Inserting interior points
+Memory: 596/596 619/619
+-          Current Progress:  14 % - Inserting interior points
+Memory: 609/609 636/636
+-          Current Progress:  15 % - Inserting interior points
+Memory: 609/610 637/638
+-          Current Progress:  17 % - Inserting interior points
+Memory: 617/617 645/645
+-          Current Progress:  19 % - Inserting interior points
+Memory: 623/623 649/649
+--         Current Progress:  20 % - Inserting interior points
+--         Current Progress:  21 % - Inserting interior points
+Memory: 604/627 631/653
+--         Current Progress:  22 % - Inserting interior points
+Memory: 605/627 632/653
+--         Current Progress:  23 % - Inserting interior points
+Memory: 606/627 633/653
+--         Current Progress:  24 % - Inserting interior points
+Memory: 627/627 660/660
+--         Current Progress:  25 % - Inserting interior points
+Memory: 630/630 662/662
+--         Current Progress:  26 % - Inserting interior points
+Memory: 631/631 663/663
+--         Current Progress:  27 % - Inserting interior points
+--         Current Progress:  28 % - Inserting interior points
+Memory: 629/635 660/669
+--         Current Progress:  29 % - Inserting interior points
+Memory: 629/635 661/669
+---        Current Progress:  30 % - Inserting interior points
+---        Current Progress:  34 % - Inserting interior points
+Memory: 630/635 668/669
+---        Current Progress:  35 % - Improving element quality
+Memory: 596/635 624/669
+---        Current Progress:  36 % - Improving element quality
+Memory: 605/635 640/669
+---        Current Progress:  37 % - Improving element quality
+Memory: 623/635 654/669
+---        Current Progress:  38 % - Improving element quality
+Memory: 633/635 669/669
+---------  Current Progress:  91 % - Improving element quality
+Memory: 639/651 672/686
+---------  Current Progress:  95 % - Improving element quality
+Memory: 611/651 640/686
+Number of elements: 632425
+---------  Current Progress:  99 % - Finalizing mesh
+Memory: 626/651 659/686
+---------- Current Progress: 100 % - Finalizing mesh
+Memory: 572/690 593/725
+Minimum element quality: 0.4217
+Model qurildi (mode=transfer).
+FATAL: java.lang.NullPointerException: null
+java.lang.NullPointerException
+	at MoS2Fet.main(MoS2Fet.class:48)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
+	at com.comsol.util.application.CsBaseApplication.a(SourceFile:859)
+	at com.comsol.util.security.a.a(SourceFile:40)
+	at com.comsol.util.application.CsBaseApplication.runExternalClassStat(SourceFile:858)
+	at com.comsol.util.application.CsBaseApplication.runExternalClass(SourceFile:819)
+	at com.comsol.util.compile.g$1.a(SourceFile:63)
+	at com.comsol.util.compile.g$1.call(SourceFile:1)
+	at java.base/java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.base/java.lang.Thread.run(Unknown Source)
+Class run time: 100 s.
+Saving model: C:\comsol_tranzistor\ish\model\MoS2Fet_Model.mph
+Save time: 1 s.
+Total time: 100 s.
+---------- Current Progress: 100 % - Done
+Memory: 590/690 612/725
