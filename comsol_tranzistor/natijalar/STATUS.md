@@ -49,7 +49,8 @@ Kechagi geometriya faqat MoS2 (1 domen, Polygon) edi - qollanma 5-qismidagi sodd
 6. Tuzoqlarsiz bazaviy transfer sweep (pipeline tekshiruvi uchun, 5 nuqta) - `natijalar\
    transfer_baseline_notraps_partial.csv`. Maqola bilan solishtirilmaydi (D_it yo'q).
 7. `HISOBOT.md` yozildi (to'liq, halol, barcha 8 urinish tafsiloti bilan).
-8. B8: natijalar repo'ga nusxalandi, git commit qilindi (pastga qarang).
+8. B8: natijalar repo'ga nusxalandi, git commit va push muvaffaqiyatli bajarildi
+   (commit a5a872d, birinchi push urinishi HTTP 408 bilan vaqt tugadi, ikkinchi urinish o'tdi).
 
 ## COMSOL Java API topilmalari (kelajak sessiyalar uchun, API_ESLATMA.md ga qo'shimcha)
 
