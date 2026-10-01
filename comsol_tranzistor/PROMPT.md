@@ -255,6 +255,60 @@ beta_COMSOL = 92.5 / |ΔV_on/Δx|.
 Uchala tekshiruvdan keyin B3 → B8 ni PROMPT bo'yicha davom ettir. 2-kundagi sinov loglarini o'chirma.
 Yangi loglar `run_d3_*.log` deb nomlansin.
 
+## 6c. 4-kun: bulutdagi tekshiruv xulosalari (AVVAL SHULARNI QIL)
+
+3-kun natijasi: barer tuzatildi va ishlayapti (I_D endi µA darajasida, `Phi_B0` ga bog'liq). Ammo ikki
+muammo qoldi: (a) D_it bilan VG sweep yaqinlashmaydi; (b) D_it'siz ham VG < 0 da yaqinlashmaydi.
+Ikkalasining sababi va tuzatishi quyida. 3-kundagi vaqtinchalik yechimlarni olib tashla, ular muammoni
+yashiradi, hal qilmaydi.
+
+**C1. Solver "tuzatishlarini" qaytar.** `reserrfact = 1e8`, `initstep = 0.01`, RETRY va
+`clearSolutionData` orqali o'tkazish olib tashlansin. Ular yaqinlashmagan holatni "qabul qilingan"
+yechimga aylantiradi. Shu sabab parametr o'zgarmasa ham qayta yechish yiqiladi: boshlang'ich nuqta
+aslida yechim emas. Solver sozlamalari sukut qiymatlarida qolsin.
+
+**C2. D_it ni elektr potensialiga chiziqli bog'la (Efn va tanh emas).**
+`semi.Efn`, `semi.Ec`, `semi.Ev` hosilaviy kattaliklar. Kambag'allashgan sohada Efn deyarli aniqlanmaydi.
+Ularga bog'liq manba Newton Jakobianini noaniq qiladi. tanh esa yana tor oynani qaytaradi
+(±Ew0 = ±0.3 V dan keyin D_it yo'qoladi va SS butun oraliqda chiqmaydi). To'g'ri va standart yaqinlash:
+tezkor interfeys holatlari kichik V_D da kanal potensialiga chiziqli zaryad beradi.
+```java
+sfit.set("rhoqs", "-e_const^2*Dit*(V - V_it0)");   // V — semi'ning bog'liq o'zgaruvchisi (potensial)
+```
+- `e_const^2*Dit` = q²·D_it, ya'ni C_it (3e13 cm^-2 eV^-1 da ≈ 4.8 µF/cm²). COMSOL birlik ogohlantirishi
+  bermasligi kerak: rhoqs = C/m^2. Birlikni bir nuqtada baholab tekshir.
+- `V_it0` — neytrallik potensiali (kalibrlanadigan, `dE0` o'rnini bosadi). Boshlang'ich qiymat: Equilibrium'da
+  VG = 0 bo'lgandagi MoS2/SiO2 sirtidagi V (o'lchab ol).
+- Bu manba bog'liq o'zgaruvchiga **chiziqli**: Jakobian aniq, ramp kerak emas, D_it ni birdaniga to'liq qo'yish
+  mumkin. Ishonch uchun 0 → 1 ni 3 qadamda native continuation bilan qilsa ham bo'ladi.
+- Cheklov (hisobotda yoz): drenaj yaqinida Efn V_D ga pasayadi, model buni hisobga olmaydi. V_D ≤ 1 V va
+  subporog uchun xato kichik.
+
+**C3. VG sweepni COMSOL'ning o'z continuation'i bilan bitta studiyada qil.**
+Java siklida har VG uchun `run()` chaqirma. Bitta Stationary study step'da **Auxiliary sweep**
+`VG = range(80,-2,-80)` qo'y, "Use continuation" yoqilsin. Kerak bo'lsa VD ham shu sweepda (VD tashqi tsikl).
+Yechimdan CSV'ni Global Evaluation (barcha parametr qiymatlari) bilan bir marta ol.
+
+**C4. Chuqur subporog (VG < 0) uchun formulyatsiya.**
+Kam tashuvchili sohada log formulyatsiya mustahkamroq. Tartib:
+(1) semi → Discretization: **Finite element (log formulation)**, tuzoqlarsiz VG = 80 → −80 sinov;
+(2) yiqilsa, Finite volume + quasi-Fermi-level formulyatsiyasi (6.0 da bo'lsa);
+(3) Stationary solver'da "Relative tolerance" = 1e-4 (sukut), tokni Terminal orqali ol.
+Qaysi biri −80 V gacha o'tganini STATUS.md ga yoz va o'shani qoldir.
+
+**C5. Kanal "normally-on" bo'lsin (maqolaga mos).** Hozir Nd = 1e17 da 20 nm MoS2 VG ≈ 0 da kambag'allashadi.
+Maqolada esa bare qurilma V_on ≈ −70 V. Kerakli zaryad ≈ C_ox·70 V / q ≈ 5e12 cm^-2, ya'ni 20 nm uchun
+Nd ≈ 2–3e18 cm^-3. `Nd_mos` boshlang'ich qiymati 2.5e18 bo'lsin, B4 da kalibrlanadi.
+
+**C6. Tartib va tekshiruvlar.**
+1. C1 + C4: D_it'siz, Nd = 2.5e18, VD = 0.2 V, VG 80 → −80 to'liq sweep. *Shart:* −80 V gacha o'tdi, tok
+   kamida 4 dekada pasaydi.
+2. C2 + C3: D_it = 3e13 bilan xuddi shu sweep. *Shart:* −80 V gacha o'tdi, SS ≈ 0.06·(1 + C_it/C_ox) ± 30%.
+   O'tmasa, D_it ni 1e12 → 3e12 → 1e13 → 3e13 sweep qilib, qaysi qiymatda yiqilishini yoz.
+3. 6b dagi 3-tekshiruv (ΔV_on/Δx, VD = 0.5 V, x = 0 va 0.05 V). Undan beta_COMSOL = 92.5/|ΔV_on/Δx|.
+4. Keyin B3 → B8.
+Yangi loglar `run_d4_*.log`. Har qadam natijasini STATUS.md ga yoz.
+
 ## 7. Boshlash va davom etish
 
 **Kechagi seans (1-kun) to'liq tugamagan.** U ruxsat so'rab to'xtab qolgan va o'chirilgan. COMSOL faylida
