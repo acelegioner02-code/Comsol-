@@ -1,0 +1,8 @@
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1620px;overflow:hidden}
+body{position:relative;-webkit-font-smoothing:antialiased}
+.poster{position:absolute;inset:0;overflow:hidden}
+.footer{position:absolute;left:0;right:0;bottom:0;height:96px;display:flex;align-items:center;justify-content:center;gap:22px;font:600 17px/1 'Montserrat',sans-serif;color:var(--ffg,#fff);background:var(--fbg,transparent);z-index:5}
+.footer span{display:flex;align-items:center;gap:9px;white-space:nowrap}
+.footer svg{width:26px;height:26px;flex:none}
+.footer i{width:1px;height:30px;background:currentColor;opacity:.35}

@@ -1,0 +1,30 @@
+<!doctype html><html lang="uz"><head><meta charset="utf-8"><title>Variant 4 — Foto va gradient</title>
+<link rel="stylesheet" href="../fonts.css"><link rel="stylesheet" href="../common.css">
+<style>
+:root{--teal:#0a6c86;--deep:#062a49;--sun:#ffc83d;--ffg:#e6f6fb;--fbg:#041d33}
+.poster{background:linear-gradient(180deg,var(--teal) 0%,#08486b 55%,var(--deep) 100%)}
+.photo{position:absolute;left:0;right:0;bottom:96px;height:720px;background:url(../assets/scene.jpg) center/cover}
+.photo:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#0a6c86 0%,rgba(10,108,134,.75) 18%,rgba(10,108,134,0) 45%,rgba(4,29,51,0) 80%,rgba(4,29,51,.85) 100%)}
+.tiles{position:absolute;left:0;right:0;top:0;height:28px;background:repeating-linear-gradient(90deg,#ffc83d 0 28px,#0a6c86 28px 56px,#fff 56px 84px,#0a6c86 84px 112px)}
+.tiles2{position:absolute;left:0;right:0;top:28px;height:6px;background:#ffc83d}
+.content{position:absolute;top:74px;left:70px;right:70px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:24px}
+.logo{display:flex;align-items:center;gap:20px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);padding:10px 30px 10px 10px;border-radius:80px;backdrop-filter:blur(6px)}
+.logo img{width:110px;height:110px;border-radius:50%;background:#fff}
+.logo div{text-align:left;font:700 20px/1.35 'Montserrat';color:#fff;letter-spacing:.08em}
+.kicker{margin-top:14px;font:600 26px/1 'Montserrat';letter-spacing:.3em;color:var(--sun);padding-left:.3em}
+.title{font:900 70px/1.04 'Montserrat';color:#fff;text-transform:uppercase;letter-spacing:-.01em;text-shadow:0 6px 30px rgba(0,0,0,.25)}
+.title em{font-style:normal;color:var(--sun)}
+.date{display:flex;gap:0;border-radius:60px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.25);font:700 30px/1 'Montserrat'}
+.date span{padding:20px 34px;background:#fff;color:var(--deep)}
+.date span+span{background:var(--sun)}
+</style></head><body><div class="poster">
+<div class="photo"></div>
+<div class="tiles"></div><div class="tiles2"></div>
+<div class="content">
+ <div class="logo"><img src="../assets/logo.png" alt=""><div>URGANCH DAVLAT<br>PEDAGOGIKA INSTITUTI</div></div>
+ <div class="kicker">XALQARO ILMIY-AMALIY ANJUMAN</div>
+ <div class="title">«Innovatsion pedagogika: tabiiy va aniq fanlarni o‘qitishda <em>global tajriba</em> va <em>mahalliy yechimlar</em>»</div>
+ <div class="date"><span>Urganch</span><span>12-oktabr, 2026</span></div>
+</div>
+{{FOOTER}}
+</div></body></html>

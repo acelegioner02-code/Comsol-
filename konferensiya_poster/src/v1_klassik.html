@@ -1,0 +1,49 @@
+<!doctype html><html lang="uz"><head><meta charset="utf-8"><title>Variant 1 — Klassik Xorazm</title>
+<link rel="stylesheet" href="../fonts.css">
+<link rel="stylesheet" href="../common.css">
+<style>
+:root{--navy:#0a1d47;--navy2:#132d66;--gold:#d4ad5a;--gold2:#f1d48c;--cream:#fbf3df;--ffg:var(--gold2)}
+.poster{background:radial-gradient(ellipse at 50% 30%,#1b3a7a 0%,var(--navy) 60%,#061331 100%)}
+.pat{position:absolute;inset:0;opacity:.09}
+.frame{position:absolute;inset:34px 34px 110px;border:2px solid var(--gold);outline:1px solid var(--gold);outline-offset:-12px}
+.corner{position:absolute;width:86px;height:86px;color:var(--gold)}
+.corner.tl{left:-8px;top:-8px}.corner.tr{right:-8px;top:-8px;transform:scaleX(-1)}
+.corner.bl{left:-8px;bottom:-8px;transform:scaleY(-1)}.corner.br{right:-8px;bottom:-8px;transform:scale(-1)}
+.content{position:absolute;top:84px;left:70px;right:70px;height:1000px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:26px;z-index:3}
+.logo{flex:none;width:210px;height:210px;border-radius:50%;padding:9px;background:conic-gradient(from 0deg,var(--gold),var(--gold2),var(--gold),var(--gold2),var(--gold));box-shadow:0 10px 40px rgba(0,0,0,.45)}
+.logo img{width:100%;height:100%;border-radius:50%;display:block;background:#fff}
+.kicker{margin-top:8px;text-align:center;font:600 30px/1 'Montserrat';letter-spacing:.32em;color:var(--gold2);padding-left:.32em}
+.div{flex:none;width:520px;height:30px;color:var(--gold)}
+.title{text-align:center;font:700 78px/1.0 'Cormorant Garamond',serif;color:var(--cream);text-transform:uppercase;letter-spacing:.01em;text-shadow:0 4px 24px rgba(0,0,0,.35)}
+.title em{font-style:normal;color:var(--gold2)}
+.date{display:flex;align-items:center;gap:22px;padding:18px 44px;border:2px solid var(--gold);border-radius:60px;font:600 34px/1 'Montserrat';color:var(--cream);background:rgba(10,29,71,.6);white-space:nowrap}
+.date b{color:var(--gold2);font-weight:700}
+.date svg{width:38px;height:38px;color:var(--gold2)}
+.dirs{margin-top:22px;font:600 22px/1.6 'Montserrat';letter-spacing:.14em;color:var(--gold2);text-align:center;opacity:.9}
+.dirs b{color:var(--gold);padding:0 10px}
+.skyline{position:absolute;left:34px;right:34px;bottom:110px;width:calc(100% - 68px);height:330px;color:var(--gold);opacity:.95}
+.skyline .band{stroke:var(--navy)}
+.glow{position:absolute;left:0;right:0;bottom:110px;height:420px;background:radial-gradient(ellipse at 50% 100%,rgba(241,212,140,.28),transparent 65%)}
+.org{position:absolute;bottom:126px;left:0;right:0;text-align:center;font:600 19px/1 'Montserrat';letter-spacing:.24em;color:var(--navy);z-index:3}
+.footer{border-top:1px solid rgba(212,173,90,.4)}
+</style></head><body><div class="poster">
+<svg class="pat" width="100%" height="100%"><defs><pattern id="g" width="90" height="90" patternUnits="userSpaceOnUse"><g fill="none" stroke="#f1d48c" stroke-width="1.4"><rect x="25" y="25" width="40" height="40"/><rect x="25" y="25" width="40" height="40" transform="rotate(45 45 45)"/><circle cx="45" cy="45" r="8"/><path d="M0 0L17 17M90 0L73 17M0 90L17 73M90 90L73 73"/></g></pattern></defs><rect width="100%" height="100%" fill="url(#g)"/></svg>
+<div class="glow"></div>
+<div class="frame">
+ <svg class="corner tl" viewBox="0 0 86 86" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 8h70M8 8v70"/><path d="M20 20h40a0 0 0 0 1 0 0c-12 0-20 8-20 20v0c0-12-8-20-20-20zM20 20v40c0-12 8-20 20-20" /><circle cx="20" cy="20" r="6" fill="currentColor"/><path d="M8 8l24 24"/></svg>
+ <svg class="corner tr" viewBox="0 0 86 86" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 8h70M8 8v70"/><path d="M20 20h40c-12 0-20 8-20 20c0-12-8-20-20-20zM20 20v40c0-12 8-20 20-20"/><circle cx="20" cy="20" r="6" fill="currentColor"/><path d="M8 8l24 24"/></svg>
+ <svg class="corner bl" viewBox="0 0 86 86" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 8h70M8 8v70"/><path d="M20 20h40c-12 0-20 8-20 20c0-12-8-20-20-20zM20 20v40c0-12 8-20 20-20"/><circle cx="20" cy="20" r="6" fill="currentColor"/><path d="M8 8l24 24"/></svg>
+ <svg class="corner br" viewBox="0 0 86 86" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 8h70M8 8v70"/><path d="M20 20h40c-12 0-20 8-20 20c0-12-8-20-20-20zM20 20v40c0-12 8-20 20-20"/><circle cx="20" cy="20" r="6" fill="currentColor"/><path d="M8 8l24 24"/></svg>
+</div>
+<div class="content"><div class="logo"><img src="../assets/logo.png" alt=""></div>
+<div class="kicker">XALQARO ILMIY-AMALIY ANJUMAN</div>
+<svg class="div" viewBox="0 0 520 30" fill="none" stroke="currentColor" stroke-width="2"><path d="M0 15H215M305 15H520"/><path d="M260 1l14 14-14 14-14-14z" fill="currentColor"/><path d="M232 15l8-8 8 8-8 8zM272 15l8-8 8 8-8 8z"/></svg>
+<div class="title">«Innovatsion pedagogika: tabiiy va aniq fanlarni o‘qitishda <em>global tajriba</em> va <em>mahalliy yechimlar</em>»</div>
+<svg class="div" viewBox="0 0 520 30" fill="none" stroke="currentColor" stroke-width="2"><path d="M0 15H215M305 15H520"/><path d="M260 1l14 14-14 14-14-14z" fill="currentColor"/><path d="M232 15l8-8 8 8-8 8zM272 15l8-8 8 8-8 8z"/></svg>
+<div class="date"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span>Urganch,&nbsp;<b>2026-yil 12-oktabr</b></span></div>
+<div class="dirs">MATEMATIKA<b>◆</b>FIZIKA<b>◆</b>KIMYO<b>◆</b>BIOLOGIYA<b>◆</b>INFORMATIKA</div>
+</div>
+{{SKYLINE}}
+<div class="org">URGANCH DAVLAT PEDAGOGIKA INSTITUTI</div>
+{{FOOTER}}
+</div></body></html>
