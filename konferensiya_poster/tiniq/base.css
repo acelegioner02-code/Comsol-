@@ -1,0 +1,11 @@
+*{margin:0;padding:0;box-sizing:border-box}
+body{position:relative;overflow:hidden;-webkit-font-smoothing:antialiased;font-family:'Montserrat',sans-serif}
+.fk{position:absolute;left:0;right:0;bottom:0;height:var(--fh,96px);background:linear-gradient(90deg,#0b2a6b,#1747a6 50%,#0b2a6b);border-top:4px solid #d8b25a;display:flex;align-items:center;justify-content:center;gap:var(--fgap,18px);font:600 var(--fs,17px)/1 'Montserrat';color:#fff;z-index:9}
+.fk span{display:flex;align-items:center;gap:9px;white-space:nowrap}
+.fk b{width:var(--fi,36px);height:var(--fi,36px);border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;flex:none}
+.fk svg{width:58%;height:58%;color:#1747a6}
+.fk i{width:1.5px;height:34px;background:rgba(255,255,255,.45)}
+.rule{position:absolute;left:50%;transform:translateX(-50%);height:34px;display:flex;align-items:center;gap:10px}
+.rule:before,.rule:after{content:"";height:2px;flex:1;background:linear-gradient(90deg,rgba(201,154,60,0),#c99a3c 30%,#e2bd68)}
+.rule:after{transform:scaleX(-1)}
+.rule svg{width:34px;height:34px;flex:none}

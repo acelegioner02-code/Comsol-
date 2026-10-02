@@ -16,3 +16,18 @@ Urganch, 2026-yil 12-oktabr · UrDPI
 
 PNG o‘lchami: 2160×3240 px (2:3). Matnni tahrirlash: `src/*.html` ni o‘zgartirib,
 `NODE_PATH=$(npm root -g) node build.js` ni ishga tushiring (Playwright kerak).
+
+## Tiniq variantlar (`tiniq/`)
+
+Asl afisha asosida: fon rasmi Real-ESRGAN bilan 4x kattalashtirilgan (`assets/bg_up.jpg`, 3412×5120),
+logo (`parts/logo_urspi.svg`), matn, naqshlar va havolalar esa vektor ko'rinishida qayta terilgan.
+
+| Fayl | Tavsif | O'lcham |
+|------|--------|---------|
+| `tiniq/out/A_asl_tiniq.*` | Asl dizayn, tiniq, pastda ko'k havolalar qatori | 3240×4860 (+PDF) |
+| `tiniq/out/B_kok_sarlavha.*` | Yuqori qismi ko'k-oltin, sahna pastda | 3240×4860 (+PDF) |
+| `tiniq/out/C_oltin_ramka.*` | Oltin ramka, ko'k urg'u, sana alohida blokda | 3240×4860 (+PDF) |
+| `tiniq/out/D_banner_16x9.*` | Ekran / LED / taqdimot uchun banner | 3840×2160 |
+| `tiniq/out/E_kvadrat_instagram.*` | Instagram / Telegram uchun kvadrat | 2160×2160 |
+
+Qayta yig'ish: `NODE_PATH=$(npm root -g) node tiniq/build.js [filtr] [masshtab]`
