@@ -31,3 +31,6 @@ logo (`parts/logo_urspi.svg`), matn, naqshlar va havolalar esa vektor ko'rinishi
 | `tiniq/out/E_kvadrat_instagram.*` | Instagram / Telegram uchun kvadrat | 2160×2160 |
 
 Qayta yig'ish: `NODE_PATH=$(npm root -g) node tiniq/build.js [filtr] [masshtab]`
+
+Ingliz tilidagi nusxalar: `tiniq/out/*_EN.*` (A, B, C — PNG/JPG/PDF; D, E — PNG/JPG).
+Ijtimoiy tarmoq ikonkalari asl brend ranglarida (Facebook, Instagram, Telegram).

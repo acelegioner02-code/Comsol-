@@ -9,3 +9,7 @@ body{position:relative;overflow:hidden;-webkit-font-smoothing:antialiased;font-f
 .rule:before,.rule:after{content:"";height:2px;flex:1;background:linear-gradient(90deg,rgba(201,154,60,0),#c99a3c 30%,#e2bd68)}
 .rule:after{transform:scaleX(-1)}
 .rule svg{width:34px;height:34px;flex:none}
+.fk b.web{background:#fff}.fk b.web svg{color:#1b2a6e}
+.fk b.fb{background:#1877f2;box-shadow:0 0 0 2px #fff}.fk b.fb svg{color:#fff;width:66%;height:66%}
+.fk b.ig{background:radial-gradient(circle at 30% 107%,#fdf497 0%,#fdf497 5%,#fd5949 45%,#d6249f 60%,#285aeb 90%);border-radius:28%;box-shadow:0 0 0 2px #fff}.fk b.ig svg{color:#fff}
+.fk b.tg{background:#2aabee;box-shadow:0 0 0 2px #fff}.fk b.tg svg{color:#fff;transform:translateX(-6%)}
