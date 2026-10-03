@@ -1,6 +1,39 @@
 HOLAT: YAKUNLANDI
-Oxirgi yangilanish: 2026-10-01 04:35
-Bosqichlar: B0 [x] B1 [x] B2 [x] B3 [~] B4 [ ] B5 [ ] B6 [ ] B6b [ ] B7 [x] B8 [x]
+Oxirgi yangilanish: 2026-10-03 11:20
+Bosqichlar: B0 [x] B1 [x] B2 [x] B3 [x] B4 [~] B5 [ ] B6 [ ] B6b [x] B7 [x] B8 [x]
+
+## 4-kun (2026-10-03): PROMPT.md 6c (C1-C6) - D_it Newton yaqinlashish muammosi HAL QILINDI
+
+**ASOSIY NATIJA:** C1 (solver yamoqlari olib tashlandi) + C2 (D_it zaryadi `semi.Efn`
+o'rniga to'g'ridan-to'g'ri potensial `V`ga chiziqli: `rhoqs=-e_const^2*Dit*(V-V_it0)`,
+`V_it0` avtomatik o'lchanadi) + C3 (VG sweep COMSOL native continuation, Java tsikli
+emas) birgalikda D_it=3e13'ni TO'LIQ yaqinlashtirdi: **B3 to'liq (barcha 5 VD, VG=80..-80,
+205/205 nuqta, 1190s)** - bu loyihaning 4 kunlik tarixida D_it'ning BIRINCHI marta to'liq
+ishlashi (3-kunda 9 mustaqil usul muvaffaqiyatsiz bo'lgan edi). Batafsil: HISOBOT.md 9-bo'lim.
+
+**YANGI, kutilmagan muammo:** V_on (1nA mezoni) HALI HAM 1 nA'ga yetmaydi - tok
+3.1e-6..2.7e-5 A oralig'ida tekis qoladi. Sabab (sonli tasdiqlangan): C_it/C_ox≈400
+(kuchli Fermi-pinning) gate samaradorligini ~400x pasaytiradi. Hisoblangan SS=470
+V/dekada (maqsad ~25 V/dek dan ~19x yomonroq). `Phi_B0` 0.25->0.1 pasaytirish yordam
+bermadi (kontakt bareri emas, D_it'ning o'zi sabab). 6b ΔVon/Δx testi (VD=0.5, x=0 vs
+0.05) ham faqat ~2% farq berdi, beta_COMSOL hisoblanmadi.
+
+**C4 (diskretizatsiya):** FEM1log darhol `FlNativeException: Undefined_value_found_
+Solvermodel` bilan qulladi (sabab aniqlanmadi); FEM2Ef FVM'dan yomonroq (36/41 nuqta,
+~1.1 dekada); **FVM (sukut) eng yaxshisi** (D_it'siz: 40/41, ~2.1 dekada) - shu qoldirildi.
+
+**C5 (Nd_mos=2.5e18):** joriy qilindi, lekin D_it bilan birga juda yuqori chiqdi - B4
+uchun bu qiymatni ~400x kamaytirish (taxminan 6-7e15 cm^-3) tavsiya etiladi.
+
+**B4 TO'LIQ emas** - faqat bitta qo'lda Phi_B0 testi qilindi (vaqt tejash, "Vaqt qoidasi"
+bo'yicha B7-B8'ga o'tildi). T1-T8: T8 (SS) endi HAQIQIY raqam bilan "yetilmadi" (470 vs
+25 V/dek), qolgan T1-T7 hamon "yetilmadi" (V_on topilmagani uchun). `natijalar\jadval.csv`
+yangilandi. Kod: `ish\model\MoS2Fet.java` (C1-C6 bilan), loglar `run_d4_*.log`, natija
+`natijalar\transfer_b3_full_d4.csv`, rasm `natijalar\fig4a_transfer_d4.png`.
+
+Keyingi aniq qadam: `Nd_mos`ni ~6-7e15 cm^-3 atrofida qayta kalibrlash (B4, scipy bilan
+avtomatlashtirish `calibrate.py` orqali tavsiya etiladi), keyin B5 (Time Dependent)/B6
+(2-rasm)ga o'tish.
 
 ## Qo'shimcha urinish (davomi): to'yinuvchi (tanh) D_it formulasi
 

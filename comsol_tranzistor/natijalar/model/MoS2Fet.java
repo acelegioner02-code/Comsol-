@@ -93,7 +93,7 @@ public class MoS2Fet {
     P.put("eps_mos", "7");
     P.put("Nc_mos", "1e19[1/cm^3]");
     P.put("Nv_mos", "1e19[1/cm^3]");
-    P.put("Nd_mos", "1e17[1/cm^3]");
+    P.put("Nd_mos", "2.5e18[1/cm^3]");
     P.put("mu_n", "30[cm^2/(V*s)]");
     P.put("mu_p", "10[cm^2/(V*s)]");
     P.put("Phi_B0", "0.25[V]");
@@ -105,8 +105,8 @@ public class MoS2Fet {
     P.put("eps_air", "1");
     P.put("d_ideal", "1[nm]");
     P.put("Dit", "3e13[1/(cm^2*eV)]");
-    P.put("Ew0", "0.3[V]");
-    P.put("dE0", "0[V]");
+    P.put("V_it0", "0[V]");
+    P.put("formulation", "FEM1log");
     P.put("sigma_F4", "-1e12[1/cm^2]*e_const");
     P.put("beta", "0.22[V/V]");
     P.put("t_sw", "40[s]");
@@ -156,7 +156,8 @@ public class MoS2Fet {
     model.comments("MoS2/F4TCNQ FET, to'liq geometriya (GEOMETRIYA.md), Kii & Nouchi 2025 asosida.");
 
     for (Map.Entry<String, String> e : P.entrySet()) {
-      if (e.getKey().equals("mode") || e.getKey().equals("VD_list") || e.getKey().equals("VG_list")) continue;
+      if (e.getKey().equals("mode") || e.getKey().equals("VD_list") || e.getKey().equals("VG_list")
+          || e.getKey().equals("formulation")) continue;
       try {
         model.param().set(e.getKey(), e.getValue());
       } catch (Exception ex) {
@@ -294,6 +295,11 @@ public class MoS2Fet {
     // D_it interfeysi: MoS2/SiO2 (y = 0, butun MoS2 kengligi)
     boxBnd("sel_mos_sio2", "-L_ov-0.05*L_ov", "L+L_ov+0.05*L_ov", "0-0.1*t_mos", "0+0.1*t_mos");
 
+    // V_it0 (neytrallik potensiali) o'lchash uchun o'rtacha operator (C2, 4-kun)
+    model.component("comp1").cpl().create("aveop1", "Average");
+    model.component("comp1").cpl("aveop1").selection().geom("geom1", 1);
+    model.component("comp1").cpl("aveop1").selection().named("sel_mos_sio2");
+
     // F4TCNQ/suv kontakti: MoS2 usti, ochiq kanal [x:0..L, y=t_mos]
     boxBnd("sel_mos_top_channel", "0+0.05*L_ov", "L-0.05*L_ov", "t_mos-0.1*t_mos", "t_mos+0.1*t_mos");
 
@@ -335,6 +341,19 @@ public class MoS2Fet {
     semi.selection().named("geom1_csel_mos2_dom");
     System.out.println("CHECKPOINT: semi.selection() -> faqat MoS2");
 
+    // C4 (4-kun): chuqur subporogda (kam tashuvchili soha) standart Finite Volume (FVM)
+    // o'rniga Finite Element log formulation (FEM1log) sinaladi - kam tashuvchi zichligida
+    // ko'proq raqamli barqaror bo'lishi kutiladi. params.txt "formulation" bilan FVM yoki
+    // FEM2Ef (quasi-Fermi-level) ga almashtiriladi (applications\Semiconductor_Module\
+    // Verification_Examples\pn_junction_1d.mph va Device_Building_Blocks\
+    // moscap_1d_interface_traps.mph'da topilgan: semi.prop("ShapeProperty")/"Formulation").
+    try {
+      semi.prop("ShapeProperty").set("Formulation", P.get("formulation"));
+      System.out.println("CHECKPOINT: semi Formulation=" + P.get("formulation"));
+    } catch (Exception e) {
+      System.out.println("OGOHLANTIRISH: Formulation sozlanmadi: " + e.getMessage());
+    }
+
     PhysicsFeature smm1 = semi.feature("smm1");
     smm1.set("Eg0_mat", "userdef"); smm1.set("Eg0", "Eg_mos");
     smm1.set("chi0_mat", "userdef"); smm1.set("chi0", "chi_mos");
@@ -374,25 +393,23 @@ public class MoS2Fet {
     // Interfeys tuzoqlari (D_it) - MoS2/SiO2 chegarasida.
     // MUHIM (3-kun, Xato 2 tuzatildi): avval ContinuousEnergyLevelsBoundary (faqat donor,
     // midgap atrofida 0.3eV tor oyna) ishlatilgan edi - bulutdagi tekshiruv buni ham fizik
-    // ham sonli jihatdan noto'g'ri deb topdi. Tuzatish: tezkor interfeys holatlari, statik
-    // zaryadi Fermi sathiga bog'liq, oddiy SurfaceChargeDensity orqali (tasr1/ctb1 emas).
-    // semi.Efn/semi.Ec/semi.Ev nomlari EfProbe.java bilan tasdiqlangan.
+    // ham sonli jihatdan noto'g'ri deb topdi.
     //
-    // MUHIM (3-kun, davomi - CHIZIQLI formula raqamli beqaror topildi): PROMPT.md'ning
-    // so'zma-so'z ifodasi Q_it = -q*D_it*(E_Fn-E_mid-dE0) CHEGARALANMAGAN - Efn qancha
-    // siljisa ham mutanosib zaryad beradi. Bu hatto Dit_scale=0.02 (maqsaddan 50x kichik)
-    // da ham yaqinlashmadi (STATUS.md, 6 ta mustaqil solver-darajasidagi tuzatish sinaldi,
-    // barchasi muvaffaqiyatsiz). Endi TO'YINUVCHI (saturating) variant sinaladi: haqiqiy
-    // tuzoqlar chekli sonli holatlarga ega, Ew0 kenglikdagi energiya oynasidan tashqarida
-    // deyarli barcha holatlar allaqachon to'la/bo'sh bo'lib qoladi. tanh() kichik siljishda
-    // (|Efn-Emid-dE0| << Ew0) ASL chiziqli formulaga mos keladi (tanh(x)≈x), lekin katta
-    // siljishda ±e_const*Dit*Ew0 ga to'yinadi - chegaralangan, silliq, Newton uchun
-    // ancha barqarorroq bo'lishi kutiladi.
+    // MUHIM (3-kun, davomi): keyin PROMPT.md'ning so'zma-so'z Q_it = -q*D_it*(E_Fn-E_mid-dE0)
+    // (semi.Efn ga chiziqli) va keyin tanh(Efn) to'yinuvchi varianti sinaldi - ikkalasi ham
+    // yaqinlashmadi, hatto Dit_scale=0.02'da ham. Sabab (4-kun, bulutdagi tekshiruv): Efn
+    // kambag'allashgan sohada deyarli aniqlanmagan hosilaviy kattalik - unga bog'liq manba
+    // Newton Jakobianini noaniq qiladi.
+    //
+    // C2 (4-kun): standart va barqaror yaqinlash - tezkor interfeys holatlari kichik V_D'da
+    // kanal POTENSIALIGA (V, semi'ning bog'liq o'zgaruvchisi, hosilaviy emas) chiziqli zaryad
+    // beradi: rhoqs = -q^2*D_it*(V - V_it0), ya'ni C_it = q^2*D_it. V_it0 (neytrallik
+    // potensiali) measureVit0() bilan VG=0/Dit_scale=0 muvozanatda o'lchanadi.
     if (P.get("use_traps").equals("1")) {
       PhysicsFeature sfit = semi.create("sfit", "SurfaceChargeDensity", 1);
       sfit.selection().named("sel_mos_sio2");
-      sfit.set("rhoqs", "-e_const*Dit*Dit_scale*Ew0*tanh((semi.Efn - (semi.Ec+semi.Ev)/2 - dE0)/Ew0)");
-      System.out.println("CHECKPOINT: sfit (D_it, SurfaceChargeDensity, to'yinuvchi) OK");
+      sfit.set("rhoqs", "-e_const^2*Dit*Dit_scale*(V-V_it0)");
+      System.out.println("CHECKPOINT: sfit (D_it, chiziqli-potensial) OK");
     }
 
     // F4TCNQ sirt zaryadi - MoS2/suv chegarasida (ochiq kanal)
@@ -444,8 +461,12 @@ public class MoS2Fet {
       ge1.setIndex("initialValueU", "0", 0);
       ge1.setIndex("initialValueUt", "0", 0);
     } else {
+      // x_fixed (6b, Tekshiruv 3): ion holatini VD'dan mustaqil, qo'lda berilgan qiymatga
+      // qotirish - beta_COMSOL = 92.5/|dVon/dx| hisoblash uchun kerak.
+      String xExpr = (P.containsKey("x_fixed") && P.get("x_fixed").trim().length() > 0)
+          ? P.get("x_fixed") : "beta*VD";
       model.component("comp1").variable().create("var_x");
-      model.component("comp1").variable("var_x").set("x", "beta*VD");
+      model.component("comp1").variable("var_x").set("x", xExpr);
     }
     System.out.println("CHECKPOINT: ion holati OK");
 
@@ -641,93 +662,108 @@ public class MoS2Fet {
       String[] vgParts = P.get("VG_list").split(",");
       for (int i = 0; i < vgParts.length; i++) vgList.add(Double.parseDouble(vgParts[i].trim()));
     }
+    if (vgList == null) {
+      vgList = new ArrayList<Double>();
+      for (double vg = vgStart; (vgStep > 0 ? vg <= vgStop + 1e-9 : vg >= vgStop - 1e-9); vg += vgStep) {
+        vgList.add(vg);
+      }
+    }
 
     List<Double> vdList = new ArrayList<Double>();
     String[] vdParts = P.get("VD_list").split(",");
     for (int i = 0; i < vdParts.length; i++) vdList.add(Double.parseDouble(vdParts[i].trim()));
 
-    double vgFirst = (vgList != null) ? vgList.get(0) : vgStart;
-    double vdFirst = parseD(P.get("VD_list").split(",")[0]);
+    double vgFirst = vgList.get(0);
+    double vdFirst = vdList.get(0);
     model.param().set("VG", fmt(vgFirst));
     model.param().set("VD", fmt(vdFirst));
-    boolean firstOk;
+
     if (P.get("use_traps").equals("1")) {
-      // MUHIM (3-kun, Xato 2 tuzatilgandan keyin): D_it modeli endi SurfaceChargeDensity
-      // orqali Fermi sathiga CHIZIQLI bog'liq (tasr1/ctb1 tor-band diskret trap modeli emas).
-      // Amalda ANIQLANDI (SolverProbe.java/SolverProbe2.java): standart sozlamalar (maxiter=50,
-      // reserrfact=1000, initstep=0.1) har qanday nolmas Dit_scale uchun BIRINCHI urinishda
-      // deyarli doim muvaffaqiyatsiz bo'ladi - shuning uchun bu safar bumplarni RETRY'ga
-      // qoldirmasdan, ramp boshlanishidan OLDIN proaktiv tarzda qo'llaymiz (vaqt tejash uchun,
-      // har bosqichda keraksiz "birinchi urinish muvaffaqiyatsiz" siklini aylanib o'tish).
-      // Ramp ham yanada silliqlashtirildi (past uchida zichroq qadamlar).
-      double[] ditStages = {0, 0.02, 0.05, 0.1, 0.15, 0.22, 0.32, 0.46, 0.65, 0.85, 1.0};
-      firstOk = false;
+      measureVit0();
+      // C1 (4-kun): solver "tuzatishlari" (reserrfact/initstep/retry) olib tashlandi, sukut
+      // sozlamalarda. C2'ning chiziqli-potensial formulasi (Efn/tanh emas) Jakobianni aniq
+      // qiladi - PROMPT.md bo'yicha endi bosqichma-bosqich ramp ham, retry ham shart emas,
+      // lekin Dit_scale=0'dan 1'ga bitta sakrash xavfli bo'lishi mumkin, shuning uchun
+      // soddalashtirilgan 3 bosqichli ramp saqlanadi (6b tavsiyasiga mos: 0, 0.1, 0.3, 1.0).
+      double[] ditStages = {0, 0.1, 0.3, 1.0};
       for (int i = 0; i < ditStages.length; i++) {
         model.param().set("Dit_scale", fmt(ditStages[i]));
-        boolean ok = solveRobust("Dit_scale=" + fmt(ditStages[i]));
-        if (ok) firstOk = true;
-        if (i == 0) {
-          // Dit_scale=0 (nol zaryad) doim oson yaqinlashadi va solver ketma-ketligini
-          // ("sol1" va h.k.) birinchi marta yaratadi. Shundan keyingina bump qilish mumkin -
-          // undan OLDIN model.sol() bo'sh bo'ladi (hali hech narsa yaratilmagan).
-          String[] solTags0 = model.sol().tags();
-          for (int j = 0; j < solTags0.length; j++) bumpMaxIter(model.sol(solTags0[j]));
-        }
+        solveRobust("Bootstrap Dit_scale=" + fmt(ditStages[i]));
       }
     } else {
       model.param().set("Dit_scale", "1");
-      firstOk = solveRobust("Boshlang'ich nuqta");
+      solveRobust("Boshlang'ich nuqta");
     }
 
+    // C3 (4-kun): VG bo'yicha Java tsikli o'rniga COMSOL'ning o'z native Auxiliary
+    // sweep/continuation solveri - bitta Stationary step, bitta study().run() chaqiruvi
+    // butun VG ro'yxati uchun. VD tashqi Java tsiklida qoladi (PROMPT.md 6c/C3 ruxsat beradi).
+    StringBuilder vgPlist = new StringBuilder();
+    for (int i = 0; i < vgList.size(); i++) vgPlist.append(fmt(vgList.get(i))).append(" ");
+    model.study("std1").feature("stat").set("useparam", true);
+    model.study("std1").feature("stat").set("pname", new String[]{"VG"});
+    model.study("std1").feature("stat").set("plist", new String[]{vgPlist.toString().trim()});
+    model.study("std1").feature("stat").set("pcontinuationmode", "last");
+    System.out.println("CHECKPOINT: VG native continuation sweep sozlandi (" + vgList.size() + " nuqta)");
+
+    model.result().numerical().create("gev1", "EvalGlobal");
+    model.result().numerical("gev1").set("data", "dset1");
+    model.result().numerical("gev1").set("expr", new String[]{"VG", "semi.I0_2"});
+
     String csvPath = OUT_DIR + File.separator + "transfer.csv";
-    boolean gevCreated = false;
     PrintWriter out = new PrintWriter(new FileWriter(csvPath));
     try {
       out.println("VD,VG,ID");
       for (int vdi = 0; vdi < vdList.size(); vdi++) {
         double vd = vdList.get(vdi);
         model.param().set("VD", fmt(vd));
-        List<Double> thisVgList = vgList;
-        if (thisVgList == null) {
-          thisVgList = new ArrayList<Double>();
-          for (double vg = vgStart; (vgStep > 0 ? vg <= vgStop + 1e-9 : vg >= vgStop - 1e-9); vg += vgStep) {
-            thisVgList.add(vg);
+        model.param().set("VG", fmt(vgFirst));
+        boolean ok = solveRobust(String.format(Locale.US, "VD=%.2f VG sweep (native continuation)", vd));
+        try {
+          double[][] vals = model.result().numerical("gev1").getReal();
+          int n = (vals.length > 0) ? vals[0].length : 0;
+          System.out.println("VD=" + fmt(vd) + ": " + n + " / " + vgList.size() + " nuqta qaytdi (ok=" + ok + ")");
+          for (int i = 0; i < n; i++) {
+            out.println(fmt(vd) + "," + String.format(Locale.US, "%.6f", vals[0][i]) + ","
+                + String.format(Locale.US, "%.6e", vals[1][i]));
           }
-        }
-        for (int vgi = 0; vgi < thisVgList.size(); vgi++) {
-          double vg = thisVgList.get(vgi);
-          model.param().set("VG", fmt(vg));
-          // ESLATMA (3-kun): "birinchi nuqtani bootstrap'dan o'qish" (qayta yechmasdan)
-          // sinaldi, lekin dataset eski/uzilib qolgan holatga bog'lanib, ID=0 (noto'g'ri)
-          // qaytardi - bekor qilindi. Har bir nuqta, birinchisi ham, to'liq qayta yechiladi.
-          boolean ok = solveRobust(String.format(Locale.US, "VD=%.2f VG=%7.2f", vd, vg));
-          if (ok) {
-            try {
-              if (!gevCreated) {
-                model.result().numerical().create("gev1", "EvalGlobal");
-                model.result().numerical("gev1").set("data", "dset1");
-                model.result().numerical("gev1").set("expr", new String[]{"semi.I0_2"});
-                gevCreated = true;
-              }
-              double id = model.result().numerical("gev1").getReal()[0][0];
-              out.println(fmt(vd) + "," + fmt(vg) + "," + String.format(Locale.US, "%.6e", id));
-              out.flush();
-              System.out.println(String.format(Locale.US, "VD=%.2f VG=%7.2f ID=%.4e A", vd, vg, id));
-            } catch (Exception e) {
-              System.out.println(String.format(Locale.US, "VD=%.2f VG=%7.2f natija o'qishda xato: %s", vd, vg, e.getMessage()));
-              out.println(fmt(vd) + "," + fmt(vg) + ",NaN");
-              out.flush();
-            }
-          } else {
-            out.println(fmt(vd) + "," + fmt(vg) + ",NaN");
-            out.flush();
-          }
+          out.flush();
+        } catch (Exception e) {
+          System.out.println("VD=" + fmt(vd) + ": natija o'qishda xato: " + e.getMessage());
         }
       }
     } finally {
       out.close();
     }
     System.out.println("Tayyor: " + csvPath);
+  }
+
+  // C2 (4-kun): V_it0 (neytrallik potensiali) ni VG=0, VD=0, Dit_scale=0 (tuzoqsiz, bias'siz,
+  // muvozanatga yaqin) holatda MoS2/SiO2 chegarasidagi potensial V ning o'rtachasi sifatida
+  // o'lchaydi. Natija model.param "V_it0" ga yoziladi; chaqiruvdan oldingi VG/VD/Dit_scale
+  // tiklanadi (davom etayotgan ramp/sweep'ga ta'sir qilmasligi uchun).
+  static void measureVit0() {
+    String prevVG = model.param().get("VG");
+    String prevVD = model.param().get("VD");
+    String prevDit = model.param().get("Dit_scale");
+    try {
+      model.param().set("VG", "0");
+      model.param().set("VD", "0");
+      model.param().set("Dit_scale", "0");
+      solveRobust("V_it0 o'lchash (VG=0,VD=0,Dit_scale=0)");
+      model.result().numerical().create("gev_vit0", "EvalGlobal");
+      model.result().numerical("gev_vit0").set("data", "dset1");
+      model.result().numerical("gev_vit0").set("expr", new String[]{"aveop1(V)"});
+      double vit0 = model.result().numerical("gev_vit0").getReal()[0][0];
+      model.param().set("V_it0", fmt(vit0) + "[V]");
+      System.out.println("V_it0 o'lchandi: " + fmt(vit0) + " V");
+    } catch (Exception e) {
+      System.out.println("OGOHLANTIRISH: V_it0 o'lchanmadi (" + e.getMessage() + "), standart 0V qoladi.");
+    } finally {
+      model.param().set("VG", prevVG);
+      model.param().set("VD", prevVD);
+      model.param().set("Dit_scale", prevDit);
+    }
   }
 
   // ---------------------------------------------------------------------
@@ -786,74 +822,20 @@ public class MoS2Fet {
     System.out.println("Tayyor: " + csvPath);
   }
 
+  // C1 (4-kun): avvalgi retry/clearSolutionData/reserrfact/initstep "tuzatishlari" olib
+  // tashlandi - ular yaqinlashmagan holatni qisman "qabul qilingan" yechimga aylantirib,
+  // haqiqiy muammoni (formula/diskretizatsiya) yashirar edi. Endi bitta urinish, sukut
+  // solver sozlamalari bilan; muvaffaqiyatsizlik ochiq qoldiriladi (false qaytadi).
   static boolean solveRobust(String label) {
     try {
       model.study("std1").run();
       return true;
     } catch (Exception e) {
-      System.out.println(label + ": birinchi urinish muvaffaqiyatsiz (" + e.getMessage() + "), tozalab qayta urinamiz.");
-    }
-    try {
-      String[] solTags = model.sol().tags();
-      for (int i = 0; i < solTags.length; i++) {
-        try {
-          model.sol(solTags[i]).clearSolutionData();
-        } catch (Exception ce) {
-        }
-        bumpMaxIter(model.sol(solTags[i]));
+      System.out.println(label + ": yaqinlashmadi (" + e.getMessage() + ")");
+      for (Throwable t = e.getCause(); t != null; t = t.getCause()) {
+        System.out.println("  sabab: " + t.getClass().getSimpleName() + ": " + t.getMessage());
       }
-      model.study("std1").run();
-      System.out.println(label + ": tozalash + oshirilgan iteratsiya bilan yaqinlashdi.");
-      return true;
-    } catch (Exception e2) {
-      System.out.println(label + ": OGOHLANTIRISH - hali ham yaqinlashmadi: " + e2.getMessage());
       return false;
-    }
-  }
-
-  static void bumpMaxIter(SolverSequence ss) {
-    try {
-      String[] tags = ss.feature().tags();
-      for (int i = 0; i < tags.length; i++) bumpMaxIterFeature(ss.feature(tags[i]));
-    } catch (Exception e) {
-      System.out.println("bumpMaxIter FAIL: " + e.getMessage());
-    }
-  }
-
-  static void bumpMaxIterFeature(SolverFeature sf) {
-    // MUHIM (3-kun): oldin FAQAT maxiter oshirilgan edi, lekin loglar tekshirilganda (
-    // SolverProbe.java/SolverProbe2.java) "FullyCoupled" tuguni ("fc1") muvaffaqiyatsizlikda
-    // atigi 6 iteratsiyada to'xtaganini ko'rsatdi - maxiter=50 (standart) hali yetib
-    // bormagan, sabab boshqa: "reserrfact" (standart 1000) - agar navbatdagi qoldiq oldingi
-    // eng yaxshisidan reserrfact marta yomonroq bo'lsa, solver "divergensiya" deb qaror qilib
-    // TO'XTAYDI, garchi maxiter hali uzoq bo'lsa ham. Bizning rhoqs ifodasi (Efn ga chiziqli,
-    // TO'YINMAYDIGAN zaryad) katta oraliq qadamlarida ResEst'ni vaqtincha 1000x dan ko'proq
-    // oshirib yuborishi mumkin - shuning uchun reserrfact ham ancha kattalashtiriladi.
-    String[] candidates = {"maxiter", "MaxIter", "maxIter"};
-    for (int i = 0; i < candidates.length; i++) {
-      try {
-        sf.set(candidates[i], "400");
-      } catch (Exception e) {
-      }
-    }
-    try {
-      sf.set("reserrfact", "1e8");
-    } catch (Exception e) {
-    }
-    // reserrfact yolg'iz yetarli emas edi: ba'zi bosqichlarda SolEst bitta iteratsiyada
-    // 1e26 gacha portlab ketdi (Newton qadami haddan tashqari katta bo'lib, o'zgaruvchining
-    // o'z miqyosidan katta tuzatish taklif qildi) - bu holatda reserrfact (ResEst nisbati)
-    // emas, balki qadam o'zi (SolEst) haddan tashqari kattaligi sabab. Boshlang'ich damping'ni
-    // ancha kichraytiramiz (standart initstep=0.1 -> 0.01), shunda birinchi qadamlar
-    // ehtiyotkorroq bo'ladi.
-    try {
-      sf.set("initstep", "0.01");
-    } catch (Exception e) {
-    }
-    try {
-      String[] sub = sf.feature().tags();
-      for (int i = 0; i < sub.length; i++) bumpMaxIterFeature(sf.feature(sub[i]));
-    } catch (Exception e) {
     }
   }
 

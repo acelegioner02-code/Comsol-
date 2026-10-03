@@ -1,16 +1,16 @@
 metric,maqola,model,farq,holat,izoh
-T1_Von_VD0.2_highRH,-4,NaN,NaN,yetilmadi,D_it yaqinlashmadi (1nA chegarasiga yetilmadi - VG=0 da 1.82e-7 A)
-T1_Von_VD0.4_highRH,-22,NaN,NaN,yetilmadi,D_it yaqinlashmadi - sweep VD=0.2 danoshgan
-T1_Von_VD0.6_highRH,-36,NaN,NaN,yetilmadi,D_it yaqinlashmadi
-T1_Von_VD0.8_highRH,-61,NaN,NaN,yetilmadi,D_it yaqinlashmadi
-T1_Von_VD1.0_highRH,-78,NaN,NaN,yetilmadi,D_it yaqinlashmadi
-T2_dVon_dVD_highRH,92.5,NaN,NaN,yetilmadi,D_it yaqinlashmadi - T1 ustunidan hisoblanadi
-T3_dVon_dVD_lowRH,5.3,NaN,NaN,yetilmadi,D_it yaqinlashmadi
-T4_rectification_highRH,0.03,NaN,NaN,yetilmadi,Time Dependent (B5) boshlanmadi - D_it blokladi
-T5_hysteresis_highRH_pct,87,NaN,NaN,yetilmadi,Time Dependent (B5) boshlanmadi
-T6_Im1_highRH_uA,1.6,NaN,NaN,yetilmadi,Time Dependent (B5) boshlanmadi
-T7_Fig2_dVon_dVD,46.3,NaN,NaN,yetilmadi,B6 boshlanmadi (B3-B5 tugallanmagani sababli)
+T1_Von_VD0.2_highRH,-4,NaN,NaN,yetilmadi,"4-kun: D_it=3e13 TO'LIQ yaqinlashdi (205/205 nuqta, VG=80..-80, barcha VD), lekin ID 3.1e-6..2.7e-5 A oralig'ida qoladi - 1nA chegarasiga umuman yetmaydi (kuchli Fermi-pinning, C_it/C_ox~400)"
+T1_Von_VD0.4_highRH,-22,NaN,NaN,yetilmadi,"yuqoridagi kabi"
+T1_Von_VD0.6_highRH,-36,NaN,NaN,yetilmadi,"yuqoridagi kabi"
+T1_Von_VD0.8_highRH,-61,NaN,NaN,yetilmadi,"yuqoridagi kabi"
+T1_Von_VD1.0_highRH,-78,NaN,NaN,yetilmadi,"yuqoridagi kabi"
+T2_dVon_dVD_highRH,92.5,NaN,NaN,yetilmadi,V_on topilmagani uchun hisoblab bo'lmaydi
+T3_dVon_dVD_lowRH,5.3,NaN,NaN,yetilmadi,past RH holati sinalmadi (yuqori RH hali T1/T2 bermaydi)
+T4_rectification_highRH,0.03,NaN,NaN,yetilmadi,Time Dependent (B5) bu sessiyada boshlanmadi
+T5_hysteresis_highRH_pct,87,NaN,NaN,yetilmadi,Time Dependent (B5) bu sessiyada boshlanmadi
+T6_Im1_highRH_uA,1.6,NaN,NaN,yetilmadi,Time Dependent (B5) bu sessiyada boshlanmadi
+T7_Fig2_dVon_dVD,46.3,NaN,NaN,yetilmadi,B6 boshlanmadi
 T7_Fig2_rectification,0.37,NaN,NaN,yetilmadi,B6 boshlanmadi
 T7_Fig2_hysteresis_pct,32,NaN,NaN,yetilmadi,B6 boshlanmadi
-T8_SS_highRH_V_per_dec,25,NaN,NaN,yetilmadi,D_it yaqinlashmadi - SS ni D_it belgilaydi
-T8_SS_Fig2_V_per_dec,12,14.5,+2.5 (D_it'siz),qisman/yetilmadi,"D_it'siz VD=0.2 VG=12..0 mahalliy qiyalik - D_it bilan qayta hisoblanishi kerak, to'g'ridan-to'g'ri solishtirib bo'lmaydi"
+T8_SS_highRH_V_per_dec,25,470,+445 (~19x yomonroq),yetilmadi,"4-kun YANGI: D_it=3e13 bilan VD=0.2 uchidan-uchiga SS=470 V/dek (mahalliy eng tik qism ~376 V/dek) - D_it HAQIQIY yaqinlashgan holatda birinchi marta hisoblandi, lekin maqsaddan ~15-19x yomonroq. Sabab: C_it/C_ox~400 gate samaradorligini ~400x pasaytiradi, Nd_mos=2.5e18 kanal bilan birga kutilgandan ham yassiroq javob beradi."
+T8_SS_Fig2_V_per_dec,12,NaN,NaN,yetilmadi,"2-rasm qurilmasi (B6, W=11.9um) alohida sinalmadi; 3-kundagi D_it'siz 14.5 V/dek endi eskirgan solishtiruv (D_it endi yoqilgan holatda ishlaydi)"

@@ -1,0 +1,220 @@
+*******************************************
+***COMSOL 6.0.0.318 progress output file***
+*******************************************
+Sat Oct 03 10:27:32 UZT 2026
+COMSOL Multiphysics 6.0 (Build: 318) starting in batch mode
+Running: C:\comsol_tranzistor\ish\model\MoS2Fet.class
+params.txt o'qildi: C:\comsol_tranzistor\ish\model\params.txt
+---------- Current Progress: 100 % - Updating selections
+Memory: 421/422 452/453
+           Current Progress:   0 % - Rectangle
+Memory: 451/462 482/494
+           Current Progress:   1 % - Rectangle 2
+           Current Progress:   3 % - Rectangle 2a
+           Current Progress:   4 % - Polygon
+           Current Progress:   5 % - Polygon 2
+Memory: 453/462 482/494
+           Current Progress:   6 % - Mirror
+-          Current Progress:  19 % - Mirror 2
+---        Current Progress:  31 % - Rectangle 3
+---        Current Progress:  33 % - Ellipse 1
+---        Current Progress:  34 % - Ellipse 2
+---        Current Progress:  35 % - Union
+Memory: 450/462 478/494
+----       Current Progress:  43 % - Resolving domains
+Memory: 454/462 482/494
+----       Current Progress:  48 % - Rectangle 4
+Memory: 455/462 484/494
+----       Current Progress:  49 % - Intersection
+Memory: 456/462 485/494
+-----      Current Progress:  57 % - Resolving domains
+------     Current Progress:  61 % - Difference 4
+Memory: 457/462 485/494
+-------    Current Progress:  73 % - Resolving domains
+Memory: 457/462 486/494
+-------    Current Progress:  74 % - Rectangle 5
+-------    Current Progress:  75 % - Difference
+Memory: 456/462 485/494
+--------   Current Progress:  86 % - Resolving domains
+Memory: 457/462 487/494
+--------   Current Progress:  88 % - Form Union
+Memory: 458/462 487/494
+---------  Current Progress:  99 % - Resolving domains
+---------- Current Progress: 100 % - Updating selections
+Memory: 459/462 487/494
+Geometriya quruldi. Domenlar soni: 10 (kutilgan: 10)
+CHECKPOINT: sel_insulators OK
+CHECKPOINT: sel_semi_domains OK
+---------- Current Progress: 100 % - Creating visualization mesh
+Memory: 457/462 483/494
+CHECKPOINT: chegara selectionlari OK
+CHECKPOINT: semi yaratildi
+CHECKPOINT: semi.selection() -> faqat MoS2
+CHECKPOINT: semi Formulation=FEM1log
+CHECKPOINT: adm1 OK
+CHECKPOINT: gc1 OK
+CHECKPOINT: sfcd1 OK
+CHECKPOINT: mc1/mc2 OK
+CHECKPOINT: ion holati OK
+CHECKPOINT: mesh size features OK
+Number of vertex elements: 37
+           Current Progress:   6 % - Adjusting boundary mesh
+Memory: 417/503 435/522
+Number of boundary elements: 15129
+-          Current Progress:  13 % - Inserting interior points
+Memory: 428/503 453/522
+--         Current Progress:  20 % - Inserting interior points
+Memory: 439/503 464/522
+--         Current Progress:  23 % - Inserting interior points
+Memory: 439/503 465/522
+--         Current Progress:  28 % - Inserting interior points
+Memory: 440/503 465/522
+---        Current Progress:  35 % - Improving element quality
+Memory: 443/503 470/522
+------     Current Progress:  67 % - Preparing for advancing front meshing
+-------    Current Progress:  71 % - Inserting interior points
+Memory: 445/503 472/522
+-------    Current Progress:  72 % - Inserting interior points
+Memory: 446/503 472/522
+-------    Current Progress:  75 % - Inserting interior points
+---------  Current Progress:  95 % - Improving element quality
+Memory: 450/503 477/522
+---------  Current Progress:  95 % - Inserting interior points
+Memory: 468/503 492/522
+---------  Current Progress:  95 % - Improving element quality
+Memory: 429/503 447/522
+Number of elements: 152778
+---------  Current Progress:  99 % - Finalizing mesh
+Memory: 459/503 486/522
+Minimum element quality: 0.2344
+---------- Current Progress: 100 % - Finalizing mesh
+Memory: 421/503 445/522
+MESH_DOMAINS_TOTAL=10
+Model qurildi (mode=transfer).
+CHECKPOINT: natijalar papka OK
+CHECKPOINT: view1 (full) sozlandi
+-----      Current Progress:  50 % - Generating image
+Memory: 445/503 468/522
+---------- Current Progress: 100 % - Creating visualization mesh
+Memory: 476/503 487/522
+Eksport: natijalar\geom_full.png
+CHECKPOINT: view1 (src edge) sozlandi
+-----      Current Progress:  50 % - Generating image
+Memory: 669/681 581/583
+Eksport: natijalar\geom_source_edge.png
+<---- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) -
+Started at Oct 3, 2026, 10:28:15 AM.
+Geometry shape function: Linear Lagrange
+Running on 11th Gen Intel(R) Core(TM) i7-1165G7 at 2.80 GHz.
+Using 1 socket with 4 cores in total on WIN-FNSSP1NOF49.
+Available memory: 7.97 GB.
+           Current Progress:   3 % - Compile Equations: Semiconductor Equilibrium
+Memory: 635/698 626/668
+           Current Progress:   3 % - Creating visualization mesh
+Memory: 636/698 627/668
+Time: 2 s.
+Physical memory: 674 MB
+Virtual memory: 667 MB
+Ended at Oct 3, 2026, 10:28:17 AM.
+----- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) >
+<---- Dependent Variables 1 in Study 1/Solution 1 (sol1) -----------------------
+Started at Oct 3, 2026, 10:28:17 AM.
+           Current Progress:   3 % - Dependent Variables 1
+Memory: 638/698 628/668
+Solution time: 0 s.
+Physical memory: 638 MB
+Virtual memory: 628 MB
+Ended at Oct 3, 2026, 10:28:17 AM.
+----- Dependent Variables 1 in Study 1/Solution 1 (sol1) ---------------------->
+<---- Stationary Solver 1 in Study 1/Solution 1 (sol1) -------------------------
+Started at Oct 3, 2026, 10:28:17 AM.
+Nonlinear solver
+Number of degrees of freedom solved for: 77892.
+           Current Progress:   5 % - Stationary Solver 1
+Memory: 642/698 630/668
+           Current Progress:   5 % - Assembling matrices
+Memory: 669/698 656/683
+Nonsymmetric matrix found.
+Scales for dependent variables:
+Electron solution variable (comp1.Ne): 33
+Hole solution variable (comp1.Ph): 1.1e+05
+Electric potential (comp1.V): 1.3e+10
+Orthonormal null-space function used.
+           Current Progress:   5 % - Matrix factorization
+Memory: 723/735 715/731
+Iter      SolEst      ResEst     Damping    Stepsize #Res #Jac #Sol
+           Current Progress:   5 % - 
+Memory: 743/746 785/788
+           Current Progress:   8 % - 
+Memory: 747/747 787/788
+-----      Current Progress:  50 % - 
+Memory: 611/747 636/788
+Solution time: 3 s.
+Physical memory: 747 MB
+Virtual memory: 787 MB
+Ended at Oct 3, 2026, 10:28:20 AM.
+----- Stationary Solver 1 in Study 1/Solution 1 (sol1) ------------------------>
+Boshlang'ich nuqta: yaqinlashmadi (The_following_feature_has_encountered_a_problem)
+CHECKPOINT: VG native continuation sweep sozlandi (41 nuqta)
+<---- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) -
+Started at Oct 3, 2026, 10:28:23 AM.
+Geometry shape function: Linear Lagrange
+Running on 11th Gen Intel(R) Core(TM) i7-1165G7 at 2.80 GHz.
+Using 1 socket with 4 cores in total on WIN-FNSSP1NOF49.
+Available memory: 7.97 GB.
+           Current Progress:   1 % - Compile Equations: Semiconductor Equilibrium
+Memory: 663/747 687/788
+           Current Progress:   1 % - Creating visualization mesh
+Memory: 662/747 686/788
+Time: 1 s.
+Physical memory: 663 MB
+Virtual memory: 687 MB
+Ended at Oct 3, 2026, 10:28:24 AM.
+----- Compile Equations: Semiconductor Equilibrium in Study 1/Solution 1 (sol1) >
+<---- Dependent Variables 1 in Study 1/Solution 1 (sol1) -----------------------
+Started at Oct 3, 2026, 10:28:24 AM.
+           Current Progress:   1 % - Dependent Variables 1
+Memory: 663/747 686/788
+Solution time: 0 s.
+Physical memory: 663 MB
+Virtual memory: 686 MB
+Ended at Oct 3, 2026, 10:28:24 AM.
+----- Dependent Variables 1 in Study 1/Solution 1 (sol1) ---------------------->
+<---- Stationary Solver 1 in Study 1/Solution 1 (sol1) -------------------------
+Started at Oct 3, 2026, 10:28:24 AM.
+Nonlinear solver
+Number of degrees of freedom solved for: 77892.
+           Current Progress:   2 % - Assembling matrices
+Memory: 690/747 715/788
+Nonsymmetric matrix found.
+Scales for dependent variables:
+Electron solution variable (comp1.Ne): 33
+Hole solution variable (comp1.Ph): 1.1e+05
+Electric potential (comp1.V): 1.3e+10
+Orthonormal null-space function used.
+           Current Progress:   2 % - Matrix factorization
+Memory: 736/747 766/788
+Iter      SolEst      ResEst     Damping    Stepsize #Res #Jac #Sol
+           Current Progress:   2 % - 
+Memory: 770/777 807/814
+           Current Progress:   3 % - Assembling matrices
+Memory: 772/777 810/814
+           Current Progress:   3 % - 
+Memory: 772/777 809/814
+-          Current Progress:  18 % - 
+Memory: 603/777 626/814
+Solution time: 2 s.
+Physical memory: 772 MB
+Virtual memory: 814 MB
+Ended at Oct 3, 2026, 10:28:27 AM.
+----- Stationary Solver 1 in Study 1/Solution 1 (sol1) ------------------------>
+VD=0.20 VG sweep (native continuation): yaqinlashmadi (The_following_feature_has_encountered_a_problem)
+VD=0.200000: 1 / 41 nuqta qaytdi (ok=false)
+Tayyor: C:\comsol_tranzistor\ish\model\transfer.csv
+MPH saqlandi: C:\comsol_tranzistor\ish\model\MoS2Fet_transfer.mph
+Class run time: 55 s.
+Saving model: C:\comsol_tranzistor\ish\model\MoS2Fet_Model.mph
+Save time: 0 s.
+Total time: 55 s.
+---------- Current Progress: 100 % - Done
+Memory: 648/777 672/814

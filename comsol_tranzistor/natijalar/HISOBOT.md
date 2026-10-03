@@ -2,9 +2,42 @@
 
 **Maqola:** H. Kii, R. Nouchi, ACS Appl. Electron. Mater. 2025, 7, 5282.
 **Muhit:** COMSOL Multiphysics 6.0.0.318, Semiconductor Module (litsenziya bor, ishlaydi).
-**Sana:** 2026-09-30/10-01 (2-kun va 3-kun, PROMPT.md B0-B8 va 6b-qismi bo'yicha).
+**Sana:** 2026-09-30 — 2026-10-03 (2,3,4-kun, PROMPT.md B0-B8 va 6b/6c-qismlari bo'yicha).
 
-## 0. Qisqa xulosa (halol)
+## 0a. 4-kun yangilanishi (2026-10-03): D_it Newton yaqinlashish muammosi HAL QILINDI
+
+Bulutdagi Claude (PROMPT.md 6c, "4-kun") ikkita aniq sabab va tuzatish taklif qildi: (C1)
+avvalgi solver "yamoqlari" (reserrfact/initstep/retry) olib tashlansin - ular muammoni
+yashirardi; (C2) D_it zaryadini `semi.Efn` (hosilaviy, kambag'allashgan sohada noaniq)
+o'rniga to'g'ridan-to'g'ri potensial `V`ga chiziqli bog'lash (`rhoqs=-e_const^2*Dit*(V-V_it0)`).
+Qo'shimcha: (C3) VG sweep Java tsikli o'rniga COMSOL native Auxiliary sweep/continuation
+bilan (bitta `study().run()` chaqiruvi), (C4) diskretizatsiya formulasi (FEM1log/FEM2Ef/FVM)
+tanlovi, (C5) `Nd_mos` 1e17 dan 2.5e18 ga ("normally-on" kanal).
+
+**NATIJA: ikkalasi ham to'g'ri chiqdi. D_it=3×10¹³ endi TO'LIQ VG=80..-80 oralig'ida
+(barcha 5 VD qiymati, 205/205 nuqta) bitta native-continuation chaqiruvida yaqinlashadi** -
+loglar `ish\model\run_d4_*.log`, natija `natijalar\transfer_b3_full_d4.csv`. Bu butun loyiha
+davomida D_it'ning BIRINCHI marta to'liq ishlashi (3-kun: 9 mustaqil usul, barchasi
+muvaffaqiyatsiz; 4-kun: C1+C2+C3 birgalikda - hal qilindi).
+
+**Ammo yangi, kutilmagan natija: V_on hali ham 1 nA chegarasiga YETMAYDI** (tok
+3.1×10⁻⁶..2.7×10⁻⁵ A oralig'ida qoladi, ±80V bo'ylab). Sabab aniqlandi va sonli
+tasdiqlandi: `C_it = q²·D_it ≈ 4.8 uF/cm²`, `C_ox ≈ 0.012 uF/cm²`, demak
+`m = 1+C_it/C_ox ≈ 400` - gate VG'ning kanal sathiga ta'siri ~400x so'nadi (kuchli
+Fermi-pinning). Hisoblangan SS (haqiqiy, D_it ishlagan holatda birinchi marta): **470
+V/dekada** (uchidan-uchiga, VD=0.2V) - maqsaddan (~25 V/dek) ~19x yomonroq. `Phi_B0`ni
+0.25V dan 0.1V ga pasaytirish yordam bermadi (natija bir xil tarzda yassi) - demak muammo
+kontakt bareri emas, balki D_it'ning o'zi gate samaradorligini deyarli yo'q qilgani.
+6b'ning ΔVon/Δx testi (VD=0.5V, x=0 vs x=0.05V) ham buni mustaqil tasdiqladi: tok faqat
+~2% o'zgardi (kutilgan eksponensial siljish o'rniga) - `beta_COMSOL` hisoblab bo'lmadi.
+
+**Xulosa:** bu endi YANGI turdagi muammo - yaqinlashish EMAS, balki KALIBRLASH (B4).
+PROMPT.md C5'ning (`Nd_mos=2.5e18`) asl mo'ljali to'liq gate samaradorligini nazarda
+tutgan edi; D_it uni ~400x pasaytirgani uchun, V_on'ni ±80V ichiga qaytarish uchun
+`Nd_mos`ni sezilarli kamaytirish (taxminan 400x, ~6-7×10¹⁵ cm⁻³ atrofida) KERAK bo'lishi
+mumkin - bu keyingi sessiya uchun asosiy tavsiya (pastga, 9-bo'lim). Batafsil: 9-bo'lim.
+
+## 0. Qisqa xulosa (halol, 2/3-kun holati)
 
 **Geometriya (B2) to'liq bajarildi va tasdiqlandi.** Maqoladagi 1a-rasmga mos to'liq kesim
 (Si, SiO₂ 285 nm, MoS₂, Cr 1 nm, pog'onali Au, F4TCNQ, suv, havo — 10 domen) qurildi,
@@ -243,6 +276,130 @@ o'rnini bosmaydi, lekin modelning to'g'ri yo'nalishda ishlashini ko'rsatadi.
 - `ish\model\transfer_ss_notraps_partial.csv` — 2-tekshiruv bazaviy egri chizig'i.
 - `ish\test\EfProbe.java`, `SolverProbe.java`, `SolverProbe2.java` — 3-kun API/solver
   tekshiruv dasturlari.
-- `ish\natijalar\jadval.csv` — T1-T8 jadvali (barchasi "yetilmadi", sabab bilan).
+- `ish\natijalar\jadval.csv` — T1-T8 jadvali (4-kun bilan yangilangan, sabab bilan).
 - `ish\natijalar\geom_full.png`, `geom_source_edge.png` — geometriya tasdiqlash rasmlari.
-- `ish\STATUS.md` — to'liq texnik jurnal (barcha qarorlar, 2-kun va 3-kun).
+- `ish\STATUS.md` — to'liq texnik jurnal (barcha qarorlar, 2,3,4-kun).
+
+## 9. 4-kun (2026-10-03): PROMPT.md 6c (C1-C6) joriy qilindi va natijalar
+
+PROMPT.md'ga bulutdagi Claude tomonidan qo'shilgan "6c. 4-kun" bo'limi (C1-C6)
+`ish\model\MoS2Fet.java`ga to'liq joriy qilindi. Har bir o'zgarish alohida sinaldi.
+
+### 9.1. C1 — solver "yamoqlari" olib tashlandi
+
+`solveRobust()` endi faqat BITTA `model.study("std1").run()` chaqiradi, sukut solver
+sozlamalari bilan (`reserrfact`, `initstep`, retry/`clearSolutionData` butunlay olib
+tashlandi, `bumpMaxIter*` metodlari o'chirildi). Muvaffaqiyatsizlik endi ochiq qoldiriladi.
+
+### 9.2. C2 — D_it zaryadi potensialga chiziqli bog'landi, V_it0 o'lchandi
+
+Eski ifoda (`semi.Efn` ga, keyin `tanh(semi.Efn)` ga bog'liq) butunlay almashtirildi:
+```java
+sfit.set("rhoqs", "-e_const^2*Dit*Dit_scale*(V-V_it0)");
+```
+`V` — semi'ning o'z bog'liq o'zgaruvchisi (potensial), hosilaviy `Efn` emas - Jakobian
+endi aniq. `V_it0` (neytrallik potensiali) yangi `measureVit0()` metodi bilan avtomatik
+o'lchanadi: VG=0, VD=0, Dit_scale=0 holatda `sel_mos_sio2` chegarasidagi `V`ning
+`Average` coupling operatori (`aveop1`) orqali o'rtachasi olinadi (natija: **-4.038 V**).
+
+### 9.3. C3 — VG sweep COMSOL native continuation bilan
+
+Java tsiklidagi har-VG-uchun-alohida-`study().run()` o'rniga, Stationary study step'ning
+`useparam`/`pname`/`plist`/`pcontinuationmode` xossalari orqali BITTA chaqiruvda butun VG
+ro'yxati yechiladi (VD tashqi Java tsiklida qoladi). Natijalar `EvalGlobal` bilan
+(`expr={"VG","semi.I0_2"}`) bitta `getReal()` chaqiruvida barcha nuqtalar uchun olinadi.
+Bu ham ANCHA tezroq (41 nuqta ~1-8 daqiqada, avvalgi har-nuqta-alohida yondashuvga
+nisbatan), ham ko'proq barqaror chiqdi.
+
+### 9.4. C4 — diskretizatsiya formulasi: FEM1log ishlamadi, FEM2Ef yomonroq, FVM eng yaxshisi
+
+`applications\Semiconductor_Module\Verification_Examples\pn_junction_1d.mph` va
+`Device_Building_Blocks\moscap_1d_interface_traps.mph`'dan topilgan aniq API:
+`semi.prop("ShapeProperty").set("Formulation", <qiymat>)`, qiymatlar: `"FVM"` (sukut),
+`"FEM1log"` (log formulation), `"FEM2Ef"` (quasi-Fermi-level, D_it namunasida ishlatilgan).
+
+Uch qiymat ham sinaldi (D_it'siz, Nd_mos=2.5e18, VD=0.2V, VG=80..-80):
+| Formulation | Natija |
+|---|---|
+| `FEM1log` | DARHOL ishlamadi: `FlNativeException: Undefined_value_found_Solvermodel` - hatto birinchi (Equilibrium+bias) nuqtada ham, aux sweep'gacha ham yetmadi. Sabab aniqlanmadi (keyingi sessiya uchun). |
+| `FEM2Ef` | Ishladi, lekin FVM'dan YOMONROQ: 36/41 nuqta, VG=-59.25'da to'xtadi, ~1.1 dekada tushish. |
+| `FVM` (sukut) | ENG YAXSHI: 40/41 nuqta, VG=-74.4'gacha, ~2.1 dekada tushish (8.19e-6 -> 8.14e-8 A). |
+
+**Qaror: `FVM` (COMSOL sukut qiymati) qoldirildi.** `FEM1log`'ning nosozligi hujjatlashtirildi,
+sababini chuqur tahlil qilishga vaqt qolmadi.
+
+### 9.5. C5 — Nd_mos = 2.5e18 cm⁻³ ("normally-on" kanal)
+
+Standart qiymat sifatida kiritildi (`MoS2Fet.java` defaults). D_it yoqilgan holatda bu
+qiymat endi juda yuqori chiqdi (9.6-bo'limga qarang) - kelajakda qayta kalibrlanishi kerak.
+
+### 9.6. C6.1 — D_it'siz, Nd=2.5e18, VD=0.2V, VG=80..-80 (FVM bilan)
+
+**QISMAN O'TDI**: 40/41 nuqta (VG=-74.4'gacha), tok 8.19e-6 -> 8.14e-8 A (~2.1 dekada).
+PROMPT.md shartidagi "kamida 4 dekada" ga YETMADI, lekin 3-kundagi natijadan (22.7x =
+1.36 dekada, eski Java-tsikl + eski solver yamoqlari bilan) ANCHA yaxshi. Oxirgi (-80V)
+nuqtada native continuation solver o'z-o'zidan qadamni qisqartirib (-74.4 oxirgi erishgan
+qadam) to'xtatdi.
+
+### 9.7. C6.2 — D_it=3e13, Nd=2.5e18, VD=0.2V, VG=80..-80 (C2+C3, FVM) — TO'LIQ O'TDI
+
+**BU LOYIHANING ASOSIY NATIJASI.** Avval 3-nuqtali smoke-test (VG=80,76,72) muvaffaqiyatli
+o'tgandan keyin, to'liq 41-nuqtali sweep **41/41** yaqinlashdi (403s). Keyin BARCHA 5 VD
+qiymati (0.2,0.4,0.6,0.8,1.0) bilan to'liq B3 ishga tushirildi: **205/205 nuqta, 1190s
+(~20 daqiqa)**. Natija: `natijalar\transfer_b3_full_d4.csv`, rasm:
+`natijalar\fig4a_transfer_d4.png`.
+
+**Lekin fizik natija kutilmagan:** tok barcha VD'da deyarli tekis (VG=80'dan -80'gacha
+faqat 1.1-2.2x o'zgaradi — 9.9-bo'limga qarang).
+
+### 9.8. 6b, Tekshiruv 3 — ΔV_on/Δx (D_it bilan, VD=0.5V)
+
+`x_fixed` parametri qo'shildi (`var_x`ni `beta*VD` o'rniga qo'lda berilgan qiymatga
+qotiradi). x=0 va x=0.05V bilan (VG=80,40,0,-40,-80) alohida ishga tushirildi:
+
+| VG | I(x=0) | I(x=0.05) | nisbat |
+|---|---|---|---|
+| 80 | 1.829e-5 | 1.818e-5 | 0.994 |
+| 40 | 1.466e-5 | 1.442e-5 | 0.984 |
+| 0 | 1.202e-5 | 1.175e-5 | 0.978 |
+| -40 | 1.018e-5 | 9.952e-6 | 0.978 |
+| -80 | 8.713e-6 | 8.557e-6 | 0.982 |
+
+Faqat ~2% farq (eksponensial siljish YO'Q). V_on hech bir holatda 1nA'ga yetmagani uchun
+**beta_COMSOL hisoblanmadi** - bu 3-kundagi xulosani (kontakt/kanal cheklovi) mustaqil
+tasdiqlaydi, endi D_it yoqilgan holatda ham.
+
+### 9.9. Kalibrlash urinishi va YANGI fizik tahlil (B4, qisman)
+
+`Phi_B0`ni 0.25V'dan 0.1V'ga pasaytirib D_it=3e13 bilan to'liq sweep qayta ishga
+tushirildi: natija AMALIY JIHATDAN BIR XIL (1.21e-5 -> 5.20e-5 A, ~2.3x) - demak muammo
+kontakt bareri EMAS edi.
+
+Sonli tahlil: `C_it = q²·D_it`. `Dit=3e13[1/(cm^2*eV)]` uchun COMSOL hisoblashicha
+(avvalgi sessiyada tasdiqlangan) `C_it ≈ 4.8 uF/cm²`. `C_ox = eps0*3.9/285nm ≈
+1.21e-8 F/cm² = 0.0121 uF/cm²`. **m = 1+C_it/C_ox ≈ 397-400.** Bu VG'ning har bir
+voltining kanalga faqat ~1/400 qismi yetib borishini bildiradi - 160V (±80V) to'liq
+sweep ORQALI atigi ~0.4V HAQIQIY sirt potentsiali siljishi beriladi.
+
+Hisoblangan SS (haqiqiy, VD=0.2V): uchidan-uchiga **470 V/dekada**, mahalliy eng tik
+qism **376 V/dekada** (VG=28..32 atrofida). Maqsad (~25 V/dek) dan ~15-19x yomonroq -
+ya'ni kuzatilgan javob NAZARIY m=400'dan kutilgan (~24 V/dek, agar kanal o'zi ideal ~60
+mV/dekada bersa) dan HAM ko'ra sezilarli yassiroq. Demak, **faqat gate-samaradorlik
+pasayishi (m-faktor) bilan tushuntirib bo'lmaydi** - kanalning o'zi (Nd_mos=2.5e18 bilan)
+ham kutilganidan ancha kuchsizroq subporog javobi beradi, ehtimol bu qalinlik (bu yupqa
+MoS2 to'liq charchamaydi/aralashmaydi) yoki qo'shimcha kontakt/geometriya ta'siri bilan.
+
+**B4 TO'LIQ BAJARILMADI** - bitta qo'lda qilingan Phi_B0 testi doirasidan tashqariga
+chiqilmadi (vaqt tejash uchun, PROMPT.md "Vaqt qoidasi"ga muvofiq B7-B8 ga o'tildi).
+
+### 9.10. Kelajak uchun aniq tavsiya
+
+1. **`Nd_mos`ni sezilarli kamaytirish** (taxminan 400x gate-samaradorlik yo'qotilishini
+   qoplash uchun, ~6-7×10¹⁵ cm⁻³ atrofidan boshlab) va qayta sinash - bu B4'ning asosiy
+   ishi bo'lishi kerak (`calibrate.py`ni yangi pipeline'ga ulash, scipy bilan avtomatik).
+2. `FEM1log`'ning nima uchun darhol qulashini aniqlash (ehtimol foydali bo'lar, agar
+   kanalning o'z chuqur-subporog javobi FVM'da ham yetarlicha yaxshi bo'lmasa).
+3. B5 (Time Dependent, gisterezis) va B6 (2-rasm) hali boshlanmagan - B4 V_on'ni
+   ±80V ichiga qaytargandan keyin davom etilishi kerak.
+4. Geometriya, fizika arxitekturasi, C1-C3 (yaqinlashish mexanizmi) TO'LIQ tayyor va
+   tasdiqlangan - B4 hal qilinsa, B5-B8 nisbatan tez bajarilishi kutiladi.
