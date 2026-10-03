@@ -309,6 +309,47 @@ Nd ≈ 2–3e18 cm^-3. `Nd_mos` boshlang'ich qiymati 2.5e18 bo'lsin, B4 da kalib
 4. Keyin B3 → B8.
 Yangi loglar `run_d4_*.log`. Har qadam natijasini STATUS.md ga yoz.
 
+## 6d. 5-kun: bulutdagi tekshiruv xulosalari (AVVAL SHULARNI QIL)
+
+4-kun natijasi: D_it = 3e13 bilan to'liq VG sweep yaqinlashdi, bu katta yutuq. Lekin `transfer_b3_full.csv` da
+I_D butun −80…+80 V oralig'ida µA darajasida qoladi (VD = 0.2 V da 3.1 → 6.9 µA). Ya'ni kanal hech qachon
+yopilmaydi, subporog soha umuman yo'q. "SS = 470 V/dek" subporog qiyaligi emas: bu to'liq ochiq kanal tokining
+sekin o'zgarishi. Sabablari va tuzatish:
+
+**Sabab 1: kanalni yopib bo'lmaydi.** Nd = 2.5e18 da 20 nm MoS2 ni to'liq kambag'allashtirish uchun sirt
+potensiali taxminan 1.4 V o'zgarishi kerak (W_dep = sqrt(2·ε·ψ/(q·Nd)) ≈ 12 nm ψ = 0.5 V da). C_it/C_ox ≈ 400
+bo'lganda ±80 V gate potensialni faqat ~±0.2 V ga siljitadi. Demak yopilish fizik jihatdan imkonsiz.
+**Sabab 2: `V_it0` muvozanatdagi (VG = 0) sirt potensialiga teng qilib o'lchangan.** Shuning uchun Fermi sathi
+aynan kanal to'liq ochiq bo'lgan nuqtada "qadalib" qolgan.
+
+**D1. Nd ni kamaytir, lekin 400 marta emas, fizik mezon bilan.** 20 nm qatlam ~0.2–0.3 V da to'liq
+kambag'allashishi kerak: Nd ≤ 2·ε·ψ/(q·t_mos²) ≈ 1e17. `Nd_mos = 5e16` dan boshla.
+**D2. `V_it0` ni o'lchama, kalibrlanadigan parametr qil.** V_on ≈ const + m·(ψ_on − V_it0), m ≈ 400, ya'ni
+V_it0 ning 0.01 V ga o'zgarishi V_on ni ~4 V ga siljitadi. V_it0 ni 0.02 V qadam bilan sweep qilib (VD = 0.2 V),
+V_on = V_G(1 nA) ni −80…+80 ichiga olib kir. Maqsad 4b: V_on(0.2 V) ≈ −4 V (yuqori RH).
+`sigma_F4` va `Phi_Si` ham V_on ni siljitadi. Avval faqat V_it0 bilan ishla.
+*Shart:* tok 1 nA dan pastga tushadi va SS (1e-10…1e-8 A oralig'ida) ≈ 0.06·(1 + C_it/C_ox) ≈ 24 V/dek ±30%.
+
+**D3. Eng muhim fizik test: V_on ionlarga (x) bog'liqmi?** (4-kunda 2% chiqqan, chunki subporog yo'q edi.)
+D2 dan keyin VD = 0.5 V da x = 0 va x = 0.05 V bilan V_on ni hisobla. Kutilgan natija: ΔV_on ≈ −m·0.05 ≈ −20 V.
+**Diqqat, oldindan bilib qo'y:** faqat termoemissiyali Schottky shartida bu test yana ~0 chiqishi mumkin.
+Elektronlar yo'ldagi eng baland barerdan o'tishi kerak. Subporogda bu kanal bareri (gate boshqaradi),
+kontakt bareri esa past qoladi. Kontakt bareri baland bo'lsa, tok gate'ga bog'liq bo'lmay qoladi. Maqoladagi
+Schottky-barerli FET mexanizmida gate barerni **yupqalashtiradi** va elektronlar **tunnel** orqali o'tadi
+(maqola, 3-rasm, "barrier narrowing"). Shuning uchun:
+**D4. Kontaktga tunnellash qo'sh.** `mc1/mc2` dagi `extraElectronCurrent` xossasining COMSOL 6.0 dagi ruxsat
+etilgan qiymatlarini aniqla. Masalan, ataylab noto'g'ri qiymat berib xato xabaridagi ro'yxatni o'qi yoki
+Semiconductor Module User's Guide'dagi "Metal Contact"/"Schottky"/"tunneling" bo'limidan top. WKB yoki
+tunnellash varianti bo'lsa, yoq va D3 ni takrorla. Tunnellash bilan `Phi_B0` ni 0.3–0.5 V atrofida qayta tanla.
+**D5. Tunnellash opsiyasi bo'lmasa: fenomenologik TFE.** Barerni kontakt qirrasidagi normal maydonga bog'la:
+`Phi = chi_mos + Phi_B0 - x - alpha_t*En_c`. Bunda `En_c` source qirrasi yonidagi (5–10 nm) MoS2 ichidagi
+o'rtacha |E| (integration operator), `alpha_t` [m] kalibrlanadi. Bu kompakt modeldagi "gate barerni
+yupqalashtiradi" farazining COMSOL'dagi ekvivalenti. Hisobotda uni fenomenologik deb aniq yoz.
+Yaqinlashish qiyin bo'lsa, `alpha_t` ni continuation bilan kirit.
+
+**Tartib:** D1 → D2 (SS shartigacha) → D3 → (kerak bo'lsa D4, keyin D5) → D3 qayta → B4 (beta = 92.5/|ΔV_on/Δx|,
+past RH, T1–T3, T8) → B5 → B7 → B8. Loglar `run_d5_*.log`. Har qadamni STATUS.md ga yoz va har bosqich oxirida push qil.
+
 ## 7. Boshlash va davom etish
 
 **Kechagi seans (1-kun) to'liq tugamagan.** U ruxsat so'rab to'xtab qolgan va o'chirilgan. COMSOL faylida
