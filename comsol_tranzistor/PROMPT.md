@@ -323,7 +323,7 @@ bo'lganda ±80 V gate potensialni faqat ~±0.2 V ga siljitadi. Demak yopilish fi
 aynan kanal to'liq ochiq bo'lgan nuqtada "qadalib" qolgan.
 
 **D1. Nd ni kamaytir, lekin 400 marta emas, fizik mezon bilan.** 20 nm qatlam ~0.2–0.3 V da to'liq
-kambag'allashishi kerak: Nd ≤ 2·ε·ψ/(q·t_mos²) ≈ 1e17. `Nd_mos = 5e16` dan boshla.
+kambag'allashishi kerak: Nd ≤ 2·ε·ψ/(q·t_mos²) ≈ 3–5e17 (ψ = 0.15–0.25 V). Zaxira bilan `Nd_mos = 5e16` dan boshla.
 **D2. `V_it0` ni o'lchama, kalibrlanadigan parametr qil.** V_on ≈ const + m·(ψ_on − V_it0), m ≈ 400, ya'ni
 V_it0 ning 0.01 V ga o'zgarishi V_on ni ~4 V ga siljitadi. V_it0 ni 0.02 V qadam bilan sweep qilib (VD = 0.2 V),
 V_on = V_G(1 nA) ni −80…+80 ichiga olib kir. Maqsad 4b: V_on(0.2 V) ≈ −4 V (yuqori RH).
